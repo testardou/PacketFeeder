@@ -10,6 +10,50 @@ This project aims to provide a simple, flexible, and reproducible platform for v
 
 ---
 
+## 🧰 **Project Modes**
+
+Treat My IDS provides multiple operating modes to cover a wide range of IDS/IPS testing needs:
+
+### **1. Classic Replay Mode (tcpreplay‑like)**
+
+Replays a PCAP directly on a chosen network interface, similar to `tcpreplay`. Ideal for:
+
+- Simple tests
+- Checking Suricata/Snort rule matches
+- Replaying attack PCAPs at full speed or throttled
+
+### **2. Two‑Host Interactive Replay Mode**
+
+In this mode, two VMs (client/server) exchange real packets while the tool replays the PCAP:
+
+- Packets are rebuilt and re‑sent live
+- Both machines actually communicate during the replay
+- Useful for testing detections that depend on real TCP handshakes, timing, or multi‑step flows
+
+### **3. Scenario Mode (Simple Attack Simulations)**
+
+A collection of small, predefined scenarios, each stored as a folder:
+
+- Single HTTP request
+- SSH brute‑force attempt
+- DNS or ICMP probes
+- Small attack chains
+
+These scenarios allow quick validation of IDS coverage without handling large PCAP files.
+
+### **4. Step‑by‑Step Mode (Breakpoint/Line‑by‑Line)**
+
+Provides complete control over the replay process:
+
+- Process a PCAP packet‑by‑packet
+- Add breakpoints at specific packets or protocol layers
+- Inspect or modify the live replay sequence
+- Useful for debugging, teaching, or reverse engineering detection behavior
+
+---
+
+---
+
 ## 🧪 **Testing Lab Used During Development**
 
 To build and validate Treat My IDS, a minimal yet realistic laboratory environment was configured. It runs on a physical server using QEMU/KVM and managed through **virsh**.
@@ -42,7 +86,3 @@ To build and validate Treat My IDS, a minimal yet realistic laboratory environme
   - Allows capturing all traffic produced by the PCAP replays
 
 This creates a realistic environment for validating IDS detection capabilities.
-
----
-
-(Next sections may include: project installation, usage examples, scenario structure, step‑by‑step mode, etc.)
