@@ -7,6 +7,7 @@ def play_pcap(packets, iface="eth0", speed=1):
     """
     if not packets:
         return
+    sender = rpcap(iface)
 
     # Timestamp du premier paquet pour compenser l'offset
     prev_ts = packets[0].time
