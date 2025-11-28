@@ -14,7 +14,7 @@ def add_parser(subparsers):
         type=int,
         choices=[0, 1, 2],
         default=0,
-        help="0=Real time with progress bar, 1=Fullspeed with progress bar, 2=Fullspeed without progress bar (fastest)"
+        help="0=Real time, 1=Fullspeed with progress bar, 2=Fullspeed without progress bar (fastest)"
     )
     parser.set_defaults(func=run)
 
@@ -22,11 +22,12 @@ def add_parser(subparsers):
 def run(args):
     print(f"[Replay] PCAP: {args.pcap}")
     print(f"[Replay] Interface: {args.iface}")
-    print(f"[Replay] Full Speed: {args.speed}")
+    print(f"[Replay] Speed: {args.speed}")
     packets = rdpcap(args.pcap)
-    first_timestamp = packets[0].time
+    print(f"[Replay] Number of packets: {len(packets)}")
+    first_timestamp = float(packets[0].time)
     prev_timestamp = first_timestamp
-    ts = packets[-1].time - first_timestamp
+    ts = float(packets[-1].time) - first_timestamp
     d = int(ts // 86400)
     h = int((ts % 86400) // 3600)
     m = int((ts % 3600) // 60)
@@ -39,9 +40,10 @@ def run(args):
         if args.speed == 0:
             print(f"[Replay] Total replay time: {d}d {h:02d}h {m:02d}m {s:02d}s {ms:03d}ms")
             for pkt in tqdm(packets, desc="Replaying PCAP"):
-                if pkt.time > first_timestamp:
-                    time.sleep(pkt.time - prev_timestamp)
-                    prev_timestamp = pkt.time
+                timestamp = float(pkt.time)
+                if timestamp > first_timestamp:
+                    time.sleep(timestamp - prev_timestamp)
+                    prev_timestamp = timestamp
                 sendp(pkt, iface=args.iface, verbose=False)
 
         elif args.speed == 1:
