@@ -1,6 +1,6 @@
-from core.utils.play_pcap import play_pcap
-from core.utils.read_pcap import read_pcap
-
+import time
+from scapy.all import conf, rdpcap, sendp
+from tqdm import tqdm
 
 def add_parser(subparsers):
     parser = subparsers.add_parser(
@@ -8,17 +8,48 @@ def add_parser(subparsers):
         help="Replay a PCAP like tcpreplay"
     )
     parser.add_argument("--pcap", required=True)
-    parser.add_argument("--iface", default="eth0")
-    parser.add_argument("--speed", type=int, default=1)
-
+    parser.add_argument("--iface", default=conf.iface)
+    parser.add_argument(
+        "--speed",
+        type=int,
+        choices=[0, 1, 2],
+        default=0,
+        help="0=Real time with progress bar, 1=Fullspeed with progress bar, 2=Fullspeed without progress bar (fastest)"
+    )
     parser.set_defaults(func=run)
 
 
 def run(args):
     print(f"[Replay] PCAP: {args.pcap}")
     print(f"[Replay] Interface: {args.iface}")
-    print(f"[Replay] Speed: {args.speed}x")
-    packets = read_pcap(args.pcap)
-    play_pcap(packets, args.iface)
+    print(f"[Replay] Full Speed: {args.speed}")
+    packets = rdpcap(args.pcap)
+    first_timestamp = packets[0].time
+    prev_timestamp = first_timestamp
+    ts = packets[-1].time - first_timestamp
+    d = int(ts // 86400)
+    h = int((ts % 86400) // 3600)
+    m = int((ts % 3600) // 60)
+    s = int(ts % 60)
+    ms = int((ts % 1) * 1000)
+
+    if not packets:
+        return
+    try:
+        if args.speed == 0:
+            print(f"[Replay] Total replay time: {d}d {h:02d}h {m:02d}m {s:02d}s {ms:03d}ms")
+            for pkt in tqdm(packets, desc="Replaying PCAP"):
+                if pkt.time > first_timestamp:
+                    time.sleep(pkt.time - prev_timestamp)
+                    prev_timestamp = pkt.time
+                sendp(pkt, iface=args.iface, verbose=False)
+
+        elif args.speed == 1:
+            for pkt in tqdm(packets, desc="Replaying PCAP"):
+                sendp(pkt, iface=args.iface, verbose=False)
+        else:
+            print("Replaying PCAP...")
+            sendp(pkt, iface=args.iface, verbose=False)
     
-    # TODO: call utils.pcap.replay(...)
+    except KeyboardInterrupt:
+        print("\nOUCH !!!!!! Interrupted by user, stopping replay :'(")
