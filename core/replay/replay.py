@@ -49,7 +49,7 @@ def run(args):
                 sendp(pkt, iface=args.iface, verbose=False)
         else:
             print("Replaying PCAP...")
-            sendp(pkt, iface=args.iface, verbose=False)
+            sendp(packets, iface=args.iface, verbose=False)
     
     except KeyboardInterrupt:
         print("\nOUCH !!!!!! Interrupted by user, stopping replay :'(")
