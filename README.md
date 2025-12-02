@@ -1,10 +1,10 @@
-# Treat My IDS
+# Packet Feeder
 
 **A treat a day keeps false negatives away.**
 
-![Treat My IDS Logo](./assets/logo.png)
+![Packet Feeder Logo](./assets/logo.png)
 
-Treat My IDS is a tool designed to easily test IDS/IPS systems by replaying PCAP files, modifying IP addresses, running pre‑built scenarios stored in a folder, and even using a step‑by‑step mode that allows reading a PCAP line by line with breakpoints.
+Packet Feeder is a tool designed to easily test IDS/IPS systems by replaying PCAP files, modifying IP addresses, running pre‑built scenarios stored in a folder, and even using a step‑by‑step mode that allows reading a PCAP line by line with breakpoints.
 
 This project aims to provide a simple, flexible, and reproducible platform for validating IDS/IPS behavior in different environments.
 
@@ -12,7 +12,7 @@ This project aims to provide a simple, flexible, and reproducible platform for v
 
 ## 🧰 **Project Modes**
 
-Treat My IDS provides multiple operating modes to cover a wide range of IDS/IPS testing needs:
+Packet Feeder provides multiple operating modes to cover a wide range of IDS/IPS testing needs:
 
 ### **1. Classic Replay Mode (tcpreplay‑like)**
 
@@ -56,7 +56,7 @@ Provides complete control over the replay process:
 
 ## 🧪 **Testing Lab Used During Development**
 
-To build and validate Treat My IDS, a minimal yet realistic laboratory environment was configured. It runs on a physical server using QEMU/KVM and managed through **virsh**.
+To build and validate Packet Feeder, a minimal yet realistic laboratory environment was configured. It runs on a physical server using QEMU/KVM and managed through **virsh**.
 
 ### **Lab Architecture**
 
