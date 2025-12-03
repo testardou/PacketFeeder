@@ -2,6 +2,8 @@ import time
 from scapy.all import conf, rdpcap, sendp
 from tqdm import tqdm
 
+from core.utils import read_pcap, send_pcap
+
 def add_parser(subparsers):
     parser = subparsers.add_parser(
         "replay",
@@ -23,7 +25,7 @@ def run(args):
     print(f"[Replay] PCAP: {args.pcap}")
     print(f"[Replay] Interface: {args.iface}")
     print(f"[Replay] Speed: {args.speed}")
-    packets = rdpcap(args.pcap)
+    packets = read_pcap(args.pcap)
     print(f"[Replay] Number of packets: {len(packets)}")
     first_timestamp = float(packets[0].time)
     prev_timestamp = first_timestamp
@@ -44,14 +46,14 @@ def run(args):
                 if timestamp > first_timestamp:
                     time.sleep(timestamp - prev_timestamp)
                     prev_timestamp = timestamp
-                sendp(pkt, iface=args.iface, verbose=False)
+                send_pcap(pkt, iface=args.iface, verbose=False)
 
         elif args.speed == 1:
             for pkt in tqdm(packets, desc="Replaying PCAP"):
-                sendp(pkt, iface=args.iface, verbose=False)
+                send_pcap(pkt, iface=args.iface, verbose=False)
         else:
             print("Replaying PCAP...")
-            sendp(packets, iface=args.iface, verbose=False)
+            send_pcap(packets, iface=args.iface, verbose=False)
     
     except KeyboardInterrupt:
         print("\nOUCH !!!!!! Interrupted by user, stopping replay :'(")

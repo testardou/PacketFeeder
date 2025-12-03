@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from api.views import infos_pcap
+from api.views import infos_pcap, replay_real_time
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/infos-pcap/', infos_pcap),
+    path('api/replay-real-time/', replay_real_time),
 ]

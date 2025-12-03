@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 export const Replay = () => {
   const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [selected, setSelected] = useState("realTime");
 
   const uploadMutation = useMutation({
     mutationFn: async (file) => {
@@ -15,6 +17,36 @@ export const Replay = () => {
       });
 
       if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    },
+  });
+
+  const startReplayProgressListener = () => {
+    const evtSource = new EventSource(
+      "http://localhost:8000/api/replay-real-time/"
+    );
+
+    evtSource.onmessage = (event) => {
+      console.log("Progress:", event.data);
+      setProgress(Number(event.data));
+    };
+
+    return () => evtSource.close();
+  };
+
+  const runMutation = useMutation({
+    mutationFn: async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("iface", "wlp4s0");
+
+      const res = await fetch("http://localhost:8000/api/replay-real-time/", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Erreur API");
+      startReplayProgressListener();
       return res.json();
     },
   });
@@ -110,8 +142,40 @@ export const Replay = () => {
               </ul>
             </div>
           </div>
+          <div className="flex flex-row gap-4 items-center justify-center">
+            <div className="flex flex-row gap-1">
+              <input
+                checked={selected === "realTime"}
+                onChange={(e) => setSelected(e.target.value)}
+                type="radio"
+                name="speed"
+                value="realTime"
+              />
+              Real Time (Slowest)
+            </div>
+            <div className="flex flex-row gap-1">
+              <input
+                checked={selected === "fast"}
+                onChange={(e) => setSelected(e.target.value)}
+                type="radio"
+                name="speed"
+                value="fast"
+              />
+              Full Speed with Progress Bar (Slower)
+            </div>
+            <div className="flex flex-row gap-1">
+              <input
+                checked={selected === "fastest"}
+                onChange={(e) => setSelected(e.target.value)}
+                type="radio"
+                name="speed"
+                value="fastest"
+              />
+              Full Speed (Fastest)
+            </div>
+          </div>
           <button
-            onClick={() => uploadMutation.mutate(file)}
+            onClick={() => runMutation.mutate(file)}
             type="button"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
