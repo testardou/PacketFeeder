@@ -1,17 +1,46 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000/realtime", {
+  autoConnect: true,
+});
 
 export const Replay = () => {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [selected, setSelected] = useState("realTime");
+  const socket = io("http://localhost:5000/realtime");
+
+  // WebSocket listeners (installés UNE SEULE FOIS)
+  useEffect(() => {
+    console.log("Initialisation listeners...");
+
+    const connected = () => console.log("WS connecté !");
+    const hello = (data) => console.log("HELLO:", data);
+    const replayProgress = (data) => {
+      console.log("Progress:", data.progress);
+      setProgress(data.progress);
+    };
+
+    socket.on("connect", connected);
+    socket.on("hello", hello);
+    socket.on("replay_progress", replayProgress);
+
+    return () => {
+      socket.off("connect", connected);
+      socket.off("hello", hello);
+      socket.off("replay_progress", replayProgress);
+    };
+  }, []);
 
   const uploadMutation = useMutation({
     mutationFn: async (file) => {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("iface", "wlp3s0");
 
-      const res = await fetch("http://localhost:8000/api/infos-pcap/", {
+      const res = await fetch("http://localhost:5000/api/infos-pcap/", {
         method: "POST",
         body: formData,
       });
@@ -21,32 +50,21 @@ export const Replay = () => {
     },
   });
 
-  const startReplayProgressListener = () => {
-    const evtSource = new EventSource(
-      "http://localhost:8000/api/replay-real-time/"
-    );
-
-    evtSource.onmessage = (event) => {
-      console.log("Progress:", event.data);
-      setProgress(Number(event.data));
-    };
-
-    return () => evtSource.close();
-  };
-
   const runMutation = useMutation({
     mutationFn: async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("iface", "wlp4s0");
 
-      const res = await fetch("http://localhost:8000/api/replay-real-time/", {
+      const res = await fetch("http://localhost:5000/api/replay_realtime/", {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) throw new Error("Erreur API");
-      startReplayProgressListener();
+
+      // Lancement du replay WebSocket
+      socket.emit("start_replay", { speed: 1 });
+
       return res.json();
     },
   });
@@ -181,6 +199,7 @@ export const Replay = () => {
           >
             Replay
           </button>
+          <p>avancement : {progress}%</p>
         </div>
       )}
     </div>

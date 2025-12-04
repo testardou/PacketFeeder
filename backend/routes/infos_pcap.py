@@ -1,16 +1,11 @@
-from collections import Counter
-import time
-from django.http import StreamingHttpResponse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from scapy.all import conf, rdpcap, sendp
-
+from flask import Blueprint, request, jsonify
 from core.utils.read_pcap import read_pcap
-from core.utils.send_pcap import send_pcap
 
-@api_view(['POST'])
-def infos_pcap(request):
-    file = request.FILES['file']
+infos_pcap_bp = Blueprint("infos_pcap", __name__)
+
+@infos_pcap_bp.route("/api/infos-pcap/", methods=["POST"])
+def infos_pcap():
+    file = request.files.get('file')
     packets = read_pcap(file)
     if len(packets) == 0:
         return {"error": "Empty PCAP"}
@@ -57,36 +52,4 @@ def infos_pcap(request):
         "tcp_ports": tcp_ports,
         "udp_ports": udp_ports,
     }
-    return Response(infos)
-
-@api_view(['POST'])
-def replay_real_time(request):
-    if request.method == 'POST':
-        file = request.FILES['file']
-        iface = request.POST['iface']
-
-        task_id = str(time.time()).replace('.', '')
-        temp_path = f"/tmp/{task_id}.pcap"
-
-        with open(temp_path, "wb") as f:
-            for chunk in file.chunks():
-                f.write(chunk)
-
-        return Response({"task_id": task_id})
-    
-@api_view(['GET'])
-def replay_get_progress(request):
-    task_id = request.GET.get("task_id")
-    iface = request.GET.get("iface", "wlp4s0")
-
-    temp_path = f"/tmp/{task_id}.pcap"
-    packets = rdpcap(temp_path)
-
-    def event_stream():
-        total = len(packets)
-        for i, pkt in enumerate(packets):
-            progress = int((i + 1) / total * 100)
-            yield f"data: {progress}\n\n"
-            send_pcap(pkt, iface=iface)
-
-    return StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+    return jsonify(infos)
