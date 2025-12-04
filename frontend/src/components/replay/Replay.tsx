@@ -1,30 +1,45 @@
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { io } from "socket.io-client";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
+dayjs.extend(utc);
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
 });
 
 export const Replay = () => {
   const [file, setFile] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [clientSid, setClientSid] = useState(null);
+  const [socketData, setSocketData] = useState<{
+    progress: 0;
+    index: 0;
+    timestamp: 0;
+    size: 0;
+    remaining_time: 0;
+    next_packet: 0;
+  } | null>(null);
   const [selected, setSelected] = useState("realTime");
-  const socket = io("http://localhost:5000/realtime");
 
-  // WebSocket listeners (installés UNE SEULE FOIS)
   useEffect(() => {
     console.log("Initialisation listeners...");
 
     const connected = () => console.log("WS connecté !");
     const hello = (data) => console.log("HELLO:", data);
     const replayProgress = (data) => {
-      console.log("Progress:", data.progress);
-      setProgress(data.progress);
+      console.log("Progress:", data);
+      console.log("PERCEN", Math.floor(socketData?.progress ?? 0));
+
+      setSocketData(data);
     };
 
     socket.on("connect", connected);
     socket.on("hello", hello);
+    socket.on("sid", ({ sid }) => {
+      console.log("My SID:", sid);
+      setClientSid(sid);
+    });
     socket.on("replay_progress", replayProgress);
 
     return () => {
@@ -34,11 +49,34 @@ export const Replay = () => {
     };
   }, []);
 
+  window.addEventListener("beforeunload", () => {
+    socket.emit("stop_replay");
+  });
+
+  const {
+    data: ifaces_list,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["interfaces"], // identifiant unique du cache
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/get_interfaces/");
+
+      if (!res.ok) {
+        throw new Error("Erreur API");
+      }
+
+      return res.json();
+    },
+  });
+  const [selectedInterface, setSelectectedInterface] = useState(
+    ifaces_list?.interfaces?.[0] ?? ""
+  );
+
   const uploadMutation = useMutation({
     mutationFn: async (file) => {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("iface", "wlp3s0");
 
       const res = await fetch("http://localhost:5000/api/infos-pcap/", {
         method: "POST",
@@ -52,18 +90,23 @@ export const Replay = () => {
 
   const runMutation = useMutation({
     mutationFn: async (file) => {
+      const urls: Record<string, string> = {
+        realTime: "replay_realtime",
+        fast: "replay_faster",
+        fastest: "replay_fastest",
+      };
+
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("iface", selectedInterface);
+      formData.append("sid", clientSid ?? "");
 
-      const res = await fetch("http://localhost:5000/api/replay_realtime/", {
+      const res = await fetch(`http://localhost:5000/api/${urls[selected]}/`, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) throw new Error("Erreur API");
-
-      // Lancement du replay WebSocket
-      socket.emit("start_replay", { speed: 1 });
 
       return res.json();
     },
@@ -71,6 +114,22 @@ export const Replay = () => {
 
   return (
     <div className="p-6 space-y-4">
+      <div>
+        <h2>Interfaces :</h2>
+        <select
+          id="interfaces"
+          value={selectedInterface}
+          onChange={(e) => setSelectectedInterface(e.target.value)}
+          name="interfaces"
+          className="mt-2 block"
+        >
+          {ifaces_list?.interfaces?.map((iface: string) => (
+            <option key={iface} value={iface}>
+              {iface}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="flex flex-row gap-1">
         <input
           className="border rounded p-1"
@@ -99,7 +158,9 @@ export const Replay = () => {
 
       {/* ERREUR */}
       {uploadMutation.isError && (
-        <p className="text-red-600">Erreur lors du chargement</p>
+        <p className="text-red-600">
+          Erreur lors du chargement: {uploadMutation.error.message}
+        </p>
       )}
       {/* SUCCÈS */}
       {uploadMutation.isSuccess && (
@@ -179,7 +240,7 @@ export const Replay = () => {
                 name="speed"
                 value="fast"
               />
-              Full Speed with Progress Bar (Slower)
+              Full Speed with Progress Bar (Faster)
             </div>
             <div className="flex flex-row gap-1">
               <input
@@ -199,7 +260,52 @@ export const Replay = () => {
           >
             Replay
           </button>
-          <p>avancement : {progress}%</p>
+          {runMutation.isPending ? (
+            <p className="text-gray-500">Analyse en cours…</p>
+          ) : (
+            socketData && (
+              <>
+                <button
+                  onClick={() => socket.emit("stop_replay")}
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Stop
+                </button>
+                <div>
+                  <p>Percent: {Number(socketData?.progress.toFixed(2))} %</p>
+                  <p>Packet Index: {socketData?.index}</p>
+                  <p>
+                    Timestamp:
+                    {dayjs
+                      .unix(socketData?.timestamp ?? 0)
+                      .format("HH:mm:ss.SSS")}
+                  </p>
+                  <p>
+                    Size:
+                    {socketData?.size} bytes
+                  </p>
+                  <p>
+                    Remaining Time:
+                    {dayjs((socketData?.remaining_time ?? 0) * 1000)
+                      .utc()
+                      .format("HH:mm:ss.SSS")}
+                  </p>
+                  <p>
+                    Next Packet In:
+                    {dayjs((socketData?.next_packet ?? 0) * 1000)
+                      .utc()
+                      .format("HH:mm:ss.SSS")}
+                  </p>
+                </div>
+                <p>
+                  <progress
+                    value={Math.floor(socketData?.progress ?? 0) / 100}
+                  />
+                </p>
+              </>
+            )
+          )}
         </div>
       )}
     </div>

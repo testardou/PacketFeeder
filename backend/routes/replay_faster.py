@@ -1,12 +1,11 @@
 from flask import Blueprint, request, jsonify
-from core.utils.send_pcap import send_pcap
 from core.utils.read_pcap import read_pcap
 from flask_socketio import emit
 from backend.extension import socketio
 from backend.sockets.realtime import should_run
-import time
+from core.utils.send_pcap import send_pcap
 
-replay_realtime_bp = Blueprint("replay_realtime", __name__)
+replay_faster_bp = Blueprint("replay_faster", __name__)
 
 def replay_loop(packets, iface, sid):
     total = len(packets)
@@ -30,14 +29,13 @@ def replay_loop(packets, iface, sid):
                 "next_packet": timestamp - prev_timestamp
             }, namespace="/realtime")
             send_pcap(pkt, iface)
-            time.sleep(timestamp - prev_timestamp)
             prev_timestamp = timestamp
 
     socketio.emit("replay_done", {"msg": "Replay terminé"}, namespace="/realtime")
 
 
-@replay_realtime_bp.route("/api/replay_realtime/", methods=["POST"])
-def replay_realtime():
+@replay_faster_bp.route("/api/replay_faster/", methods=["POST"])
+def replay_faster():
     if "file" not in request.files:
         return jsonify({"error": "Missing file"}), 400
     file = request.files["file"]
