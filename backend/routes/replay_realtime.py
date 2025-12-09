@@ -1,10 +1,12 @@
-from flask import Blueprint, request, jsonify
+from flask import  request, jsonify
 from core.utils.send_pcap import send_pcap
 from core.utils.read_pcap import read_pcap
 from flask_socketio import emit
 from backend.extension import socketio
 from backend.sockets.realtime import should_run
 import time
+from flask_smorest import Blueprint
+
 
 replay_realtime_bp = Blueprint("replay_realtime", __name__)
 
@@ -32,7 +34,7 @@ def replay_loop(packets, iface, sid):
             send_pcap(pkt, iface)
             time.sleep(timestamp - prev_timestamp)
             prev_timestamp = timestamp
-
+    socketio.emit("run_status", {"sid": sid, "running": False}, room=sid, namespace="/realtime")
     socketio.emit("replay_done", {"msg": "Replay terminé"}, namespace="/realtime")
 
 
@@ -45,6 +47,7 @@ def replay_realtime():
     sid = request.form.get("sid")
     print('FILE',file, " iface", iface," sid", sid)
     packets = read_pcap(file)
+    socketio.emit("run_status", {"sid": sid, "running": True}, room=sid, namespace="/realtime")
 
     # Lancer le replay sans bloquer la requête HTTP
     socketio.start_background_task(replay_loop, packets, iface, sid)

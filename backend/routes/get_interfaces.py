@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from scapy.all import get_if_list, conf
+from flask_smorest import Blueprint
 
 get_interfaces_bp = Blueprint("get_interfaces", __name__)
 

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api": "npx openapi-typescript http://localhost:5000/openapi.json --output src/api-types.ts --export-schemas"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
@@ -30,6 +31,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "openapi-typescript": "^7.10.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",

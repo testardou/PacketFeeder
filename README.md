@@ -86,3 +86,154 @@ To build and validate Packet Feeder, a minimal yet realistic laboratory environm
   - Allows capturing all traffic produced by the PCAP replays
 
 This creates a realistic environment for validating IDS detection capabilities.
+
+## 🏗️ Project Architecture Overview
+
+Packet Feeder is composed of three main parts that work together to provide a full PCAP replay and IDS testing environment.
+
+---
+
+## 🎨 Frontend — React Application
+
+The frontend is built using **React**, providing an intuitive and interactive interface for controlling replay operations.
+
+### **Main Responsibilities**
+
+- Uploading PCAP files
+- Selecting interfaces and replay modes
+- Controlling the replay in real time (Start / Stop / Pause / Step)
+- Displaying replay progress, statistics, and upcoming features such as:
+  - Live packet timeline
+  - Protocol layers decoding
+  - Scenario configuration
+
+### ⚡ **Communication Layer**
+
+- Uses **Socket.IO client** for real-time communication
+- Uses **REST endpoints** for file upload and metadata extraction
+
+React manages all user interactions while the backend executes the replay logic.
+
+---
+
+## ⚙️ Backend — Flask + Flask-SocketIO
+
+The backend is implemented with **Flask**, with **Flask-SocketIO** providing real-time capabilities.
+
+### **Backend Responsibilities**
+
+- Provide REST API endpoints:
+
+  - Upload PCAP files
+  - Extract metadata
+  - Trigger replay modes
+
+- Provide a WebSocket control channel:
+
+  - Manage session IDs (`sid`)
+  - Events like `start_replay`, `stop_replay`
+  - Maintain per-client replay state (`should_run[sid]`)
+  - Future: live updates during replay (packet index, timestamps…)
+
+- Interface with the packet replay engine located inside the `core/` directory.
+
+---
+
+## 🖥️ Command-Line Tool (CLI)
+
+A Python-based CLI is included to allow packet replay without the web interface.
+
+### **CLI Capabilities**
+
+- Classic PCAP replay on any interface
+- Scenario replay mode
+- Speed selection (Real Time, Faster, Fastest)
+- Verbose and debug output
+- Step-by-step replay or breakpoints
+
+This is ideal for automation, CI pipelines, or local testing.
+
+---
+
+## 🚀 Replay Speeds
+
+Packet Feeder provides three replay speeds, each optimized for a different use case.
+
+### **1. Real-Time Mode**
+
+Replay follows the **original timestamps** from the PCAP:
+
+- Respects inter-packet delays
+- Produces realistic traffic pacing
+- Allows IDS/IPS to behave as if the traffic were live
+
+**Ideal for:**  
+Testing Suricata/Snort accuracy under real-world timing.
+
+---
+
+### **2. Faster Mode (Packet-by-Packet)**
+
+Replay sends packets **one by one**, but **ignores timestamps**:
+
+- No inter-packet wait
+- Still passes each packet through Python logic
+- Allows precise tracking, logging and control
+
+**Ideal for:**  
+Debugging, step-by-step replay, teaching.
+
+---
+
+### **3. Fastest Mode (Bulk Replay)**
+
+The entire PCAP is replayed **as fast as the system allows**:
+
+- Avoids Python per-packet loops
+- Sends traffic in bulk
+- Maximum throughput
+
+**Ideal for:**  
+Stress testing or quickly generating alerts on large PCAPs.
+
+---
+
+## 🧬 Core Engine — Scapy-Based PCAP Processing
+
+At the core of Packet Feeder lies a replay engine powered by **Scapy**.
+
+### **Why Scapy?**
+
+- Flexible PCAP parsing
+- Easy packet modification
+- Timestamp accuracy when needed
+- Native packet sending (`sendp`)
+- Protocol introspection
+- Automatic checksum recalculation
+
+## 🐍 Python Environment & Permissions
+
+Packet Feeder includes Python components (CLI + core replay engine).  
+To run them correctly, you must first install dependencies and allow Python to send raw packets.
+
+### **1. Create a Virtual Environment**
+
+```bash
+python3 -m venv venv --copies
+source venv/bin/activate
+```
+
+### **2. Install Requirements\***
+
+```bash
+pip install -r requirements.txt
+```
+
+### **3. Grant Permissions to Send Packets\***
+
+Scapy requires raw socket capabilities to replay traffic on an interface.
+Instead of running Python as root, Packet Feeder uses Linux capabilities:
+
+```bash
+sudo setcap cap_net_raw,cap_net_admin=eip ./venv/bin/python3
+```

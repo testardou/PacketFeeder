@@ -1,3 +1,6 @@
 scapy
-python-libpcap
-argparse
+flask
+flask-cors
+flask-socketio
+flask-smorest
+marshmallow
