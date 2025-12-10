@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { io } from "socket.io-client";
+import { Button } from "@/components/ui/button";
 
-import { ReplayConfiguration } from "../replayConfiguration/ReplayConfiguration";
 import { PcapInfos } from "../pcapInfos/PcapInfos";
 import type { ReplayProgressType, RunStatusType } from "../../types/types";
 import { ReplayModes } from "../replayModes/ReplayModes";
 import { ReplayProgress } from "../replayProgress/ReplayProgress";
+import { UploadPcapFile } from "../uploadPcapFile/UploadPcapFile";
+import { SelectInterface } from "../selectInterface/SelectInterface";
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
 });
 
-export const Replay = () => {
+export const ReplayPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [clientSid, setClientSid] = useState(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
@@ -112,10 +114,7 @@ export const Replay = () => {
 
   return (
     <div className="p-6 space-y-4">
-      <ReplayConfiguration
-        ifaces={ifaces_list?.interfaces}
-        selectedInterface={selectedInterface}
-        setSelectectedInterface={setSelectectedInterface}
+      <UploadPcapFile
         setFile={setFile}
         uploadMutation={uploadMutation}
         file={file}
@@ -134,21 +133,26 @@ export const Replay = () => {
       {/* SUCCÈS */}
       {uploadMutation.isSuccess && (
         <>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-10">
             <PcapInfos pcapInfos={uploadMutation.data} />
-            <ReplayModes selected={selected} setSelected={setSelected} />
-            <button
-              onClick={() => runMutation.mutate(file)}
-              type="button"
+            <div className="flex flex-row gap-20 items-center">
+              <SelectInterface
+                selectedInterface={selectedInterface}
+                setSelectedInterface={setSelectectedInterface}
+                ifaces={ifaces_list.interfaces}
+              />
+              <ReplayModes selected={selected} setSelected={setSelected} />
+            </div>
+            <Button
+              type="submit"
+              variant="outline"
               disabled={running}
-              className={`${
-                !running
-                  ? "bg-blue-500 hover:bg-blue-700 text-white"
-                  : "bg-gray-400 hover:bg-gray-400 text-gray-600"
-              } font-bold py-2 px-4 rounded`}
+              color="blue"
+              onClick={() => runMutation.mutate(file)}
             >
               Replay
-            </button>
+            </Button>
+
             {runMutation.isPending ? (
               <p className="text-gray-500">Analyse en cours…</p>
             ) : (

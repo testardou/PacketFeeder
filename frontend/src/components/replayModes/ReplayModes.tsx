@@ -1,41 +1,40 @@
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 interface IReplayModesProps {
   selected: string;
   setSelected: (mode: string) => void;
 }
 
 export const ReplayModes = ({ selected, setSelected }: IReplayModesProps) => {
+  const replayModes = [
+    {
+      value: "realTime",
+      label: "Real Time (Slowest)",
+    },
+    {
+      value: "fast",
+      label: "Full Speed with Progress Bar (Faster)",
+    },
+    {
+      value: "fastest",
+      label: "Full Speed (Fastest)",
+    },
+  ];
+
   return (
-    <div className="flex flex-row gap-4 items-center justify-center">
-      <div className="flex flex-row gap-1">
-        <input
-          checked={selected === "realTime"}
-          onChange={(e) => setSelected(e.target.value)}
-          type="radio"
-          name="speed"
-          value="realTime"
-        />
-        Real Time (Slowest)
-      </div>
-      <div className="flex flex-row gap-1">
-        <input
-          checked={selected === "fast"}
-          onChange={(e) => setSelected(e.target.value)}
-          type="radio"
-          name="speed"
-          value="fast"
-        />
-        Full Speed with Progress Bar (Faster)
-      </div>
-      <div className="flex flex-row gap-1">
-        <input
-          checked={selected === "fastest"}
-          onChange={(e) => setSelected(e.target.value)}
-          type="radio"
-          name="speed"
-          value="fastest"
-        />
-        Full Speed (Fastest)
-      </div>
-    </div>
+    <RadioGroup
+      className="flex flex-row"
+      defaultValue={replayModes[0].value}
+      value={selected}
+      onValueChange={setSelected}
+    >
+      {replayModes.map((mode) => (
+        <div key={mode.value} className="flex items-center space-x-2">
+          <RadioGroupItem value={mode.value} id={mode.value} />
+          <Label htmlFor={mode.value}>{mode.label}</Label>
+        </div>
+      ))}
+    </RadioGroup>
   );
 };

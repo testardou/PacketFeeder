@@ -47,6 +47,7 @@ def replay_realtime():
     sid = request.form.get("sid")
     print('FILE',file, " iface", iface," sid", sid)
     packets = read_pcap(file)
+    should_run[sid] = True
     socketio.emit("run_status", {"sid": sid, "running": True}, room=sid, namespace="/realtime")
 
     # Lancer le replay sans bloquer la requête HTTP
