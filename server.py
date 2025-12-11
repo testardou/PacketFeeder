@@ -7,6 +7,9 @@ from backend.routes.get_interfaces import get_interfaces_bp
 from backend.routes.infos_pcap import infos_pcap_bp
 from backend.routes.replay_realtime import replay_realtime_bp
 from backend.routes.replay_faster import replay_faster_bp
+from backend.routes.get_pcap_files import get_pcap_files_bp
+from backend.routes.upload_pcap_file import upload_pcap_file_bp
+from backend.routes.delete_pcap_file import delete_pcap_file_bp
 from backend.sockets.realtime import ReplayNamespace
 from backend.extension import socketio
 from backend.schemas.infos_pcap import PcapInfoSchema
@@ -28,10 +31,22 @@ app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
 app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
 api = Api(app)
+
+### GET ###
+api.register_blueprint(get_pcap_files_bp)
 api.register_blueprint(get_interfaces_bp)
 api.register_blueprint(infos_pcap_bp)
-api.register_blueprint(replay_realtime_bp)
+
+### POST ###
 api.register_blueprint(replay_faster_bp)
+api.register_blueprint(replay_realtime_bp)
+api.register_blueprint(upload_pcap_file_bp)
+
+### DELETE ###
+api.register_blueprint(delete_pcap_file_bp)
+
+
+### SOCKETS ###
 socketio.init_app(app, cors_allowed_origins="*")
 socketio.on_namespace(ReplayNamespace("/realtime"))
 

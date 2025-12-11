@@ -1,6 +1,8 @@
 import type { components } from "./api-types";
 
 export type PcapInfoType = components["schemas"]["PcapInfo"];
+export type PcapFilesType = components["schemas"]["PcapFiles"];
+export type InterfacesType = components["schemas"]["GetInterfaces"];
 
 export type ReplayProgressType = {
   progress: number;

@@ -1,0 +1,1 @@
+UPLOAD_FOLDER = "/home/user/PacketFeeder/pcaps/pcap_files/"

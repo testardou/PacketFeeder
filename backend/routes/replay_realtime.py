@@ -1,3 +1,4 @@
+from backend.config import UPLOAD_FOLDER
 from flask import  request, jsonify
 from core.utils.send_pcap import send_pcap
 from core.utils.read_pcap import read_pcap
@@ -40,13 +41,11 @@ def replay_loop(packets, iface, sid):
 
 @replay_realtime_bp.route("/api/replay_realtime/", methods=["POST"])
 def replay_realtime():
-    if "file" not in request.files:
-        return jsonify({"error": "Missing file"}), 400
-    file = request.files["file"]
+    file = request.form.get('file')
     iface = request.form.get("iface")
     sid = request.form.get("sid")
     print('FILE',file, " iface", iface," sid", sid)
-    packets = read_pcap(file)
+    packets = read_pcap(UPLOAD_FOLDER + file)
     should_run[sid] = True
     socketio.emit("run_status", {"sid": sid, "running": True}, room=sid, namespace="/realtime")
 

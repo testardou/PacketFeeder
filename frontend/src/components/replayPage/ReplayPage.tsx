@@ -1,24 +1,37 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 
-import { PcapInfos } from "../pcapInfos/PcapInfos";
-import type { ReplayProgressType, RunStatusType } from "../../types/types";
-import { ReplayModes } from "../replayModes/ReplayModes";
-import { ReplayProgress } from "../replayProgress/ReplayProgress";
-import { UploadPcapFile } from "../uploadPcapFile/UploadPcapFile";
-import { SelectInterface } from "../selectInterface/SelectInterface";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import type {
+  InterfacesType,
+  PcapFilesType,
+  ReplayProgressType,
+  RunStatusType,
+} from "@/types/types";
+import { ReplayModes } from "@/components/replayModes/ReplayModes";
+import { ReplayProgress } from "@/components/replayProgress/ReplayProgress";
+import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
+import { SelectInterface } from "@/components/selectInterface/SelectInterface";
+import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
+
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
 });
 
 export const ReplayPage = () => {
+  const queryClient = useQueryClient();
+
   const [file, setFile] = useState<File | null>(null);
+  const [selectFile, setSelectFile] = useState<string | null>(null);
   const [clientSid, setClientSid] = useState(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
   const [selected, setSelected] = useState("realTime");
   const [running, setRunning] = useState(false);
+  const [selectedInterface, setSelectedInterface] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     console.log("Initialisation listeners...");
@@ -54,7 +67,7 @@ export const ReplayPage = () => {
     setSocketData(null);
   });
 
-  const { data: ifaces_list, isLoading } = useQuery({
+  const { data: ifaces_list, isLoading } = useQuery<InterfacesType>({
     queryKey: ["interfaces"], // identifiant unique du cache
     queryFn: async () => {
       const res = await fetch("http://localhost:5000/api/get_interfaces/");
@@ -62,16 +75,63 @@ export const ReplayPage = () => {
       if (!res.ok) {
         throw new Error("Erreur API");
       }
-
       return res.json();
     },
   });
-  const [selectedInterface, setSelectectedInterface] = useState(
-    ifaces_list?.interfaces?.[0] ?? ""
-  );
+
+  const { data: pcapFiles, isLoading: pcaFilesloading } =
+    useQuery<PcapFilesType>({
+      queryKey: ["pcap_files"], // identifiant unique du cache
+      queryFn: async () => {
+        const res = await fetch("http://localhost:5000/api/get-pcap-files/");
+
+        if (!res.ok) {
+          throw new Error("Erreur API");
+        }
+
+        return res.json();
+      },
+    });
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File | null) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+
+      const res = await fetch("http://localhost:5000/api/upload-pcap-file/", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Erreur API");
+      setFile(null);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (file: string) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+
+      const res = await fetch("http://localhost:5000/api/delete-pcap-file/", {
+        method: "DELETE",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+    },
+  });
+
+  const infosMutation = useMutation({
+    mutationFn: async (file: string) => {
       const formData = new FormData();
       formData.append("file", file ?? "");
 
@@ -86,7 +146,7 @@ export const ReplayPage = () => {
   });
 
   const runMutation = useMutation({
-    mutationFn: async (file: File | null) => {
+    mutationFn: async (file: string) => {
       const urls: Record<string, string> = {
         realTime: "replay_realtime",
         fast: "replay_faster",
@@ -95,7 +155,7 @@ export const ReplayPage = () => {
 
       const formData = new FormData();
       formData.append("file", file ?? "");
-      formData.append("iface", selectedInterface);
+      formData.append("iface", selectedInterface ?? "");
       formData.append("sid", clientSid ?? "");
 
       const res = await fetch(`http://localhost:5000/api/${urls[selected]}/`, {
@@ -114,71 +174,83 @@ export const ReplayPage = () => {
 
   return (
     <div className="p-6 space-y-4">
-      <UploadPcapFile
-        setFile={setFile}
-        uploadMutation={uploadMutation}
-        file={file}
-      />
-      {/* LOADING */}
-      {uploadMutation.isPending && (
-        <p className="text-gray-500">Analyse en cours…</p>
-      )}
-
-      {/* ERREUR */}
-      {uploadMutation.isError && (
-        <p className="text-red-600">
-          Erreur lors du chargement: {uploadMutation.error.message}
-        </p>
-      )}
-      {/* SUCCÈS */}
-      {uploadMutation.isSuccess && (
-        <>
-          <div className="flex flex-col gap-10">
-            <PcapInfos pcapInfos={uploadMutation.data} />
-            <div className="flex flex-row gap-20 items-center">
-              <SelectInterface
-                selectedInterface={selectedInterface}
-                setSelectedInterface={setSelectectedInterface}
-                ifaces={ifaces_list.interfaces}
-              />
-              <ReplayModes selected={selected} setSelected={setSelected} />
+      <h1 className="text-4xl mx-auto w-fit font-bold">Replay</h1>
+      <div className="flex flex-row gap-10">
+        <div className="flex flex-col gap-6">
+          <h2 className="text-2xl">Pcap Files</h2>
+          <UploadPcapFile
+            files={pcapFiles?.files}
+            setFile={setFile}
+            uploadMutation={uploadMutation}
+            file={file}
+          />
+          <PcapFileList
+            pcapFiles={pcapFiles?.files}
+            selectFile={selectFile}
+            setSelectFile={setSelectFile}
+            infosMutation={infosMutation}
+            deleteMutation={deleteMutation}
+          />
+        </div>
+        <div className="flex flex-col gap-6 flex-1">
+          {infosMutation.isPending && (
+            <div className="align-middle mx-auto w-full h-full flex justify-center items-center">
+              <p className="text-2xl">Pcap Infos Loading...</p>
             </div>
+          )}
+          {infosMutation.isSuccess && (
+            <>
+              <h2 className="text-2xl">Pcap Infos</h2>
+              <PcapInfos pcapInfos={infosMutation.data} />
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-5">
+        <h2 className="text-2xl">Configuration</h2>
+        <div className="flex flex-row gap-20">
+          <SelectInterface
+            selectedInterface={selectedInterface}
+            setSelectedInterface={setSelectedInterface}
+            ifaces={ifaces_list?.interfaces}
+          />
+          <ReplayModes selected={selected} setSelected={setSelected} />
+        </div>
+        <div className="flex flex-row gap-10 w-full items-center">
+          <div className="flex flex-col gap-3">
             <Button
               type="submit"
               variant="outline"
-              disabled={running}
+              disabled={!selectFile || !selectedInterface || running}
               color="blue"
-              onClick={() => runMutation.mutate(file)}
+              onClick={() => selectFile && runMutation.mutate(selectFile)}
             >
               Replay
             </Button>
-
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={!running}
+              color="blue"
+              onClick={() => socket.emit("stop_replay")}
+              className="bg-red-500 text-amber-50 hover:bg-red-600 hover:text-amber-100"
+            >
+              Stop
+            </Button>
+          </div>
+          <div className="w-full">
             {runMutation.isPending ? (
               <p className="text-gray-500">Analyse en cours…</p>
             ) : (
               socketData && (
                 <>
-                  <button
-                    onClick={() => {
-                      socket.emit("stop_replay");
-                    }}
-                    type="button"
-                    disabled={!running}
-                    className={`${
-                      running
-                        ? "bg-blue-500 hover:bg-blue-700 text-white"
-                        : "bg-gray-400 hover:bg-gray-400 text-gray-600"
-                    } font-bold py-2 px-4 rounded`}
-                  >
-                    Stop
-                  </button>
-                  <ReplayProgress socketData={socketData} />
+                  <ReplayProgress socketData={socketData} mode={selected} />
                 </>
               )
             )}
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
