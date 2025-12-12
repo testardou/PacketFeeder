@@ -8,6 +8,7 @@ interface UuploadPcapFileProps {
   uploadMutation: UseMutationResult<unknown, Error, File | null, unknown>;
   file: File | null;
   files?: string[];
+  pcaFilesloading?: boolean;
 }
 
 export const UploadPcapFile = ({
@@ -15,6 +16,7 @@ export const UploadPcapFile = ({
   uploadMutation,
   file,
   files,
+  pcaFilesloading,
 }: UuploadPcapFileProps) => {
   return (
     <div className="grid w-full max-w-sm items-center gap-3">
@@ -30,6 +32,7 @@ export const UploadPcapFile = ({
           type="submit"
           variant="outline"
           disabled={
+            pcaFilesloading ||
             !file ||
             !file.name ||
             files?.find((element) => element === file.name) !== undefined

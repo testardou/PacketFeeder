@@ -4,6 +4,42 @@
  */
 
 export interface paths {
+    "/api/get-pcap-files/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PcapFiles"];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/get_interfaces/": {
         parameters: {
             query?: never;
@@ -76,33 +112,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/replay_realtime/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                default: components["responses"]["DEFAULT_ERROR"];
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/replay_faster/": {
         parameters: {
             query?: never;
@@ -130,14 +139,71 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/get_pcap_files/": {
+    "/api/replay_realtime/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: {
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/upload-pcap-file/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/delete-pcap-file/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -151,16 +217,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": components["schemas"]["PcapFiles"];
-                    };
+                    content?: never;
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -191,6 +252,9 @@ export interface components {
             previous_page?: number;
             next_page?: number;
         };
+        PcapFiles: {
+            files: string[];
+        };
         GetInterfaces: {
             interfaces: string[];
         };
@@ -200,13 +264,10 @@ export interface components {
             duration_seconds: number;
             min_packet_size: number;
             max_packet_size: number;
-            src_ips: string[];
-            dst_ips: string[];
+            macs: string[];
+            ips: string[];
             tcp_ports: number[];
             udp_ports: number[];
-        };
-        PcapFiles: {
-            files: string[];
         };
     };
     responses: {

@@ -70,15 +70,13 @@ export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
       <div className="w-full flex flex-row gap-4 items-center">
         <Card className="flex-1">
           <CardHeader>
-            <CardTitle>Sources IPs</CardTitle>
-            <CardDescription>
-              Total: {pcapInfos?.src_ips.length}
-            </CardDescription>
+            <CardTitle>IPs</CardTitle>
+            <CardDescription>Total: {pcapInfos?.ips.length}</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-72  rounded-md border">
               <div className="p-4">
-                {pcapInfos?.src_ips.map((srcIp) => (
+                {pcapInfos?.ips.map((srcIp) => (
                   <React.Fragment key={srcIp}>
                     <div className="text-sm">{srcIp}</div>
                     <Separator className="my-2" />
@@ -90,17 +88,15 @@ export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
         </Card>
         <Card className="flex-1">
           <CardHeader>
-            <CardTitle>Destinations IPs</CardTitle>
-            <CardDescription>
-              Total: {pcapInfos?.dst_ips.length}
-            </CardDescription>
+            <CardTitle>MACs</CardTitle>
+            <CardDescription>Total: {pcapInfos?.macs.length}</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-72  rounded-md border">
               <div className="p-4">
-                {pcapInfos?.dst_ips.map((dstIp) => (
-                  <React.Fragment key={dstIp}>
-                    <div className="text-sm">{dstIp}</div>
+                {pcapInfos?.macs.map((mac) => (
+                  <React.Fragment key={mac}>
+                    <div className="text-sm">{mac}</div>
                     <Separator className="my-2" />
                   </React.Fragment>
                 ))}

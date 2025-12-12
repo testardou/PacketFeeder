@@ -183,6 +183,7 @@ export const ReplayPage = () => {
             setFile={setFile}
             uploadMutation={uploadMutation}
             file={file}
+            pcaFilesloading={pcaFilesloading}
           />
           <PcapFileList
             pcapFiles={pcapFiles?.files}
@@ -190,6 +191,7 @@ export const ReplayPage = () => {
             setSelectFile={setSelectFile}
             infosMutation={infosMutation}
             deleteMutation={deleteMutation}
+            pcaFilesloading={pcaFilesloading}
           />
         </div>
         <div className="flex flex-col gap-6 flex-1">

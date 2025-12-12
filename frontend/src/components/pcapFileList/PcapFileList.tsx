@@ -9,6 +9,7 @@ interface PcapFileListProps {
   setSelectFile: (fileName: string) => void;
   infosMutation: UseMutationResult<unknown, Error, string, unknown>;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
+  pcaFilesloading?: boolean;
 }
 
 export const PcapFileList = ({
@@ -17,11 +18,14 @@ export const PcapFileList = ({
   setSelectFile,
   infosMutation,
   deleteMutation,
+  pcaFilesloading,
 }: PcapFileListProps) => {
   return (
     <div className="flex flex-col gap-3 w-full">
       <ScrollArea className="h-72  rounded-md border">
-        {!pcapFiles || pcapFiles.length === 0 ? (
+        {pcaFilesloading ? (
+          <div className="p-4 text-sm">Loading pcap files ...</div>
+        ) : !pcapFiles || pcapFiles.length === 0 ? (
           <div className="p-4 text-sm">No pcap files available.</div>
         ) : (
           <div className="p-2">
