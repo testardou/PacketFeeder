@@ -17,3 +17,5 @@ export type RunStatusType = {
   sid: string;
   running: boolean;
 };
+
+export type NewValuesPcapType = { old: string; new: string };

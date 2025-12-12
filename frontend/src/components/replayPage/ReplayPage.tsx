@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import type {
   InterfacesType,
+  NewValuesPcapType,
   PcapFilesType,
   ReplayProgressType,
   RunStatusType,
@@ -15,6 +16,7 @@ import { ReplayProgress } from "@/components/replayProgress/ReplayProgress";
 import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
+import { ModifiedPcapRecap } from "../modifiedPcapRecap/ModifiedPcapRecap";
 
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
@@ -32,6 +34,7 @@ export const ReplayPage = () => {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(
     null
   );
+  const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
 
   useEffect(() => {
     console.log("Initialisation listeners...");
@@ -203,13 +206,25 @@ export const ReplayPage = () => {
           {infosMutation.isSuccess && (
             <>
               <h2 className="text-2xl">Pcap Infos</h2>
-              <PcapInfos pcapInfos={infosMutation.data} />
+              <PcapInfos
+                pcapInfos={infosMutation.data}
+                rewriteIps={rewriteIps}
+                setRewriteIps={setRewriteIps}
+              />
             </>
           )}
         </div>
       </div>
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>
+        <div>
+          {rewriteIps.length > 0 && (
+            <ModifiedPcapRecap
+              setRewriteIps={setRewriteIps}
+              rewriteIps={rewriteIps}
+            />
+          )}
+        </div>
         <div className="flex flex-row gap-20">
           <SelectInterface
             selectedInterface={selectedInterface}
