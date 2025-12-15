@@ -1,3 +1,4 @@
+from backend.config import UPLOAD_FOLDER
 from flask import request, jsonify
 from flask_smorest import Blueprint
 import os
@@ -5,7 +6,6 @@ from werkzeug.utils import secure_filename
 
 upload_pcap_file_bp = Blueprint("upload_pcap_file", __name__, url_prefix="/api")
 
-UPLOAD_FOLDER = "/home/user/PacketFeeder/pcaps/pcap_files"  # adapt to your project
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @upload_pcap_file_bp.route("/upload-pcap-file/", methods=["POST"])

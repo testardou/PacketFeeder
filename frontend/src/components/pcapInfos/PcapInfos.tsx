@@ -2,16 +2,6 @@ import React from "react";
 import type { PcapInfoType } from "@/types/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogClose,
-  DialogFooter,
-  DialogHeader,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import {
   Card,
@@ -24,9 +14,7 @@ import {
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { ScrollAreaModify } from "../scrollAreaModify/ScrollAreaModify";
 
 dayjs.extend(utc);
 
@@ -34,18 +22,20 @@ interface IPcapInfosProps {
   pcapInfos?: PcapInfoType;
   rewriteIps: { old: string; new: string }[];
   setRewriteIps: (rewriteIps: { old: string; new: string }[]) => void;
+  rewriteMacs: { old: string; new: string }[];
+  setRewriteMacs: (rewriteIps: { old: string; new: string }[]) => void;
 }
 
 export const PcapInfos = ({
   pcapInfos,
   rewriteIps,
   setRewriteIps,
+  rewriteMacs,
+  setRewriteMacs,
 }: IPcapInfosProps) => {
-  const [newIp, setNewIp] = React.useState<string>("");
   const ipv4Regex =
     /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-  const isValidIPv4 = ipv4Regex.test(newIp);
+  const macAddrRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
 
   return (
     <div>
@@ -102,73 +92,16 @@ export const PcapInfos = ({
             <CardDescription>Total: {pcapInfos?.ips.length}</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-72  rounded-md border">
-              <div className="p-4">
-                {pcapInfos?.ips
-                  .filter(
-                    (srcIp) =>
-                      rewriteIps?.find((element) => element.old === srcIp) ===
-                      undefined
-                  )
-                  .map((srcIp) => (
-                    <React.Fragment key={srcIp}>
-                      <Dialog onOpenChange={() => setNewIp(srcIp)}>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost">{srcIp}</Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Edit IP</DialogTitle>
-                            <DialogDescription>
-                              Modify or rewrite this IP.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid gap-2">
-                              <Label htmlFor={`new-ip-${srcIp}`}>New IP</Label>
-                              <Input
-                                id={`new-ip-${srcIp}`}
-                                defaultValue={srcIp}
-                                onChange={(e) => setNewIp(e.target.value)}
-                              />
-                            </div>
-                          </div>
-                          {!isValidIPv4 && (
-                            <p className="text-red-600">
-                              The new IP is not valid
-                            </p>
-                          )}
-
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button
-                                variant="outline"
-                                onClick={() => setNewIp("")}
-                              >
-                                Cancel
-                              </Button>
-                            </DialogClose>
-                            <Button
-                              disabled={!isValidIPv4 || newIp === srcIp}
-                              onClick={() => {
-                                setRewriteIps([
-                                  ...rewriteIps,
-                                  { old: srcIp, new: newIp },
-                                ]);
-                                setNewIp("");
-                              }}
-                            >
-                              Save
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-
-                      <Separator className="my-2" />
-                    </React.Fragment>
-                  ))}
-              </div>
-            </ScrollArea>
+            <ScrollAreaModify
+              valuesArray={pcapInfos?.ips ?? []}
+              setNewValues={setRewriteIps}
+              newValues={rewriteIps}
+              validator={ipv4Regex}
+              modalLabel="New IP"
+              modalTitle="Edit IP"
+              modalDescription="Modify or rewrite this IP."
+              errorMessage="The new IP is not valid"
+            />
           </CardContent>
         </Card>
         <Card className="flex-1">
@@ -177,16 +110,16 @@ export const PcapInfos = ({
             <CardDescription>Total: {pcapInfos?.macs.length}</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-72  rounded-md border">
-              <div className="p-4">
-                {pcapInfos?.macs.map((mac) => (
-                  <React.Fragment key={mac}>
-                    <div className="text-sm">{mac}</div>
-                    <Separator className="my-2" />
-                  </React.Fragment>
-                ))}
-              </div>
-            </ScrollArea>
+            <ScrollAreaModify
+              valuesArray={pcapInfos?.macs ?? []}
+              setNewValues={setRewriteMacs}
+              newValues={rewriteMacs}
+              validator={macAddrRegex}
+              modalLabel="New MAC adress"
+              modalTitle="Edit MAC address"
+              modalDescription="Modify or rewrite this MAC address."
+              errorMessage="The new MAC address is not valid"
+            />
           </CardContent>
         </Card>
         <Card className="flex-1">

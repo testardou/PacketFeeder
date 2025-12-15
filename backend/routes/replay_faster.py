@@ -1,7 +1,5 @@
-from backend.routes.upload_pcap_file import UPLOAD_FOLDER
+from backend.replay.setup_request import setup_request
 from flask import request, jsonify
-from core.utils.read_pcap import read_pcap
-from flask_socketio import emit
 from backend.extension import socketio
 from backend.sockets.realtime import should_run
 from core.utils.send_pcap import send_pcap
@@ -11,14 +9,12 @@ from flask_smorest import Blueprint
 replay_faster_bp = Blueprint("replay_faster", __name__)
 
 def replay_loop(packets, iface, sid):
-    print("SID "+sid)
     total = len(packets)
     first_timestamp = float(packets[0].time)
     last_timestamp = float(packets[-1].time)
     prev_timestamp = first_timestamp
 
     for i, pkt in enumerate(packets):
-        print('SARUN ',should_run.get(sid, False))
         if not should_run.get(sid, False):
             print(f"Replay halted for SID {sid}")
             break
@@ -40,19 +36,8 @@ def replay_loop(packets, iface, sid):
 
 @replay_faster_bp.route("/api/replay_faster/", methods=["POST"])
 def replay_faster():
-    file = request.form.get('file')
-    iface = request.form.get("iface")
-    sid = request.form.get("sid")
-    print("PRESID "+sid)
-
-    print('FILE',file, " iface", iface," sid", sid)
-    packets = read_pcap(UPLOAD_FOLDER + file)
-    should_run[sid] = True
-    socketio.emit("run_status", {"sid": sid, "running": True}, room=sid, namespace="/realtime")
-
-    # Lancer le replay sans bloquer la requête HTTP
+    packets, iface, sid = setup_request(request)
     socketio.start_background_task(replay_loop, packets, iface, sid)
-
     return jsonify({
         "message": "Replay started",
         "packet_count": len(packets)

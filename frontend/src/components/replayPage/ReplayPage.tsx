@@ -35,6 +35,7 @@ export const ReplayPage = () => {
     null
   );
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
 
   useEffect(() => {
     console.log("Initialisation listeners...");
@@ -160,6 +161,8 @@ export const ReplayPage = () => {
       formData.append("file", file ?? "");
       formData.append("iface", selectedInterface ?? "");
       formData.append("sid", clientSid ?? "");
+      formData.append("rewriteIps", JSON.stringify(rewriteIps));
+      formData.append("rewriteMacs", JSON.stringify(rewriteMacs));
 
       const res = await fetch(`http://localhost:5000/api/${urls[selected]}/`, {
         method: "POST",
@@ -210,6 +213,8 @@ export const ReplayPage = () => {
                 pcapInfos={infosMutation.data}
                 rewriteIps={rewriteIps}
                 setRewriteIps={setRewriteIps}
+                rewriteMacs={rewriteMacs}
+                setRewriteMacs={setRewriteMacs}
               />
             </>
           )}
@@ -217,11 +222,19 @@ export const ReplayPage = () => {
       </div>
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>
-        <div>
+        <div className="flex flex-row gap-4">
           {rewriteIps.length > 0 && (
             <ModifiedPcapRecap
-              setRewriteIps={setRewriteIps}
-              rewriteIps={rewriteIps}
+              cardTitle="Replaced Ips"
+              setRewriteValues={setRewriteIps}
+              rewriteValues={rewriteIps}
+            />
+          )}
+          {rewriteMacs.length > 0 && (
+            <ModifiedPcapRecap
+              cardTitle="Replaced MACs addresses"
+              setRewriteValues={setRewriteMacs}
+              rewriteValues={rewriteMacs}
             />
           )}
         </div>

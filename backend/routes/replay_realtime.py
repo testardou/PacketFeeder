@@ -1,8 +1,6 @@
-from backend.config import UPLOAD_FOLDER
+from backend.replay.setup_request import setup_request
 from flask import  request, jsonify
 from core.utils.send_pcap import send_pcap
-from core.utils.read_pcap import read_pcap
-from flask_socketio import emit
 from backend.extension import socketio
 from backend.sockets.realtime import should_run
 import time
@@ -34,6 +32,9 @@ def replay_loop(packets, iface, sid):
             }, namespace="/realtime")
             send_pcap(pkt, iface)
             time.sleep(timestamp - prev_timestamp)
+            if not should_run.get(sid, False):
+                print(f"Replay halted for SID {sid}")
+                break
             prev_timestamp = timestamp
     socketio.emit("run_status", {"sid": sid, "running": False}, room=sid, namespace="/realtime")
     socketio.emit("replay_done", {"msg": "Replay terminé"}, namespace="/realtime")
@@ -41,17 +42,8 @@ def replay_loop(packets, iface, sid):
 
 @replay_realtime_bp.route("/api/replay_realtime/", methods=["POST"])
 def replay_realtime():
-    file = request.form.get('file')
-    iface = request.form.get("iface")
-    sid = request.form.get("sid")
-    print('FILE',file, " iface", iface," sid", sid)
-    packets = read_pcap(UPLOAD_FOLDER + file)
-    should_run[sid] = True
-    socketio.emit("run_status", {"sid": sid, "running": True}, room=sid, namespace="/realtime")
-
-    # Lancer le replay sans bloquer la requête HTTP
+    packets, iface, sid = setup_request(request)
     socketio.start_background_task(replay_loop, packets, iface, sid)
-
     return jsonify({
         "message": "Replay started",
         "packet_count": len(packets)
