@@ -1,13 +1,13 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import type { UseMutationResult } from "@tanstack/react-query";
+import type { PcapInfoType } from "@/types/types";
+import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
 
 interface PcapFileListProps {
   pcapFiles?: string[];
   selectFile: string | null;
   setSelectFile: (fileName: string) => void;
-  infosMutation: UseMutationResult<unknown, Error, string, unknown>;
+  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   pcaFilesloading?: boolean;
 }
@@ -22,29 +22,12 @@ export const PcapFileList = ({
 }: PcapFileListProps) => {
   return (
     <div className="flex flex-col gap-3 w-full">
-      <ScrollArea className="h-72  rounded-md border">
-        {pcaFilesloading ? (
-          <div className="p-4 text-sm">Loading pcap files ...</div>
-        ) : !pcapFiles || pcapFiles.length === 0 ? (
-          <div className="p-4 text-sm">No pcap files available.</div>
-        ) : (
-          <div className="p-2">
-            {pcapFiles?.map((pcapFile) => (
-              <div key={pcapFile}>
-                <div
-                  className={`${
-                    selectFile === pcapFile ? "bg-blue-300" : ""
-                  } p-1.5 rounded-sm cursor-pointer`}
-                  onClick={() => setSelectFile(pcapFile)}
-                >
-                  {pcapFile}
-                </div>
-                <Separator className="my-2" />
-              </div>
-            ))}
-          </div>
-        )}
-      </ScrollArea>
+      <FileScrollArea
+        selectFile={selectFile}
+        setSelectFile={setSelectFile}
+        pcaFilesloading={pcaFilesloading}
+        pcapFiles={pcapFiles}
+      />
       <div className="flex flex-row gap-3">
         <Button
           type="submit"

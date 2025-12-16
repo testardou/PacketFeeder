@@ -1,5 +1,5 @@
 from backend.config import UPLOAD_FOLDER
-from backend.replay.parse_rewrite_json import parse_rewrite_json
+from backend.utils.parse_rewrite_json import parse_rewrite_json
 from core.replay.rewrite_packets import rewrite_packets
 from core.utils.read_pcap import read_pcap
 from backend.sockets.realtime import should_run

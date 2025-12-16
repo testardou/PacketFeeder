@@ -1,4 +1,4 @@
-import { Play, Plug } from "lucide-react";
+import { Play, Plug, File } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import {
@@ -14,6 +14,11 @@ import {
 
 // Menu items.
 const items = [
+  {
+    title: "Files",
+    url: "/files",
+    icon: File,
+  },
   {
     title: "Replay",
     url: "/replay",

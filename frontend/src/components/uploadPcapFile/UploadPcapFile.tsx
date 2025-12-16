@@ -4,8 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 interface UuploadPcapFileProps {
-  setFile: (file: File | null) => void;
   uploadMutation: UseMutationResult<unknown, Error, File | null, unknown>;
+  setFile: (file: File | null) => void;
   file: File | null;
   files?: string[];
   pcaFilesloading?: boolean;

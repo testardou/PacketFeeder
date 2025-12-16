@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import type {
   InterfacesType,
   NewValuesPcapType,
@@ -13,10 +12,9 @@ import type {
 } from "@/types/types";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { ReplayProgress } from "@/components/replayProgress/ReplayProgress";
-import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
 import { ModifiedPcapRecap } from "../modifiedPcapRecap/ModifiedPcapRecap";
+import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
@@ -181,44 +179,22 @@ export const ReplayPage = () => {
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Replay</h1>
-      <div className="flex flex-row gap-10">
-        <div className="flex flex-col gap-6">
-          <h2 className="text-2xl">Pcap Files</h2>
-          <UploadPcapFile
-            files={pcapFiles?.files}
-            setFile={setFile}
-            uploadMutation={uploadMutation}
-            file={file}
-            pcaFilesloading={pcaFilesloading}
-          />
-          <PcapFileList
-            pcapFiles={pcapFiles?.files}
-            selectFile={selectFile}
-            setSelectFile={setSelectFile}
-            infosMutation={infosMutation}
-            deleteMutation={deleteMutation}
-            pcaFilesloading={pcaFilesloading}
-          />
-        </div>
-        <div className="flex flex-col gap-6 flex-1">
-          {infosMutation.isPending && (
-            <div className="align-middle mx-auto w-full h-full flex justify-center items-center">
-              <p className="text-2xl">Pcap Infos Loading...</p>
-            </div>
-          )}
-          {infosMutation.isSuccess && (
-            <>
-              <h2 className="text-2xl">Pcap Infos</h2>
-              <PcapInfos
-                pcapInfos={infosMutation.data}
-                rewriteIps={rewriteIps}
-                setRewriteIps={setRewriteIps}
-                rewriteMacs={rewriteMacs}
-                setRewriteMacs={setRewriteMacs}
-              />
-            </>
-          )}
-        </div>
+      <div className="flex flex-col gap-10">
+        <HandleFiles
+          deleteMutation={deleteMutation}
+          file={file}
+          infosMutation={infosMutation}
+          selectFile={selectFile}
+          setFile={setFile}
+          setSelectFile={setSelectFile}
+          uploadMutation={uploadMutation}
+          pcapFiles={pcapFiles?.files}
+          pcaFilesloading={pcaFilesloading}
+          rewriteIps={rewriteIps}
+          setRewriteIps={setRewriteIps}
+          rewriteMacs={rewriteMacs}
+          setRewriteMacs={setRewriteMacs}
+        />
       </div>
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>

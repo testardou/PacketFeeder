@@ -17,5 +17,4 @@ def parse_rewrite_json(json_string):
 
         mapping[old.strip()] = new.strip()
 
-    print('TOTOTOTOTOTO', mapping)
     return mapping

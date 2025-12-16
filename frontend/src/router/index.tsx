@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Replay from "@/pages/Replay";
 import Speak from "@/pages/Speak";
 import Layout from "../layouts/Layout";
+import { Files } from "@/components/files/Files";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Navigate to="/replay" replace />,
+      },
+      {
+        path: "files",
+        element: <Files />,
       },
       {
         path: "replay",

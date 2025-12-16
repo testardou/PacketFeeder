@@ -7,7 +7,7 @@ import time
 from flask_smorest import Blueprint
 
 
-replay_realtime_bp = Blueprint("replay_realtime", __name__)
+replay_realtime_bp = Blueprint("replay_realtime", __name__, url_prefix="/api")
 
 def replay_loop(packets, iface, sid):
     total = len(packets)
@@ -40,7 +40,7 @@ def replay_loop(packets, iface, sid):
     socketio.emit("replay_done", {"msg": "Replay terminé"}, namespace="/realtime")
 
 
-@replay_realtime_bp.route("/api/replay_realtime/", methods=["POST"])
+@replay_realtime_bp.route("/replay_realtime/", methods=["POST"])
 def replay_realtime():
     packets, iface, sid = setup_request(request)
     socketio.start_background_task(replay_loop, packets, iface, sid)

@@ -5,14 +5,11 @@ def rewrite_packets(packets, ip_map=None, mac_map=None):
     rewritten = []
 
     for pkt in packets:
-        pkt = pkt.copy()  # évite de modifier les paquets originaux
-
         # Rewrite MAC
         if mac_map and pkt.haslayer("Ether"):
             eth = pkt["Ether"]
             src = eth.src.lower()
             dst = eth.dst.lower()
-
             if src in mac_map:
                 eth.src = mac_map[src]
             if dst in mac_map:
