@@ -1,4 +1,4 @@
-import { Play, Plug, File } from "lucide-react";
+import { Play, Plug, File, Film } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import {
@@ -23,6 +23,11 @@ const items = [
     title: "Replay",
     url: "/replay",
     icon: Play,
+  },
+  {
+    title: "Scenarios",
+    url: "/scenarios",
+    icon: Film,
   },
   {
     title: "Speak",

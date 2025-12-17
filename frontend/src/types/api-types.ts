@@ -112,7 +112,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/replay_faster/": {
+    "/api/detail-packets-pcap/": {
         parameters: {
             query?: never;
             header?: never;
@@ -130,6 +130,15 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PacketDetails"];
+                    };
+                };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -166,7 +175,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/replay_faster/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replay_fastest/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/upload-pcap-file/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/rewrite-pcap-file/": {
         parameters: {
             query?: never;
             header?: never;
@@ -268,6 +358,18 @@ export interface components {
             ips: string[];
             tcp_ports: number[];
             udp_ports: number[];
+        };
+        PacketDetails: {
+            id: number;
+            proto: string;
+            src: string;
+            dst: string;
+            sport?: number | null;
+            dport?: number | null;
+            flags?: string | null;
+            length: number;
+            has_payload: boolean;
+            payload_len: number;
         };
     };
     responses: {

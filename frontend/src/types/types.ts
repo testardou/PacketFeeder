@@ -1,6 +1,7 @@
 import type { components } from "./api-types";
 
 export type PcapInfoType = components["schemas"]["PcapInfo"];
+export type PacketDetailsType = components["schemas"]["PacketDetails"];
 export type PcapFilesType = components["schemas"]["PcapFiles"];
 export type InterfacesType = components["schemas"]["GetInterfaces"];
 

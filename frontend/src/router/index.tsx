@@ -24,6 +24,10 @@ export const router = createBrowserRouter([
         element: <Replay />,
       },
       {
+        path: "Scenarios",
+        element: <Replay />,
+      },
+      {
         path: "speak",
         element: <Speak />,
       },

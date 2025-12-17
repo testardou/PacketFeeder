@@ -1,7 +1,7 @@
 import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
-import type { PcapInfoType } from "@/types/types";
+import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import type { UseMutationResult } from "@tanstack/react-query";
 
 interface IHandleFilesProps {
@@ -14,6 +14,7 @@ interface IHandleFilesProps {
   file: File | null;
   files?: string[];
   infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
+  detailsMutation: UseMutationResult<PacketDetailsType, Error, string, unknown>;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   rewriteIps: { old: string; new: string }[];
   setRewriteIps: (rewriteIps: { old: string; new: string }[]) => void;
@@ -35,6 +36,7 @@ export const HandleFiles = ({
   setRewriteIps,
   rewriteMacs,
   setRewriteMacs,
+  detailsMutation,
 }: IHandleFilesProps) => {
   return (
     <div className="flex flex-row gap-10">
@@ -48,6 +50,7 @@ export const HandleFiles = ({
           pcaFilesloading={pcaFilesloading}
         />
         <PcapFileList
+          detailsMutation={detailsMutation}
           pcapFiles={pcapFiles}
           selectFile={selectFile}
           setSelectFile={setSelectFile}
@@ -56,25 +59,13 @@ export const HandleFiles = ({
           pcaFilesloading={pcaFilesloading}
         />
       </div>
-      <div className="flex flex-col gap-6 flex-1">
-        {infosMutation.isPending && (
-          <div className="align-middle mx-auto w-full h-full flex justify-center items-center">
-            <p className="text-2xl">Pcap Infos Loading...</p>
-          </div>
-        )}
-        {infosMutation.isSuccess && (
-          <>
-            <h2 className="text-2xl">Pcap Infos</h2>
-            <PcapInfos
-              pcapInfos={infosMutation}
-              rewriteIps={rewriteIps}
-              setRewriteIps={setRewriteIps}
-              rewriteMacs={rewriteMacs}
-              setRewriteMacs={setRewriteMacs}
-            />
-          </>
-        )}
-      </div>
+      <PcapInfos
+        pcapInfos={infosMutation}
+        rewriteIps={rewriteIps}
+        setRewriteIps={setRewriteIps}
+        rewriteMacs={rewriteMacs}
+        setRewriteMacs={setRewriteMacs}
+      />
     </div>
   );
 };

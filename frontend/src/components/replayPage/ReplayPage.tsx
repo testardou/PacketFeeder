@@ -69,6 +69,11 @@ export const ReplayPage = () => {
     setSocketData(null);
   });
 
+  const resetStates = () => {
+    setRewriteIps([]);
+    setRewriteMacs([]);
+  };
+
   const { data: ifaces_list, isLoading } = useQuery<InterfacesType>({
     queryKey: ["interfaces"], // identifiant unique du cache
     queryFn: async () => {
@@ -111,6 +116,7 @@ export const ReplayPage = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+      resetStates();
     },
   });
 
@@ -144,6 +150,10 @@ export const ReplayPage = () => {
 
       if (!res.ok) throw new Error("Erreur API");
       return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+      resetStates();
     },
   });
 
@@ -179,23 +189,21 @@ export const ReplayPage = () => {
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Replay</h1>
-      <div className="flex flex-col gap-10">
-        <HandleFiles
-          deleteMutation={deleteMutation}
-          file={file}
-          infosMutation={infosMutation}
-          selectFile={selectFile}
-          setFile={setFile}
-          setSelectFile={setSelectFile}
-          uploadMutation={uploadMutation}
-          pcapFiles={pcapFiles?.files}
-          pcaFilesloading={pcaFilesloading}
-          rewriteIps={rewriteIps}
-          setRewriteIps={setRewriteIps}
-          rewriteMacs={rewriteMacs}
-          setRewriteMacs={setRewriteMacs}
-        />
-      </div>
+      <HandleFiles
+        deleteMutation={deleteMutation}
+        file={file}
+        infosMutation={infosMutation}
+        selectFile={selectFile}
+        setFile={setFile}
+        setSelectFile={setSelectFile}
+        uploadMutation={uploadMutation}
+        pcapFiles={pcapFiles?.files}
+        pcaFilesloading={pcaFilesloading}
+        rewriteIps={rewriteIps}
+        setRewriteIps={setRewriteIps}
+        rewriteMacs={rewriteMacs}
+        setRewriteMacs={setRewriteMacs}
+      />
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>
         <div className="flex flex-row gap-4">

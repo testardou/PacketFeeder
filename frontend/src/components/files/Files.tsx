@@ -1,9 +1,11 @@
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRecap";
+import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type {
   NewValuesPcapType,
+  PacketDetailsType,
   PcapFilesType,
   PcapInfoType,
 } from "@/types/types";
@@ -19,10 +21,10 @@ export const Files = () => {
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
   const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
 
-  useEffect(() => {
+  const resetStates = () => {
     setRewriteIps([]);
     setRewriteMacs([]);
-  }, [selectFile]);
+  };
 
   const { data: pcapFiles, isLoading: pcaFilesloading } =
     useQuery<PcapFilesType>({
@@ -54,6 +56,7 @@ export const Files = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+      resetStates();
     },
   });
 
@@ -76,8 +79,7 @@ export const Files = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
-      setRewriteIps([]);
-      setRewriteMacs([]);
+      resetStates();
     },
   });
 
@@ -112,12 +114,37 @@ export const Files = () => {
       if (!res.ok) throw new Error("Erreur API");
       return res.json();
     },
+    onSuccess: () => {
+      resetStates();
+    },
+  });
+  const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
+    mutationFn: async (file: string) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+      formData.append("offset", "1");
+
+      const res = await fetch(
+        "http://localhost:5000/api/detail-packets-pcap/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    },
+    onSuccess: () => {
+      resetStates();
+    },
   });
 
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Files</h1>
       <HandleFiles
+        detailsMutation={detailsMutation}
         deleteMutation={deleteMutation}
         file={file}
         infosMutation={infosMutation}
@@ -132,25 +159,28 @@ export const Files = () => {
         rewriteMacs={rewriteMacs}
         setRewriteMacs={setRewriteMacs}
       />
-      <div className="flex flex-col gap-5">
-        <h2 className="text-2xl">Modifications</h2>
-        <div className="flex flex-row gap-4">
-          {rewriteIps.length > 0 && (
-            <ModifiedPcapRecap
-              cardTitle="Replaced Ips"
-              setRewriteValues={setRewriteIps}
-              rewriteValues={rewriteIps}
-            />
-          )}
-          {rewriteMacs.length > 0 && (
-            <ModifiedPcapRecap
-              cardTitle="Replaced MACs addresses"
-              setRewriteValues={setRewriteMacs}
-              rewriteValues={rewriteMacs}
-            />
-          )}
+      {(rewriteIps.length > 0 || rewriteMacs.length > 0) && (
+        <div className="flex flex-col gap-5">
+          <h2 className="text-2xl">Modifications</h2>
+          <div className="flex flex-row gap-4">
+            {rewriteIps.length > 0 && (
+              <ModifiedPcapRecap
+                cardTitle="Replaced Ips"
+                setRewriteValues={setRewriteIps}
+                rewriteValues={rewriteIps}
+              />
+            )}
+            {rewriteMacs.length > 0 && (
+              <ModifiedPcapRecap
+                cardTitle="Replaced MACs addresses"
+                setRewriteValues={setRewriteMacs}
+                rewriteValues={rewriteMacs}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      )}
+      <PacketDetails detailsMutation={detailsMutation} />
       <div className="flex flex-row gap-5 items-center">
         <div className="flex flex-col gap-2">
           <Label>New file name</Label>

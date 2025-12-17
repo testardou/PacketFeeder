@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { UseMutationResult } from "@tanstack/react-query";
-import type { PcapInfoType } from "@/types/types";
+import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
 
 interface PcapFileListProps {
@@ -10,6 +10,7 @@ interface PcapFileListProps {
   infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   pcaFilesloading?: boolean;
+  detailsMutation: UseMutationResult<PacketDetailsType, Error, string, unknown>;
 }
 
 export const PcapFileList = ({
@@ -19,6 +20,7 @@ export const PcapFileList = ({
   infosMutation,
   deleteMutation,
   pcaFilesloading,
+  detailsMutation,
 }: PcapFileListProps) => {
   return (
     <div className="flex flex-col gap-3 w-full">
@@ -37,6 +39,15 @@ export const PcapFileList = ({
           onClick={() => selectFile && infosMutation.mutate(selectFile)}
         >
           Get infos
+        </Button>
+        <Button
+          type="submit"
+          variant="outline"
+          disabled={!selectFile}
+          color="blue"
+          onClick={() => selectFile && detailsMutation.mutate(selectFile)}
+        >
+          Packet Details
         </Button>
         <Button
           type="submit"
