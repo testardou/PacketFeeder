@@ -118,6 +118,7 @@ export const Files = () => {
       resetStates();
     },
   });
+
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const formData = new FormData();
@@ -180,7 +181,10 @@ export const Files = () => {
           </div>
         </div>
       )}
-      <PacketDetails detailsMutation={detailsMutation} />
+      <PacketDetails
+        selectedFile={selectFile}
+        detailsMutation={detailsMutation}
+      />
       <div className="flex flex-row gap-5 items-center">
         <div className="flex flex-col gap-2">
           <Label>New file name</Label>

@@ -13,9 +13,9 @@ from backend.routes.get_pcap_files import get_pcap_files_bp
 from backend.routes.upload_pcap_file import upload_pcap_file_bp
 from backend.routes.delete_pcap_file import delete_pcap_file_bp
 from backend.routes.details_packets_pcap import details_packets_pcap_bp
+from backend.routes.packet_payload import packet_payload_bp
 from backend.sockets.realtime import ReplayNamespace
 from backend.extension import socketio
-from backend.schemas.infos_pcap import PcapInfoSchema
 
 # Absolute path du dossier parent (PacketFeeder)
 PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -40,6 +40,7 @@ api.register_blueprint(get_pcap_files_bp)
 api.register_blueprint(get_interfaces_bp)
 api.register_blueprint(infos_pcap_bp)
 api.register_blueprint(details_packets_pcap_bp)
+api.register_blueprint(packet_payload_bp)
 
 ### POST ###
 api.register_blueprint(replay_realtime_bp)

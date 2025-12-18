@@ -14,7 +14,12 @@ interface IHandleFilesProps {
   file: File | null;
   files?: string[];
   infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
-  detailsMutation: UseMutationResult<PacketDetailsType, Error, string, unknown>;
+  detailsMutation: UseMutationResult<
+    PacketDetailsType[],
+    Error,
+    string,
+    unknown
+  >;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   rewriteIps: { old: string; new: string }[];
   setRewriteIps: (rewriteIps: { old: string; new: string }[]) => void;

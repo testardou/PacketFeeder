@@ -136,12 +136,48 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["PacketDetails"];
+                        "application/json": components["schemas"]["PacketDetails"][];
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packet-payload/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PacketPayload"];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -361,15 +397,18 @@ export interface components {
         };
         PacketDetails: {
             id: number;
+            timestamp: number;
             proto: string;
             src: string;
             dst: string;
             sport?: number | null;
             dport?: number | null;
-            flags?: string | null;
             length: number;
             has_payload: boolean;
             payload_len: number;
+        };
+        PacketPayload: {
+            payload: string;
         };
     };
     responses: {

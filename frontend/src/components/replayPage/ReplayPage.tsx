@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type {
   InterfacesType,
   NewValuesPcapType,
+  PacketDetailsType,
   PcapFilesType,
   ReplayProgressType,
   RunStatusType,
@@ -182,6 +183,29 @@ export const ReplayPage = () => {
       return res.json();
     },
   });
+
+  const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
+    mutationFn: async (file: string) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+      formData.append("offset", "1");
+
+      const res = await fetch(
+        "http://localhost:5000/api/detail-packets-pcap/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    },
+    onSuccess: () => {
+      resetStates();
+    },
+  });
+
   if (isLoading) {
     return <p>Loading interfaces...</p>;
   }
@@ -190,6 +214,7 @@ export const ReplayPage = () => {
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Replay</h1>
       <HandleFiles
+        detailsMutation={detailsMutation}
         deleteMutation={deleteMutation}
         file={file}
         infosMutation={infosMutation}

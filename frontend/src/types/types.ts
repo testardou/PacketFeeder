@@ -4,6 +4,7 @@ export type PcapInfoType = components["schemas"]["PcapInfo"];
 export type PacketDetailsType = components["schemas"]["PacketDetails"];
 export type PcapFilesType = components["schemas"]["PcapFiles"];
 export type InterfacesType = components["schemas"]["GetInterfaces"];
+export type PacketPayloadType = components["schemas"]["PacketPayload"];
 
 export type ReplayProgressType = {
   progress: number;

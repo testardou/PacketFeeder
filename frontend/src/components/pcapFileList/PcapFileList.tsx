@@ -10,7 +10,12 @@ interface PcapFileListProps {
   infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   pcaFilesloading?: boolean;
-  detailsMutation: UseMutationResult<PacketDetailsType, Error, string, unknown>;
+  detailsMutation: UseMutationResult<
+    PacketDetailsType[],
+    Error,
+    string,
+    unknown
+  >;
 }
 
 export const PcapFileList = ({
