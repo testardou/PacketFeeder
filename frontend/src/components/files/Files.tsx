@@ -103,15 +103,12 @@ export const Files = () => {
 
   const infosMutation = useMutation<PcapInfoType, Error, string>({
     mutationFn: async (file: string) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-
-      const res = await fetch("http://localhost:5000/api/infos-pcap/", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/infos-pcap?file=${file}`
+      );
 
       if (!res.ok) throw new Error("Erreur API");
+
       return res.json();
     },
     onSuccess: () => {
@@ -121,19 +118,12 @@ export const Files = () => {
 
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-      formData.append("offset", "1");
-
       const res = await fetch(
-        "http://localhost:5000/api/detail-packets-pcap/",
-        {
-          method: "POST",
-          body: formData,
-        }
+        `http://localhost:5000/api/detail-packets-pcap?file=${file}`
       );
 
       if (!res.ok) throw new Error("Erreur API");
+
       return res.json();
     },
     onSuccess: () => {

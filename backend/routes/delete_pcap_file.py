@@ -1,4 +1,4 @@
-from backend.config import UPLOAD_FOLDER
+from backend.config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from flask_smorest import Blueprint
 from flask import request, jsonify
 import os
@@ -13,17 +13,23 @@ def delete_pcap_file():
     if not file:
         return jsonify({"error": "No file specified"}), 400
     
-    file_path = os.path.join(UPLOAD_FOLDER, file)
+    filename = os.path.basename(file)
     
-    # Security check: ensure the file is within UPLOAD_FOLDER
-    if not os.path.abspath(file_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
-        return jsonify({"error": "Invalid file path"}), 400
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return {"error": "Invalid file type"}, 400
     
-    if not os.path.exists(file_path):
-        return jsonify({"error": "File not found"}), 404
+    file_path = os.path.realpath(os.path.join(UPLOAD_FOLDER, filename))
+    upload_path = os.path.realpath(UPLOAD_FOLDER)
+
+    if not file_path.startswith(upload_path + os.sep):
+        return {"error": "Invalid file path"}, 400
+
+    if not os.path.isfile(file_path):
+        return {"error": "File not found"}, 404
     
     try:
         os.remove(file_path)
-        return jsonify({"message": f"File '{file}' deleted successfully"}), 200
+        return jsonify({"message": f"File '{filename}' deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

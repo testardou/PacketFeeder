@@ -8,3 +8,5 @@ TCP_FLAG_MAP = {
     "P": "PSH",
     "U": "URG",
 }
+
+ALLOWED_EXTENSIONS = {".pcap", ".pcapng"}

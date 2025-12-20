@@ -95,20 +95,16 @@ export const PacketDetails = ({
     []
   );
 
-  const getPacketPayload = async (id: string) => {
-    const res = await fetch(
-      `http://localhost:5000/api/packet-payload?id=${id}&file=${selectedFile}`
-    );
-
-    if (!res.ok) {
-      throw new Error("Erreur API");
-    }
-
-    return res.json();
-  };
-
   const packetPayloadMutation = useMutation({
-    mutationFn: getPacketPayload,
+    mutationFn: async (id: string) => {
+      const res = await fetch(
+        `http://localhost:5000/api/packet-payload?id=${id}&file=${selectedFile}`
+      );
+
+      if (!res.ok) throw new Error("Erreur API");
+
+      return res.json();
+    },
   });
 
   const [columnVisibility, setColumnVisibility] =

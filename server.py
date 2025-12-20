@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, request, jsonify
 import sys
 import os
@@ -24,6 +25,20 @@ sys.path.append(PARENT_DIR)
 print("DEBUG PYTHONPATH =", sys.path) 
 
 app = Flask(__name__)
+
+app.logger.setLevel(logging.INFO)
+
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+
+formatter = logging.Formatter(
+    "[%(asctime)s] %(levelname)s in %(module)s: %(message)s"
+)
+handler.setFormatter(formatter)
+
+app.logger.handlers.clear()
+app.logger.addHandler(handler)
+app.logger.info("🔥 LOGGER INITIALIZED")
 CORS(app)
 
 app.config["API_TITLE"] = "PacketFeeder API"

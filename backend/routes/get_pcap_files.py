@@ -1,3 +1,4 @@
+from backend.config import UPLOAD_FOLDER
 from backend.schemas.pcap_files_schema import PcapFilesSchema
 from flask import request, jsonify
 from scapy.all import get_if_list, conf
@@ -10,6 +11,5 @@ get_pcap_files_bp = Blueprint("get_pcap_files", __name__, url_prefix="/api")
 @get_pcap_files_bp.route("/get-pcap-files/", methods=["GET"])
 @get_pcap_files_bp.response(200, PcapFilesSchema)
 def get_pcap_files():
-    mypath = './pcaps/pcap_files/'
-    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f)) and f.endswith(".pcap")]
+    onlyfiles = [f for f in listdir(UPLOAD_FOLDER) if isfile(join(UPLOAD_FOLDER, f)) and f.endswith(".pcap")]
     return jsonify({"files": onlyfiles})

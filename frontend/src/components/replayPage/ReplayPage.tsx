@@ -8,6 +8,7 @@ import type {
   NewValuesPcapType,
   PacketDetailsType,
   PcapFilesType,
+  PcapInfoType,
   ReplayProgressType,
   RunStatusType,
 } from "@/types/types";
@@ -16,6 +17,7 @@ import { ReplayProgress } from "@/components/replayProgress/ReplayProgress";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { ModifiedPcapRecap } from "../modifiedPcapRecap/ModifiedPcapRecap";
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
+import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 
 const socket = io("http://localhost:5000/realtime", {
   autoConnect: true,
@@ -139,21 +141,17 @@ export const ReplayPage = () => {
     },
   });
 
-  const infosMutation = useMutation({
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
     mutationFn: async (file: string) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-
-      const res = await fetch("http://localhost:5000/api/infos-pcap/", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/infos-pcap?file=${file}`
+      );
 
       if (!res.ok) throw new Error("Erreur API");
+
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
       resetStates();
     },
   });
@@ -186,19 +184,12 @@ export const ReplayPage = () => {
 
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-      formData.append("offset", "1");
-
       const res = await fetch(
-        "http://localhost:5000/api/detail-packets-pcap/",
-        {
-          method: "POST",
-          body: formData,
-        }
+        `http://localhost:5000/api/detail-packets-pcap?file=${file}`
       );
 
       if (!res.ok) throw new Error("Erreur API");
+
       return res.json();
     },
     onSuccess: () => {
@@ -247,6 +238,10 @@ export const ReplayPage = () => {
             />
           )}
         </div>
+        <PacketDetails
+          selectedFile={selectFile}
+          detailsMutation={detailsMutation}
+        />
         <div className="flex flex-row gap-20">
           <SelectInterface
             selectedInterface={selectedInterface}
