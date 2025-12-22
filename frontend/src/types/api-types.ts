@@ -83,9 +83,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post: {
+        get: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -106,6 +104,8 @@ export interface paths {
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -119,9 +119,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post: {
+        get: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -142,6 +140,8 @@ export interface paths {
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -256,6 +256,42 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/replay-step/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReplayStep"];
+                    };
+                };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -409,6 +445,17 @@ export interface components {
         };
         PacketPayload: {
             payload: string;
+        };
+        ReplayStep: {
+            message: string;
+            progress: number;
+            index: number;
+            timestamp: number;
+            size: number;
+            packet_count: number;
+            parsed_packet: {
+                [key: string]: unknown;
+            }[];
         };
     };
     responses: {

@@ -31,12 +31,15 @@ def infos_pcap():
     upload_path = os.path.realpath(UPLOAD_FOLDER)
 
     if not file_path.startswith(upload_path + os.sep):
+        current_app.logger.warning("Invalid file path: %s", file_path)
         return {"error": "Invalid file path"}, 400
 
     if not os.path.isfile(file_path):
+        current_app.logger.warning("File not found: %s", file_path)
         return {"error": "File not found"}, 404
     packets = read_pcap(file_path)
     if len(packets) == 0:
+        current_app.logger.warning("Empty PCAP")
         return {"error": "Empty PCAP"}
     infos = pcap_infos(packets)
     return jsonify(infos)

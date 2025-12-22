@@ -16,6 +16,7 @@ export const ModifiedPcapRecap = ({
   rewriteValues,
   setRewriteValues,
 }: IModifiedPcapRecapProps) => {
+  if (rewriteValues === undefined || rewriteValues.length === 0) return null;
   return (
     <Card className="w-fit">
       <CardHeader>

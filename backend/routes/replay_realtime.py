@@ -16,6 +16,7 @@ def replay_loop(packets, iface, sid):
     prev_timestamp = first_timestamp
 
     for i, pkt in enumerate(packets):
+        print('KEFA',sid, should_run.get(sid, False))
         if not should_run.get(sid, False):
             print(f"Replay halted for SID {sid}")
             break

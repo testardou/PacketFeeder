@@ -1,23 +1,43 @@
-import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface UuploadPcapFileProps {
-  uploadMutation: UseMutationResult<unknown, Error, File | null, unknown>;
-  setFile: (file: File | null) => void;
-  file: File | null;
   files?: string[];
   pcaFilesloading?: boolean;
+  resetStates: () => void;
 }
 
 export const UploadPcapFile = ({
-  setFile,
-  uploadMutation,
-  file,
   files,
   pcaFilesloading,
+  resetStates,
 }: UuploadPcapFileProps) => {
+  const queryClient = useQueryClient();
+  const [file, setFile] = useState<File | null>(null);
+
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File | null) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+
+      const res = await fetch("http://localhost:5000/api/upload-pcap-file/", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Erreur API");
+      setFile(null);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+      resetStates();
+    },
+  });
+
   return (
     <div className="grid w-full max-w-sm items-center gap-3">
       <Label htmlFor="file">Upload new File</Label>

@@ -5,6 +5,7 @@ export type PacketDetailsType = components["schemas"]["PacketDetails"];
 export type PcapFilesType = components["schemas"]["PcapFiles"];
 export type InterfacesType = components["schemas"]["GetInterfaces"];
 export type PacketPayloadType = components["schemas"]["PacketPayload"];
+export type ReplayStepType = components["schemas"]["ReplayStep"];
 
 export type ReplayProgressType = {
   progress: number;
@@ -21,3 +22,5 @@ export type RunStatusType = {
 };
 
 export type NewValuesPcapType = { old: string; new: string };
+
+export type ReplayModeType = "realTime" | "fast" | "fastest" | "step";

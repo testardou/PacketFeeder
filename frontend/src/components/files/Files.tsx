@@ -3,20 +3,14 @@ import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRe
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type {
-  NewValuesPcapType,
-  PacketDetailsType,
-  PcapFilesType,
-  PcapInfoType,
-} from "@/types/types";
+import type { NewValuesPcapType, PacketDetailsType } from "@/types/types";
 import { Label } from "@radix-ui/react-label";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export const Files = () => {
   const queryClient = useQueryClient();
   const [fileName, setFileName] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
   const [selectFile, setSelectFile] = useState<string | null>(null);
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
   const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
@@ -25,40 +19,6 @@ export const Files = () => {
     setRewriteIps([]);
     setRewriteMacs([]);
   };
-
-  const { data: pcapFiles, isLoading: pcaFilesloading } =
-    useQuery<PcapFilesType>({
-      queryKey: ["pcap_files"], // identifiant unique du cache
-      queryFn: async () => {
-        const res = await fetch("http://localhost:5000/api/get-pcap-files/");
-
-        if (!res.ok) {
-          throw new Error("Erreur API");
-        }
-
-        return res.json();
-      },
-    });
-
-  const uploadMutation = useMutation({
-    mutationFn: async (file: File | null) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-
-      const res = await fetch("http://localhost:5000/api/upload-pcap-file/", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Erreur API");
-      setFile(null);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
-      resetStates();
-    },
-  });
 
   const rewriteMutation = useMutation({
     mutationFn: async () => {
@@ -74,44 +34,10 @@ export const Files = () => {
       });
 
       if (!res.ok) throw new Error("Erreur API");
-      setFile(null);
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
-      resetStates();
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (file: string) => {
-      const formData = new FormData();
-      formData.append("file", file ?? "");
-
-      const res = await fetch("http://localhost:5000/api/delete-pcap-file/", {
-        method: "DELETE",
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Erreur API");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
-    },
-  });
-
-  const infosMutation = useMutation<PcapInfoType, Error, string>({
-    mutationFn: async (file: string) => {
-      const res = await fetch(
-        `http://localhost:5000/api/infos-pcap?file=${file}`
-      );
-
-      if (!res.ok) throw new Error("Erreur API");
-
-      return res.json();
-    },
-    onSuccess: () => {
       resetStates();
     },
   });
@@ -135,16 +61,10 @@ export const Files = () => {
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Files</h1>
       <HandleFiles
+        resetStates={resetStates}
         detailsMutation={detailsMutation}
-        deleteMutation={deleteMutation}
-        file={file}
-        infosMutation={infosMutation}
         selectFile={selectFile}
-        setFile={setFile}
         setSelectFile={setSelectFile}
-        uploadMutation={uploadMutation}
-        pcapFiles={pcapFiles?.files}
-        pcaFilesloading={pcaFilesloading}
         rewriteIps={rewriteIps}
         setRewriteIps={setRewriteIps}
         rewriteMacs={rewriteMacs}
@@ -173,7 +93,8 @@ export const Files = () => {
       )}
       <PacketDetails
         selectedFile={selectFile}
-        detailsMutation={detailsMutation}
+        data={detailsMutation?.data}
+        isPending={detailsMutation.isPending}
       />
       <div className="flex flex-row gap-5 items-center">
         <div className="flex flex-col gap-2">

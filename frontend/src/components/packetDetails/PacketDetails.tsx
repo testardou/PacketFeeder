@@ -1,18 +1,11 @@
-import type { PacketDetailsType } from "@/types/types";
-import { useMutation, type UseMutationResult } from "@tanstack/react-query";
+import type { PacketDetailsType, ReplayStepType } from "@/types/types";
+import { useMutation } from "@tanstack/react-query";
 
-import * as React from "react";
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -28,73 +21,16 @@ import {
 import { PacketPayload } from "@/packetPayload/PacketPayload";
 
 interface IPacketDetailsProps {
-  detailsMutation: UseMutationResult<
-    PacketDetailsType[],
-    Error,
-    string,
-    unknown
-  >;
+  data?: PacketDetailsType[] | ReplayStepType["parsed_packet"];
   selectedFile: string | null;
+  isPending?: boolean;
 }
 
-const columns: ColumnDef<PacketDetailsType>[] = [
-  {
-    accessorKey: "id",
-    header: "Index",
-    enableSorting: false,
-    cell: ({ row }) => <div>{`${row.getValue("id")}`}</div>,
-  },
-  {
-    accessorKey: "timestamp",
-    header: "Timstamp",
-    enableSorting: false,
-    cell: ({ row }) => <div>{`${row.getValue("timestamp")}`}</div>,
-  },
-  {
-    accessorKey: "proto",
-    header: "Protocol",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("proto")}</div>
-    ),
-  },
-  {
-    accessorKey: "src",
-    header: "Ip Source",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("src")}</div>,
-  },
-  {
-    accessorKey: "dst",
-    header: "Ip Destination",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("dst")}</div>,
-  },
-  {
-    accessorKey: "sport",
-    header: "Port Source",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("sport")}</div>,
-  },
-  {
-    accessorKey: "dport",
-    header: "Port Destination",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("dport")}</div>,
-  },
-  {
-    accessorKey: "length",
-    header: "Length",
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("length")}</div>
-    ),
-  },
-];
-
 export const PacketDetails = ({
-  detailsMutation,
+  data,
   selectedFile,
+  isPending,
 }: IPacketDetailsProps) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-
   const packetPayloadMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(
@@ -107,36 +43,83 @@ export const PacketDetails = ({
     },
   });
 
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const columns: ColumnDef<
+    PacketDetailsType | ReplayStepType["parsed_packet"]
+  >[] = [
+    {
+      accessorKey: "id",
+      header: "Index",
+      enableSorting: false,
+      cell: ({ row }) => <div>{`${row.getValue("id")}`}</div>,
+    },
+    {
+      accessorKey: "timestamp",
+      header: "Timstamp",
+      enableSorting: false,
+      cell: ({ row }) => <div>{`${row.getValue("timestamp")}`}</div>,
+    },
+    {
+      accessorKey: "proto",
+      header: "Protocol",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("proto")}</div>
+      ),
+    },
+    {
+      accessorKey: "src",
+      header: "Ip Source",
+      cell: ({ row }) => <div className="lowercase">{row.getValue("src")}</div>,
+    },
+    {
+      accessorKey: "dst",
+      header: "Ip Destination",
+      cell: ({ row }) => <div className="lowercase">{row.getValue("dst")}</div>,
+    },
+    {
+      accessorKey: "sport",
+      header: "Port Source",
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("sport")}</div>
+      ),
+    },
+    {
+      accessorKey: "dport",
+      header: "Port Destination",
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("dport")}</div>
+      ),
+    },
+    {
+      accessorKey: "length",
+      header: "Length",
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("length")}</div>
+      ),
+    },
+    {
+      accessorKey: "payload",
+      header: "Payload",
+      cell: ({ row }) => (
+        <Button onClick={() => packetPayloadMutation.mutate(row.id)}>
+          Show Payload
+        </Button>
+      ),
+    },
+  ];
   // console.log("DATA SNAPSHOT", JSON.stringify(detailsMutation.data));
   const table = useReactTable({
-    data: detailsMutation?.data ?? [],
+    data: data ?? [],
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
   return (
     <>
-      {detailsMutation?.isPending && (
+      {isPending && (
         <p className="text-gray-500">Getting packets in progress...</p>
       )}
 
-      {detailsMutation?.data && (
+      {data && (
         <div className="w-full flex flex-row gap-6">
           <div>
             <div className="overflow-hidden rounded-md border w-fit">
@@ -162,10 +145,7 @@ export const PacketDetails = ({
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                      >
+                      <TableRow key={row.id}>
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
                             {flexRender(
@@ -174,13 +154,6 @@ export const PacketDetails = ({
                             )}
                           </TableCell>
                         ))}
-                        <TableCell>
-                          <Button
-                            onClick={() => packetPayloadMutation.mutate(row.id)}
-                          >
-                            Show Payload
-                          </Button>
-                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
@@ -198,7 +171,7 @@ export const PacketDetails = ({
             </div>
             <div className="flex items-center justify-end space-x-2 py-4 ">
               <div className="text-muted-foreground flex-1 text-sm">
-                {table.getFilteredRowModel().rows.length} row(s) selected.
+                {table.getFilteredRowModel().rows.length} row(s).
               </div>
               <div className="space-x-2">
                 <Button

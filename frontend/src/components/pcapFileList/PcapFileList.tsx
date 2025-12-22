@@ -1,5 +1,9 @@
 import { Button } from "@/components/ui/button";
-import type { UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  type UseMutationResult,
+} from "@tanstack/react-query";
 import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
 
@@ -8,7 +12,6 @@ interface PcapFileListProps {
   selectFile: string | null;
   setSelectFile: (fileName: string) => void;
   infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
-  deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
   pcaFilesloading?: boolean;
   detailsMutation: UseMutationResult<
     PacketDetailsType[],
@@ -23,10 +26,28 @@ export const PcapFileList = ({
   selectFile,
   setSelectFile,
   infosMutation,
-  deleteMutation,
   pcaFilesloading,
   detailsMutation,
 }: PcapFileListProps) => {
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation({
+    mutationFn: async (file: string) => {
+      const formData = new FormData();
+      formData.append("file", file ?? "");
+
+      const res = await fetch("http://localhost:5000/api/delete-pcap-file/", {
+        method: "DELETE",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
+    },
+  });
+
   return (
     <div className="flex flex-col gap-3 w-full">
       <FileScrollArea

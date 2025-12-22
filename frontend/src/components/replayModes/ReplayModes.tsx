@@ -1,13 +1,14 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import type { ReplayModeType } from "@/types/types";
 
 interface IReplayModesProps {
-  selected: string;
-  setSelected: (mode: string) => void;
+  selected: ReplayModeType;
+  setSelected: (mode: ReplayModeType) => void;
 }
 
 export const ReplayModes = ({ selected, setSelected }: IReplayModesProps) => {
-  const replayModes = [
+  const replayModes: { value: ReplayModeType; label: string }[] = [
     {
       value: "realTime",
       label: "Real Time (Slowest)",
@@ -19,6 +20,10 @@ export const ReplayModes = ({ selected, setSelected }: IReplayModesProps) => {
     {
       value: "fastest",
       label: "Full Speed (Fastest)",
+    },
+    {
+      value: "step",
+      label: "Step by step",
     },
   ];
 

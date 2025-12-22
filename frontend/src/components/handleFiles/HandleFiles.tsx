@@ -1,67 +1,89 @@
 import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
-import type { PacketDetailsType, PcapInfoType } from "@/types/types";
-import type { UseMutationResult } from "@tanstack/react-query";
+import type {
+  NewValuesPcapType,
+  PacketDetailsType,
+  PcapFilesType,
+  PcapInfoType,
+} from "@/types/types";
+import {
+  useMutation,
+  useQuery,
+  type UseMutationResult,
+} from "@tanstack/react-query";
 
 interface IHandleFilesProps {
-  pcapFiles?: string[];
   selectFile: string | null;
   setSelectFile: (fileName: string) => void;
-  pcaFilesloading?: boolean;
-  uploadMutation: UseMutationResult<unknown, Error, File | null, unknown>;
-  setFile: (file: File | null) => void;
-  file: File | null;
   files?: string[];
-  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
   detailsMutation: UseMutationResult<
     PacketDetailsType[],
     Error,
     string,
     unknown
   >;
-  deleteMutation: UseMutationResult<unknown, Error, string, unknown>;
-  rewriteIps: { old: string; new: string }[];
-  setRewriteIps: (rewriteIps: { old: string; new: string }[]) => void;
-  rewriteMacs: { old: string; new: string }[];
-  setRewriteMacs: (rewriteIps: { old: string; new: string }[]) => void;
+  rewriteIps: NewValuesPcapType[];
+  setRewriteIps: (value: NewValuesPcapType[]) => void;
+  rewriteMacs: NewValuesPcapType[];
+  setRewriteMacs: (value: NewValuesPcapType[]) => void;
+  resetStates: () => void;
 }
 
 export const HandleFiles = ({
-  pcapFiles,
   selectFile,
   setSelectFile,
-  pcaFilesloading,
-  uploadMutation,
-  file,
-  setFile,
-  infosMutation,
-  deleteMutation,
   rewriteIps,
   setRewriteIps,
   rewriteMacs,
   setRewriteMacs,
   detailsMutation,
+  resetStates,
 }: IHandleFilesProps) => {
+  const pcapFilesMutation = useQuery<PcapFilesType>({
+    queryKey: ["pcap_files"], // identifiant unique du cache
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/get-pcap-files/");
+
+      if (!res.ok) {
+        throw new Error("Erreur API");
+      }
+
+      return res.json();
+    },
+  });
+
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(
+        `http://localhost:5000/api/infos-pcap?file=${file}`
+      );
+
+      if (!res.ok) throw new Error("Erreur API");
+
+      return res.json();
+    },
+    onSuccess: () => {
+      resetStates();
+    },
+  });
+
   return (
     <div className="flex flex-row gap-10">
       <div className="flex flex-col gap-6">
         <h2 className="text-2xl">Pcap Files</h2>
         <UploadPcapFile
-          files={pcapFiles}
-          setFile={setFile}
-          uploadMutation={uploadMutation}
-          file={file}
-          pcaFilesloading={pcaFilesloading}
+          files={pcapFilesMutation.data?.files}
+          pcaFilesloading={pcapFilesMutation.isLoading}
+          resetStates={resetStates}
         />
         <PcapFileList
           detailsMutation={detailsMutation}
-          pcapFiles={pcapFiles}
+          pcapFiles={pcapFilesMutation.data?.files}
           selectFile={selectFile}
           setSelectFile={setSelectFile}
           infosMutation={infosMutation}
-          deleteMutation={deleteMutation}
-          pcaFilesloading={pcaFilesloading}
+          pcaFilesloading={pcapFilesMutation.isLoading}
         />
       </div>
       <PcapInfos

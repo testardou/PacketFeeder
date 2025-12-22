@@ -19,5 +19,6 @@ class ReplayNamespace(Namespace):
         sid = request.sid
         print("STOP request from client:", sid)
         should_run[sid] = False
+        print('Should run:', should_run)
 
 

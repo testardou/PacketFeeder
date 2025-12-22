@@ -1,6 +1,7 @@
 from backend.config import UPLOAD_FOLDER
 from backend.schemas.packet_details import PacketDetailsSchema
 from backend.schemas.packet_payload import PacketPayloadSchema
+from core.pcap_infos.payload_packet import payload_packet
 from flask_smorest import Blueprint
 from flask import request, jsonify
 from core.utils.read_pcap import read_pcap
@@ -27,9 +28,8 @@ def packet_payload():
         return {"message": "Packet index out of range"}, 404
 
     pkt = packets[index]
-    raw_payload = bytes(pkt.payload)
-    print(raw_payload)
+    hex_payload = payload_packet(pkt)
 
     return {
-        "payload": raw_payload.hex(),
+        "payload": hex_payload,
     }
