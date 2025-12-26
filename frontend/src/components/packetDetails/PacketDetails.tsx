@@ -1,5 +1,6 @@
 import type { PacketDetailsType, ReplayStepType } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import {
   flexRender,
@@ -43,72 +44,84 @@ export const PacketDetails = ({
     },
   });
 
-  const columns: ColumnDef<
-    PacketDetailsType | ReplayStepType["parsed_packet"]
-  >[] = [
-    {
-      accessorKey: "id",
-      header: "Index",
-      enableSorting: false,
-      cell: ({ row }) => <div>{`${row.getValue("id")}`}</div>,
-    },
-    {
-      accessorKey: "timestamp",
-      header: "Timstamp",
-      enableSorting: false,
-      cell: ({ row }) => <div>{`${row.getValue("timestamp")}`}</div>,
-    },
-    {
-      accessorKey: "proto",
-      header: "Protocol",
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("proto")}</div>
-      ),
-    },
-    {
-      accessorKey: "src",
-      header: "Ip Source",
-      cell: ({ row }) => <div className="lowercase">{row.getValue("src")}</div>,
-    },
-    {
-      accessorKey: "dst",
-      header: "Ip Destination",
-      cell: ({ row }) => <div className="lowercase">{row.getValue("dst")}</div>,
-    },
-    {
-      accessorKey: "sport",
-      header: "Port Source",
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("sport")}</div>
-      ),
-    },
-    {
-      accessorKey: "dport",
-      header: "Port Destination",
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("dport")}</div>
-      ),
-    },
-    {
-      accessorKey: "length",
-      header: "Length",
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("length")}</div>
-      ),
-    },
-    {
-      accessorKey: "payload",
-      header: "Payload",
-      cell: ({ row }) => (
-        <Button onClick={() => packetPayloadMutation.mutate(row.id)}>
-          Show Payload
-        </Button>
-      ),
-    },
-  ];
-  // console.log("DATA SNAPSHOT", JSON.stringify(detailsMutation.data));
+  type TableRow = PacketDetailsType | { [key: string]: unknown };
+
+  const normalizedData: TableRow[] = useMemo(
+    () => (Array.isArray(data) ? data : []),
+    [data]
+  );
+
+  const columns: ColumnDef<TableRow>[] = useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: "Index",
+        enableSorting: false,
+        cell: ({ row }) => <div>{`${row.getValue("id")}`}</div>,
+      },
+      {
+        accessorKey: "timestamp",
+        header: "Timstamp",
+        enableSorting: false,
+        cell: ({ row }) => <div>{`${row.getValue("timestamp")}`}</div>,
+      },
+      {
+        accessorKey: "proto",
+        header: "Protocol",
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("proto")}</div>
+        ),
+      },
+      {
+        accessorKey: "src",
+        header: "Ip Source",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("src")}</div>
+        ),
+      },
+      {
+        accessorKey: "dst",
+        header: "Ip Destination",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("dst")}</div>
+        ),
+      },
+      {
+        accessorKey: "sport",
+        header: "Port Source",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("sport")}</div>
+        ),
+      },
+      {
+        accessorKey: "dport",
+        header: "Port Destination",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("dport")}</div>
+        ),
+      },
+      {
+        accessorKey: "length",
+        header: "Length",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("length")}</div>
+        ),
+      },
+      {
+        accessorKey: "payload",
+        header: "Payload",
+        cell: ({ row }) => (
+          <Button onClick={() => packetPayloadMutation.mutate(row.id)}>
+            Show Payload
+          </Button>
+        ),
+      },
+    ],
+    [packetPayloadMutation]
+  );
+
   const table = useReactTable({
-    data: data ?? [],
+    data: normalizedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });

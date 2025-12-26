@@ -1,239 +1,117 @@
 # Packet Feeder
 
-**A treat a day keeps false negatives away.**
+![Packet Feeder Logo](./assets/packetfeeder_logo_256.png)
 
-![Packet Feeder Logo](./assets/logo.png)
+Packet Feeder is a PCAP-based traffic replay platform designed for security research and IDS/NDR testing.
 
-Packet Feeder is a tool designed to easily test IDS/IPS systems by replaying PCAP files, modifying IP addresses, running pre‑built scenarios stored in a folder, and even using a step‑by‑step mode that allows reading a PCAP line by line with breakpoints.
-
-This project aims to provide a simple, flexible, and reproducible platform for validating IDS/IPS behavior in different environments.
+It combines a CLI and a web-based GUI to inspect, rewrite, and replay network traffic, supporting multiple replay modes, scenario-based attack simulations, and realistic lab environments.
 
 ---
 
-## 🧰 **Project Modes**
+## Features
 
-Packet Feeder provides multiple operating modes to cover a wide range of IDS/IPS testing needs:
+### 1. PCAP File Management & Inspection
 
-### **1. Classic Replay Mode (tcpreplay‑like)**
+- Browse, upload, and delete PCAP files
+- Inspect packet metadata and payload-related data
+- Generate and upload rewritten PCAP copies with modified network fields (IPs, MACs, ports, DNS)
 
-Replays a PCAP directly on a chosen network interface, similar to `tcpreplay`. Ideal for:
+### 2. PCAP Replay & Live Editing
 
-- Simple tests
-- Checking Suricata/Snort rule matches
-- Replaying attack PCAPs at full speed or throttled
+- Select, upload, and delete PCAP files
+- Global traffic overview (IPs, TCP/UDP ports, DNS)
+- On-the-fly traffic rewriting (IPs, ports, DNS)
+- Packet and payload inspection
 
-### **2. Two‑Host Interactive Replay Mode**
+Replay modes:
 
-In this mode, two VMs (client/server) exchange real packets while the tool replays the PCAP:
+- **Real-time** (timestamps respected)
+- **Faster** (no timestamps, live progress)
+- **Fastest** (full injection, tcpreplay-like)
+- **Step-by-step** (packet-by-packet)
 
-- Packets are rebuilt and re‑sent live
-- Both machines actually communicate during the replay
-- Useful for testing detections that depend on real TCP handshakes, timing, or multi‑step flows
+### 3. Scenario-Based Attack Simulation
 
-### **3. Scenario Mode (Simple Attack Simulations)**
+- PCAP-based scenarios aligned with the MITRE ATT&CK matrix
+- Replay predefined attack patterns for security testing
+- Designed to simulate simple and repeatable attack scenarios
 
-A collection of small, predefined scenarios, each stored as a folder:
+### 4. Live Network Interaction (Experimental)
 
-- Single HTTP request
-- SSH brute‑force attempt
-- DNS or ICMP probes
-- Small attack chains
+- Real traffic exchange between multiple systems
+- Advanced lab-oriented IDS/NDR testing
 
-These scenarios allow quick validation of IDS coverage without handling large PCAP files.
+## Architecture Overview
 
-### **4. Step‑by‑Step Mode (Breakpoint/Line‑by‑Line)**
+Packet Feeder follows a modular client-server architecture designed to support both interactive and automated workflows.
 
-Provides complete control over the replay process:
+- **Frontend (GUI)**  
+  A web-based interface built with React, providing PCAP management, traffic inspection, replay control, and live status updates.
 
-- Process a PCAP packet‑by‑packet
-- Add breakpoints at specific packets or protocol layers
-- Inspect or modify the live replay sequence
-- Useful for debugging, teaching, or reverse engineering detection behavior
+- **CLI**  
+  A command-line interface for automation, scripting, and headless execution of replays and scenarios.
 
----
+- **Backend API**  
+  A Python backend based on Flask, exposing REST endpoints for PCAP management and control operations.
 
----
+- **Replay Engine**  
+  A Scapy-based packet injection engine responsible for replaying and rewriting traffic on a real network interface.
 
-## 🧪 **Testing Lab Used During Development**
+- **Real-Time Communication**  
+  WebSocket (Socket.IO) channels used to stream replay progress, status, and control events between the backend and the GUI.
 
-To build and validate Packet Feeder, a minimal yet realistic laboratory environment was configured. It runs on a physical server using QEMU/KVM and managed through **virsh**.
+  ## Installation
 
-### **Lab Architecture**
+Packet Feeder is composed of a Python backend and a web-based frontend.
 
-- **Hypervisor:** QEMU/KVM
-- **Management:** virsh
-- **Number of VMs:** 2
-
-### **Virtual Machines**
-
-1. **ClearNDR**
-
-   - Role: IDS/IPS (Suricata‑based)
-   - Network interface connected to the host's bridge
-
-2. **“Enterprise PC” VM**
-
-   - Role: a simulated workstation inside a corporate network
-   - Used as the source to replay PCAP files
-
-### **Lab Network**
-
-- Linux **bridge** on the host (br0)
-- Both VMs attached to this bridge
-- **Port mirroring** configured:
-
-  - **Ingress + Egress** traffic from the Enterprise PC VM is mirrored to the ClearNDR VM
-  - Allows capturing all traffic produced by the PCAP replays
-
-This creates a realistic environment for validating IDS detection capabilities.
-
-## 🏗️ Project Architecture Overview
-
-Packet Feeder is composed of three main parts that work together to provide a full PCAP replay and IDS testing environment.
-
----
-
-## 🎨 Frontend — React Application
-
-The frontend is built using **React**, providing an intuitive and interactive interface for controlling replay operations.
-
-### **Main Responsibilities**
-
-- Uploading PCAP files
-- Selecting interfaces and replay modes
-- Controlling the replay in real time (Start / Stop / Pause / Step)
-- Displaying replay progress, statistics, and upcoming features such as:
-  - Live packet timeline
-  - Protocol layers decoding
-  - Scenario configuration
-
-### ⚡ **Communication Layer**
-
-- Uses **Socket.IO client** for real-time communication
-- Uses **REST endpoints** for file upload and metadata extraction
-
-React manages all user interactions while the backend executes the replay logic.
-
----
-
-## ⚙️ Backend — Flask + Flask-SocketIO
-
-The backend is implemented with **Flask**, with **Flask-SocketIO** providing real-time capabilities.
-
-### **Backend Responsibilities**
-
-- Provide REST API endpoints:
-
-  - Upload PCAP files
-  - Extract metadata
-  - Trigger replay modes
-
-- Provide a WebSocket control channel:
-
-  - Manage session IDs (`sid`)
-  - Events like `start_replay`, `stop_replay`
-  - Maintain per-client replay state (`should_run[sid]`)
-  - Future: live updates during replay (packet index, timestamps…)
-
-- Interface with the packet replay engine located inside the `core/` directory.
-
----
-
-## 🖥️ Command-Line Tool (CLI)
-
-A Python-based CLI is included to allow packet replay without the web interface.
-
-### **CLI Capabilities**
-
-- Classic PCAP replay on any interface
-- Scenario replay mode
-- Speed selection (Real Time, Faster, Fastest)
-- Verbose and debug output
-- Step-by-step replay or breakpoints
-
-This is ideal for automation, CI pipelines, or local testing.
-
----
-
-## 🚀 Replay Speeds
-
-Packet Feeder provides three replay speeds, each optimized for a different use case.
-
-### **1. Real-Time Mode**
-
-Replay follows the **original timestamps** from the PCAP:
-
-- Respects inter-packet delays
-- Produces realistic traffic pacing
-- Allows IDS/IPS to behave as if the traffic were live
-
-**Ideal for:**  
-Testing Suricata/Snort accuracy under real-world timing.
-
----
-
-### **2. Faster Mode (Packet-by-Packet)**
-
-Replay sends packets **one by one**, but **ignores timestamps**:
-
-- No inter-packet wait
-- Still passes each packet through Python logic
-- Allows precise tracking, logging and control
-
-**Ideal for:**  
-Debugging, step-by-step replay, teaching.
-
----
-
-### **3. Fastest Mode (Bulk Replay)**
-
-The entire PCAP is replayed **as fast as the system allows**:
-
-- Avoids Python per-packet loops
-- Sends traffic in bulk
-- Maximum throughput
-
-**Ideal for:**  
-Stress testing or quickly generating alerts on large PCAPs.
-
----
-
-## 🧬 Core Engine — Scapy-Based PCAP Processing
-
-At the core of Packet Feeder lies a replay engine powered by **Scapy**.
-
-### **Why Scapy?**
-
-- Flexible PCAP parsing
-- Easy packet modification
-- Timestamp accuracy when needed
-- Native packet sending (`sendp`)
-- Protocol introspection
-- Automatic checksum recalculation
-
-## 🐍 Python Environment & Permissions
-
-Packet Feeder includes Python components (CLI + core replay engine).  
-To run them correctly, you must first install dependencies and allow Python to send raw packets.
-
-### **1. Create a Virtual Environment**
+### Backend and CLI
 
 ```bash
+# Create virtual environment
 python3 -m venv venv --copies
 source venv/bin/activate
-```
 
-### **2. Install Requirements\***
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-### **3. Grant Permissions to Send Packets\***
-
-Scapy requires raw socket capabilities to replay traffic on an interface.
-Instead of running Python as root, Packet Feeder uses Linux capabilities:
-
-```bash
+# Allow raw packet injection without running as root
 sudo setcap cap_net_raw,cap_net_admin=eip ./venv/bin/python3
 ```
+
+### Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+## Roadmap
+
+### PCAP File Management
+
+- [x] PCAP upload, listing, and deletion
+- [x] PCAP inspection and metadata extraction
+- [x] Generation of rewritten PCAP copies
+- [x] Traffic field rewriting (IPs, MACs, ports, DNS)
+
+### Replay Engine
+
+- [x] PCAP replay through real network interfaces
+- [x] Multiple replay modes:
+  - [x] real-time (timestamps respected)
+  - [x] accelerated replay (with progress)
+  - [x] full-speed injection
+  - [x] step-by-step execution
+- [x] Replay progress tracking and status reporting
+
+### Scenario Mode
+
+- [ ] PCAP-based scenario definitions
+- [ ] MITRE ATT&CK–aligned attack scenarios
+- [ ] Repeatable and deterministic scenario execution
+
+### Live Network Interaction
+
+- [ ] Real traffic exchange between multiple systems
+- [ ] Hybrid replay and live traffic execution
+- [ ] Advanced lab-oriented workflows
