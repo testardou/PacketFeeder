@@ -41,3 +41,22 @@ export type RewriteValues = {
   rewriteUdpPorts: NewValuesPcapType[];
   setRewriteUdpPorts: (values: NewValuesPcapType[]) => void;
 };
+
+export type ProtocolType =
+  | "ip"
+  | "ipv6"
+  | "mac"
+  | "tcp"
+  | "udp"
+  | "icmp"
+  | "arp"
+  | "dns"
+  | null;
+
+export type ProtocolDataType = {
+  key: ProtocolType;
+  label: string;
+  count: number;
+  data: (string | number)[];
+  isPort?: boolean;
+};

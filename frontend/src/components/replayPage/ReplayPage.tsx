@@ -91,6 +91,15 @@ export const ReplayPage = () => {
     },
   });
 
+  const handleSetSelectFile = (fileName: string | null) => {
+    // Reset all states when file selection changes
+    if (fileName !== selectFile) {
+      resetStates();
+      detailsMutation.reset();
+    }
+    setSelectFile(fileName);
+  };
+
   if (isLoading) {
     return <p>Loading interfaces...</p>;
   }
@@ -102,7 +111,7 @@ export const ReplayPage = () => {
         resetStates={resetStates}
         detailsMutation={detailsMutation}
         selectFile={selectFile}
-        setSelectFile={setSelectFile}
+        setSelectFile={handleSetSelectFile}
         rewriteValues={rewriteValues}
       />
       <div className="flex flex-col gap-5">

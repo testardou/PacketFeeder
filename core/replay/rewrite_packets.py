@@ -1,9 +1,11 @@
-def rewrite_packets(packets, ip_map=None, mac_map=None, ipv6_map=None, arp_ip_map=None, dns_domain_map=None):
+def rewrite_packets(packets, ip_map=None, mac_map=None, ipv6_map=None, arp_ip_map=None, dns_domain_map=None, tcp_port_map=None, udp_port_map=None):
     ip_map = ip_map or {}
     mac_map = mac_map or {}
     ipv6_map = ipv6_map or {}
     arp_ip_map = arp_ip_map or {}
     dns_domain_map = dns_domain_map or {}
+    tcp_port_map = tcp_port_map or {}
+    udp_port_map = udp_port_map or {}
 
     rewritten = []
 
@@ -74,6 +76,34 @@ def rewrite_packets(packets, ip_map=None, mac_map=None, ipv6_map=None, arp_ip_ma
                                 q.qname = (new_domain + ".").encode("utf-8")
                         except (AttributeError, UnicodeDecodeError, UnicodeEncodeError):
                             pass
+
+        # Rewrite TCP ports
+        if tcp_port_map and pkt.haslayer("TCP"):
+            tcp = pkt["TCP"]
+            sport = str(tcp.sport)
+            dport = str(tcp.dport)
+            if sport in tcp_port_map:
+                tcp.sport = int(tcp_port_map[sport])
+            if dport in tcp_port_map:
+                tcp.dport = int(tcp_port_map[dport])
+            # Scapy recalculation
+            for field in ["chksum"]:
+                if field in tcp.fields:
+                    del tcp.fields[field]
+
+        # Rewrite UDP ports
+        if udp_port_map and pkt.haslayer("UDP"):
+            udp = pkt["UDP"]
+            sport = str(udp.sport)
+            dport = str(udp.dport)
+            if sport in udp_port_map:
+                udp.sport = int(udp_port_map[sport])
+            if dport in udp_port_map:
+                udp.dport = int(udp_port_map[dport])
+            # Scapy recalculation
+            for field in ["chksum"]:
+                if field in udp.fields:
+                    del udp.fields[field]
 
         rewritten.append(pkt)
 

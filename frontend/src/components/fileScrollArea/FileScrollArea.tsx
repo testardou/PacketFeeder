@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 interface FileScrollAreaProps {
   pcapFiles?: string[];
   selectFile: string | null;
-  setSelectFile: (fileName: string) => void;
+  setSelectFile: (fileName: string | null) => void;
   pcaFilesloading?: boolean;
 }
 

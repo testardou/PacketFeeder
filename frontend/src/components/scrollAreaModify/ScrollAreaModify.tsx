@@ -53,16 +53,17 @@ export const ScrollAreaModify = ({
       <div className="p-4">
         {valuesArray
           .filter(
-            (srcIp) =>
-              newValues?.find((element) => element.old === srcIp) === undefined
+            (value) =>
+              newValues?.find((element) => element.old === value) === undefined
           )
-          .map((srcIp) => (
-            <React.Fragment key={srcIp}>
+          .map((value, index) => (
+            <React.Fragment key={value}>
+              {index > 0 && <Separator className="my-2" />}
               <div className="flex items-center gap-2">
-                <Dialog onOpenChange={() => setNewValue(String(srcIp))}>
+                <Dialog onOpenChange={() => setNewValue(String(value))}>
                   <DialogTrigger asChild>
                     <Button variant="ghost" className="flex-1 justify-start">
-                      {srcIp}
+                      {value}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
@@ -72,10 +73,12 @@ export const ScrollAreaModify = ({
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid gap-2">
-                        <Label htmlFor={`new-ip-${srcIp}`}>{modalLabel}</Label>
+                        <Label htmlFor={`new-value-${value}`}>
+                          {modalLabel}
+                        </Label>
                         <Input
-                          id={`new-ip-${srcIp}`}
-                          defaultValue={String(srcIp)}
+                          id={`new-value-${value}`}
+                          defaultValue={String(value)}
                           onChange={(e) => setNewValue(e.target.value)}
                         />
                       </div>
@@ -96,12 +99,12 @@ export const ScrollAreaModify = ({
                       <Button
                         disabled={
                           !validator.test(newValue) ||
-                          newValue === String(srcIp)
+                          newValue === String(value)
                         }
                         onClick={() => {
                           setNewValues([
                             ...newValues,
-                            { old: String(srcIp), new: newValue },
+                            { old: String(value), new: newValue },
                           ]);
                           setNewValue("");
                         }}
@@ -119,7 +122,7 @@ export const ScrollAreaModify = ({
                     asChild
                   >
                     <a
-                      href={infoUrl(srcIp)}
+                      href={infoUrl(value)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center"
@@ -129,8 +132,6 @@ export const ScrollAreaModify = ({
                   </Button>
                 )}
               </div>
-
-              <Separator className="my-2" />
             </React.Fragment>
           ))}
       </div>

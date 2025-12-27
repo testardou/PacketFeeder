@@ -1,6 +1,8 @@
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.l2 import ARP
 
+from backend.config import TCP_FLAG_MAP
+
 def tcp_flags_to_str(flags):
     return ",".join(TCP_FLAG_MAP.get(f, f) for f in str(flags))
 

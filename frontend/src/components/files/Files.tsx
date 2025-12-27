@@ -1,5 +1,4 @@
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
-import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRecap";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +63,11 @@ export const Files = () => {
       formData.append("filename", fileName ?? "");
       formData.append("rewriteIps", JSON.stringify(rewriteIps));
       formData.append("rewriteMacs", JSON.stringify(rewriteMacs));
+      formData.append("rewriteIpv6s", JSON.stringify(rewriteIpv6s));
+      formData.append("rewriteArpIps", JSON.stringify(rewriteArpIps));
+      formData.append("rewriteDnsDomains", JSON.stringify(rewriteDnsDomains));
+      formData.append("rewriteTcpPorts", JSON.stringify(rewriteTcpPorts));
+      formData.append("rewriteUdpPorts", JSON.stringify(rewriteUdpPorts));
 
       const res = await fetch("http://localhost:5000/api/rewrite-pcap-file/", {
         method: "POST",
@@ -94,6 +98,15 @@ export const Files = () => {
     },
   });
 
+  const handleSetSelectFile = (fileName: string | null) => {
+    // Reset all states when file selection changes
+    if (fileName !== selectFile) {
+      resetStates();
+      detailsMutation.reset();
+    }
+    setSelectFile(fileName);
+  };
+
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-4xl mx-auto w-fit font-bold">Files</h1>
@@ -101,30 +114,9 @@ export const Files = () => {
         resetStates={resetStates}
         detailsMutation={detailsMutation}
         selectFile={selectFile}
-        setSelectFile={setSelectFile}
+        setSelectFile={handleSetSelectFile}
         rewriteValues={rewriteValues}
       />
-      {(rewriteIps.length > 0 || rewriteMacs.length > 0) && (
-        <div className="flex flex-col gap-5">
-          <h2 className="text-2xl">Modifications</h2>
-          <div className="flex flex-row gap-4">
-            {rewriteIps.length > 0 && (
-              <ModifiedPcapRecap
-                cardTitle="Replaced Ips"
-                setRewriteValues={setRewriteIps}
-                rewriteValues={rewriteIps}
-              />
-            )}
-            {rewriteMacs.length > 0 && (
-              <ModifiedPcapRecap
-                cardTitle="Replaced MACs addresses"
-                setRewriteValues={setRewriteMacs}
-                rewriteValues={rewriteMacs}
-              />
-            )}
-          </div>
-        </div>
-      )}
       <PacketDetails
         selectedFile={selectFile}
         data={detailsMutation?.data}
@@ -136,7 +128,13 @@ export const Files = () => {
           <Input
             disabled={
               !selectFile ||
-              (rewriteIps.length === 0 && rewriteMacs.length === 0)
+              (rewriteIps.length === 0 &&
+                rewriteMacs.length === 0 &&
+                rewriteIpv6s.length === 0 &&
+                rewriteArpIps.length === 0 &&
+                rewriteDnsDomains.length === 0 &&
+                rewriteTcpPorts.length === 0 &&
+                rewriteUdpPorts.length === 0)
             }
             onChange={(e) => setFileName(e.target.value)}
           />
@@ -145,7 +143,13 @@ export const Files = () => {
           onClick={() => rewriteMutation.mutate()}
           disabled={
             !selectFile ||
-            (rewriteIps.length === 0 && rewriteMacs.length === 0) ||
+            (rewriteIps.length === 0 &&
+              rewriteMacs.length === 0 &&
+              rewriteIpv6s.length === 0 &&
+              rewriteArpIps.length === 0 &&
+              rewriteDnsDomains.length === 0 &&
+              rewriteTcpPorts.length === 0 &&
+              rewriteUdpPorts.length === 0) ||
             !fileName
           }
           className="mt-auto"

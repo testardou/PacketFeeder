@@ -14,7 +14,7 @@ import {
 
 interface IHandleFilesProps {
   selectFile: string | null;
-  setSelectFile: (fileName: string) => void;
+  setSelectFile: (fileName: string | null) => void;
   files?: string[];
   detailsMutation: UseMutationResult<
     PacketDetailsType[],
@@ -61,6 +61,14 @@ export const HandleFiles = ({
     },
   });
 
+  const handleSetSelectFile = (fileName: string | null) => {
+    // Reset infos mutation when file selection changes
+    if (fileName !== selectFile) {
+      infosMutation.reset();
+    }
+    setSelectFile(fileName);
+  };
+
   return (
     <div className="flex flex-row gap-10">
       <div className="flex flex-col gap-6">
@@ -70,7 +78,7 @@ export const HandleFiles = ({
           detailsMutation={detailsMutation}
           pcapFiles={pcapFilesMutation.data?.files}
           selectFile={selectFile}
-          setSelectFile={setSelectFile}
+          setSelectFile={handleSetSelectFile}
           infosMutation={infosMutation}
           pcaFilesloading={pcapFilesMutation.isLoading}
           resetStates={resetStates}
