@@ -25,9 +25,16 @@ export const FileScrollArea = ({
           {pcapFiles?.map((pcapFile) => (
             <div key={pcapFile}>
               <div
-                className={`${
-                  selectFile === pcapFile ? "bg-blue-300" : ""
-                } p-1.5 rounded-sm cursor-pointer`}
+                className={`
+                p-1.5 rounded-sm cursor-pointer
+                transition-colors
+                hover:bg-muted
+                ${
+                  selectFile === pcapFile
+                    ? "bg-accent text-accent-foreground"
+                    : ""
+                }
+              `}
                 onClick={() => setSelectFile(pcapFile)}
               >
                 {pcapFile}

@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // import Layout from "@/layouts/Layout";
 import Replay from "@/pages/Replay";
-import Speak from "@/pages/Speak";
+import Live from "@/pages/Live";
 import Layout from "../layouts/Layout";
 import { Files } from "@/components/files/Files";
 
@@ -28,8 +28,8 @@ export const router = createBrowserRouter([
         element: <Replay />,
       },
       {
-        path: "speak",
-        element: <Speak />,
+        path: "live",
+        element: <Live />,
       },
     ],
   },

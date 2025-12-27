@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
+  SidebarHeader,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -11,6 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ThemeToggle } from "@/components/themeToggle/ThemeToggle";
+import { Separator } from "@/components/ui/separator";
 
 // Menu items.
 const items = [
@@ -30,8 +33,8 @@ const items = [
     icon: Film,
   },
   {
-    title: "Speak",
-    url: "/speak",
+    title: "Live",
+    url: "/live",
     icon: Plug,
   },
 ];
@@ -39,6 +42,12 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader>
+        <div className="flex items-center justify-start p-2">
+          <ThemeToggle />
+        </div>
+        <Separator />
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

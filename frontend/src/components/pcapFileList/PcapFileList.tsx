@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
+import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
 
 interface PcapFileListProps {
   pcapFiles?: string[];
@@ -19,6 +20,7 @@ interface PcapFileListProps {
     string,
     unknown
   >;
+  resetStates: () => void;
 }
 
 export const PcapFileList = ({
@@ -28,6 +30,7 @@ export const PcapFileList = ({
   infosMutation,
   pcaFilesloading,
   detailsMutation,
+  resetStates,
 }: PcapFileListProps) => {
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
@@ -40,7 +43,7 @@ export const PcapFileList = ({
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Erreur API");
+      if (!res.ok) throw new Error("API Error");
       return res.json();
     },
     onSuccess: () => {
@@ -57,6 +60,11 @@ export const PcapFileList = ({
         pcapFiles={pcapFiles}
       />
       <div className="flex flex-row gap-3">
+        <UploadPcapFile
+          files={pcapFiles}
+          pcaFilesloading={pcaFilesloading}
+          resetStates={resetStates}
+        />
         <Button
           type="submit"
           variant="outline"
@@ -77,10 +85,9 @@ export const PcapFileList = ({
         </Button>
         <Button
           type="submit"
-          variant="outline"
+          variant="destructive"
           disabled={!selectFile}
           onClick={() => selectFile && deleteMutation.mutate(selectFile)}
-          className="bg-red-500 text-amber-50  hover:bg-red-600 hover:text-amber-100"
         >
           Delete
         </Button>

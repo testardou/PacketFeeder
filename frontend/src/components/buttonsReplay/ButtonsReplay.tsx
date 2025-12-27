@@ -65,11 +65,9 @@ export const ButtonsReplay = ({
       </Button>
       <Button
         type="submit"
-        variant="outline"
+        variant="destructive"
         disabled={!running}
-        color="blue"
         onClick={() => socket.emit("stop_replay")}
-        className="bg-red-500 text-amber-50 hover:bg-red-600 hover:text-amber-100"
       >
         Stop
       </Button>

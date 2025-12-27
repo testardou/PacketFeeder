@@ -18,19 +18,21 @@ export const ModifiedPcapRecap = ({
 }: IModifiedPcapRecapProps) => {
   if (rewriteValues === undefined || rewriteValues.length === 0) return null;
   return (
-    <Card className="w-fit">
-      <CardHeader>
-        <CardTitle>{cardTitle}</CardTitle>
+    <Card className="w-fit border-2">
+      <CardHeader className="bg-muted/50">
+        <CardTitle className="text-base font-semibold">{cardTitle}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-72  rounded-md border">
+      <CardContent className="p-0">
+        <ScrollArea className="h-72 rounded-md border">
           <div className="p-4">
             {rewriteValues?.map((element) => (
               <React.Fragment key={element.old}>
-                <div className="text-sm flex flex-row gap-4 justify-around justify-items-center">
-                  <p className="text-sm my-auto">{`${element.old} -> ${element.new}`}</p>
+                <div className="text-sm flex flex-row gap-4 justify-between items-center">
+                  <p className="text-sm my-auto font-mono">{`${element.old} -> ${element.new}`}</p>
                   <Button
-                    className="bg-red-500 text-amber-50 hover:bg-red-600 hover:text-amber-100"
+                    variant="destructive"
+                    size="icon"
+                    className="h-7 w-7"
                     onClick={() =>
                       setRewriteValues(
                         rewriteValues.filter(

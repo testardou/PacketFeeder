@@ -1,11 +1,10 @@
 import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
 import type {
-  NewValuesPcapType,
   PacketDetailsType,
   PcapFilesType,
   PcapInfoType,
+  RewriteValues,
 } from "@/types/types";
 import {
   useMutation,
@@ -23,20 +22,14 @@ interface IHandleFilesProps {
     string,
     unknown
   >;
-  rewriteIps: NewValuesPcapType[];
-  setRewriteIps: (value: NewValuesPcapType[]) => void;
-  rewriteMacs: NewValuesPcapType[];
-  setRewriteMacs: (value: NewValuesPcapType[]) => void;
+  rewriteValues: RewriteValues;
   resetStates: () => void;
 }
 
 export const HandleFiles = ({
   selectFile,
   setSelectFile,
-  rewriteIps,
-  setRewriteIps,
-  rewriteMacs,
-  setRewriteMacs,
+  rewriteValues,
   detailsMutation,
   resetStates,
 }: IHandleFilesProps) => {
@@ -46,7 +39,7 @@ export const HandleFiles = ({
       const res = await fetch("http://localhost:5000/api/get-pcap-files/");
 
       if (!res.ok) {
-        throw new Error("Erreur API");
+        throw new Error("API Error");
       }
 
       return res.json();
@@ -59,7 +52,7 @@ export const HandleFiles = ({
         `http://localhost:5000/api/infos-pcap?file=${file}`
       );
 
-      if (!res.ok) throw new Error("Erreur API");
+      if (!res.ok) throw new Error("API Error");
 
       return res.json();
     },
@@ -72,11 +65,7 @@ export const HandleFiles = ({
     <div className="flex flex-row gap-10">
       <div className="flex flex-col gap-6">
         <h2 className="text-2xl">Pcap Files</h2>
-        <UploadPcapFile
-          files={pcapFilesMutation.data?.files}
-          pcaFilesloading={pcapFilesMutation.isLoading}
-          resetStates={resetStates}
-        />
+
         <PcapFileList
           detailsMutation={detailsMutation}
           pcapFiles={pcapFilesMutation.data?.files}
@@ -84,15 +73,10 @@ export const HandleFiles = ({
           setSelectFile={setSelectFile}
           infosMutation={infosMutation}
           pcaFilesloading={pcapFilesMutation.isLoading}
+          resetStates={resetStates}
         />
       </div>
-      <PcapInfos
-        pcapInfos={infosMutation}
-        rewriteIps={rewriteIps}
-        setRewriteIps={setRewriteIps}
-        rewriteMacs={rewriteMacs}
-        setRewriteMacs={setRewriteMacs}
-      />
+      <PcapInfos pcapInfos={infosMutation} rewriteValues={rewriteValues} />
     </div>
   );
 };

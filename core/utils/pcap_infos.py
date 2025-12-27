@@ -6,8 +6,12 @@ def pcap_infos(packets):
     total_bytes = sum(sizes)
     macs = []
     ips = []
+    ipv6s = []
     tcp_ports = []
     udp_ports = []
+    icmp_types = []
+    arp_ips = []
+    dns_domains = []
 
     for pkt in packets:
         if pkt.haslayer("Ether"):
@@ -20,6 +24,26 @@ def pcap_infos(packets):
                 ips.append(pkt["IP"].src)
             if pkt["IP"].dst not in ips:
                 ips.append(pkt["IP"].dst)
+        if pkt.haslayer("IPv6"):
+            if pkt["IPv6"].src not in ipv6s:
+                ipv6s.append(pkt["IPv6"].src)
+            if pkt["IPv6"].dst not in ipv6s:
+                ipv6s.append(pkt["IPv6"].dst)
+        if pkt.haslayer("DNS"):
+            dns = pkt["DNS"]
+            if dns.qr == 0:  # DNS query
+                if hasattr(dns, "qd") and dns.qd:
+                    for q in dns.qd:
+                        if hasattr(q, "qname") and q.qname:
+                            try:
+                                if isinstance(q.qname, bytes):
+                                    domain = q.qname.decode("utf-8", errors="ignore").rstrip(".")
+                                else:
+                                    domain = str(q.qname).rstrip(".")
+                                if domain and domain not in dns_domains:
+                                    dns_domains.append(domain)
+                            except (AttributeError, UnicodeDecodeError):
+                                pass
         if pkt.haslayer("TCP"):
             if pkt["TCP"].sport not in tcp_ports:
                 tcp_ports.append(pkt["TCP"].sport)
@@ -30,19 +54,31 @@ def pcap_infos(packets):
                 udp_ports.append(pkt["UDP"].sport)
             if pkt["UDP"].dport not in udp_ports:
                 udp_ports.append(pkt["UDP"].dport)
-
+        if pkt.haslayer("ICMP"):
+            icmp_type = pkt["ICMP"].type
+            if icmp_type not in icmp_types:
+                icmp_types.append(icmp_type)
+        if pkt.haslayer("ARP"):
+            if pkt["ARP"].psrc not in arp_ips:
+                arp_ips.append(pkt["ARP"].psrc)
+            if pkt["ARP"].pdst not in arp_ips:
+                arp_ips.append(pkt["ARP"].pdst)
 
     infos = {
         "packet_count": len(packets),
         "total_bytes": total_bytes,
         "duration_seconds": str(duration),
-
         "min_packet_size": min(sizes),
         "max_packet_size": max(sizes),
-
-        "macs": macs,
-        "ips": ips,
-        "tcp_ports": tcp_ports,
-        "udp_ports": udp_ports,
+        "protocols": {
+            "macs": macs,
+            "ips": ips,
+            "ipv6s": ipv6s,
+            "tcp_ports": tcp_ports,
+            "udp_ports": udp_ports,
+            "icmp_types": sorted(icmp_types),
+            "arp_ips": arp_ips,
+            "dns_domains": dns_domains,
+        },
     }
     return infos

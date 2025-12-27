@@ -3,7 +3,11 @@ import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRe
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { NewValuesPcapType, PacketDetailsType } from "@/types/types";
+import type {
+  NewValuesPcapType,
+  PacketDetailsType,
+  RewriteValues,
+} from "@/types/types";
 import { Label } from "@radix-ui/react-label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -14,10 +18,43 @@ export const Files = () => {
   const [selectFile, setSelectFile] = useState<string | null>(null);
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
   const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
+  const [rewriteIpv6s, setRewriteIpv6s] = useState<NewValuesPcapType[]>([]);
+  const [rewriteArpIps, setRewriteArpIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteDnsDomains, setRewriteDnsDomains] = useState<
+    NewValuesPcapType[]
+  >([]);
+  const [rewriteTcpPorts, setRewriteTcpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
+  const [rewriteUdpPorts, setRewriteUdpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
+
+  const rewriteValues: RewriteValues = {
+    rewriteIps,
+    setRewriteIps,
+    rewriteMacs,
+    setRewriteMacs,
+    rewriteIpv6s,
+    setRewriteIpv6s,
+    rewriteArpIps,
+    setRewriteArpIps,
+    rewriteDnsDomains,
+    setRewriteDnsDomains,
+    rewriteTcpPorts,
+    setRewriteTcpPorts,
+    rewriteUdpPorts,
+    setRewriteUdpPorts,
+  };
 
   const resetStates = () => {
     setRewriteIps([]);
     setRewriteMacs([]);
+    setRewriteIpv6s([]);
+    setRewriteArpIps([]);
+    setRewriteDnsDomains([]);
+    setRewriteTcpPorts([]);
+    setRewriteUdpPorts([]);
   };
 
   const rewriteMutation = useMutation({
@@ -65,10 +102,7 @@ export const Files = () => {
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={setSelectFile}
-        rewriteIps={rewriteIps}
-        setRewriteIps={setRewriteIps}
-        rewriteMacs={rewriteMacs}
-        setRewriteMacs={setRewriteMacs}
+        rewriteValues={rewriteValues}
       />
       {(rewriteIps.length > 0 || rewriteMacs.length > 0) && (
         <div className="flex flex-col gap-5">

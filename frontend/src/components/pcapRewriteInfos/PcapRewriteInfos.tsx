@@ -41,11 +41,13 @@ export const PcapRewriteInfos = ({
       <Card className="flex-1">
         <CardHeader>
           <CardTitle>IPs</CardTitle>
-          <CardDescription>Total: {pcapInfosData?.ips.length}</CardDescription>
+          <CardDescription>
+            Total: {pcapInfosData?.protocols?.ips.length ?? 0}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollAreaModify
-            valuesArray={pcapInfosData?.ips ?? []}
+            valuesArray={pcapInfosData?.protocols?.ips ?? []}
             setNewValues={setRewriteIps}
             newValues={rewriteIps}
             validator={ipv4Regex}
@@ -59,11 +61,13 @@ export const PcapRewriteInfos = ({
       <Card className="flex-1">
         <CardHeader>
           <CardTitle>MACs</CardTitle>
-          <CardDescription>Total: {pcapInfosData?.macs.length}</CardDescription>
+          <CardDescription>
+            Total: {pcapInfosData?.protocols?.macs.length ?? 0}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollAreaModify
-            valuesArray={pcapInfosData?.macs ?? []}
+            valuesArray={pcapInfosData?.protocols?.macs ?? []}
             setNewValues={setRewriteMacs}
             newValues={rewriteMacs}
             validator={macAddrRegex}
@@ -78,13 +82,13 @@ export const PcapRewriteInfos = ({
         <CardHeader>
           <CardTitle>TCP Ports</CardTitle>
           <CardDescription>
-            Total: {pcapInfosData?.tcp_ports.length}
+            Total: {pcapInfosData?.protocols?.tcp_ports.length ?? 0}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-72  rounded-md border">
             <div className="p-4">
-              {pcapInfosData?.tcp_ports.map((tcpPort) => (
+              {pcapInfosData?.protocols?.tcp_ports.map((tcpPort) => (
                 <React.Fragment key={tcpPort}>
                   <a
                     className="text-sm"
@@ -105,13 +109,13 @@ export const PcapRewriteInfos = ({
         <CardHeader>
           <CardTitle>UDP Ports</CardTitle>
           <CardDescription>
-            Total: {pcapInfosData?.udp_ports.length}
+            Total: {pcapInfosData?.protocols?.udp_ports.length ?? 0}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-72  rounded-md border">
             <div className="p-4">
-              {pcapInfosData?.udp_ports.map((udpPort) => (
+              {pcapInfosData?.protocols?.udp_ports.map((udpPort) => (
                 <React.Fragment key={udpPort}>
                   <a
                     className="text-sm"

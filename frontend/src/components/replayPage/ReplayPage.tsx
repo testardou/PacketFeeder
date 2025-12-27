@@ -6,10 +6,10 @@ import type {
   NewValuesPcapType,
   PacketDetailsType,
   ReplayModeType,
+  RewriteValues,
 } from "@/types/types";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { ModifiedPcapRecap } from "../modifiedPcapRecap/ModifiedPcapRecap";
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
@@ -23,11 +23,44 @@ export const ReplayPage = () => {
   );
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
   const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
+  const [rewriteIpv6s, setRewriteIpv6s] = useState<NewValuesPcapType[]>([]);
+  const [rewriteArpIps, setRewriteArpIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteDnsDomains, setRewriteDnsDomains] = useState<
+    NewValuesPcapType[]
+  >([]);
+  const [rewriteTcpPorts, setRewriteTcpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
+  const [rewriteUdpPorts, setRewriteUdpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
   const [stepIndex, setStepIndex] = useState<number>(0);
+
+  const rewriteValues: RewriteValues = {
+    rewriteIps,
+    setRewriteIps,
+    rewriteMacs,
+    setRewriteMacs,
+    rewriteIpv6s,
+    setRewriteIpv6s,
+    rewriteArpIps,
+    setRewriteArpIps,
+    rewriteDnsDomains,
+    setRewriteDnsDomains,
+    rewriteTcpPorts,
+    setRewriteTcpPorts,
+    rewriteUdpPorts,
+    setRewriteUdpPorts,
+  };
 
   const resetStates = () => {
     setRewriteIps([]);
     setRewriteMacs([]);
+    setRewriteIpv6s([]);
+    setRewriteArpIps([]);
+    setRewriteDnsDomains([]);
+    setRewriteTcpPorts([]);
+    setRewriteUdpPorts([]);
     setStepIndex(0);
   };
 
@@ -70,25 +103,11 @@ export const ReplayPage = () => {
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={setSelectFile}
-        rewriteIps={rewriteIps}
-        setRewriteIps={setRewriteIps}
-        rewriteMacs={rewriteMacs}
-        setRewriteMacs={setRewriteMacs}
+        rewriteValues={rewriteValues}
       />
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>
-        <div className="flex flex-row gap-4">
-          <ModifiedPcapRecap
-            cardTitle="Replaced Ips"
-            setRewriteValues={setRewriteIps}
-            rewriteValues={rewriteIps}
-          />
-          <ModifiedPcapRecap
-            cardTitle="Replaced MACs addresses"
-            setRewriteValues={setRewriteMacs}
-            rewriteValues={rewriteMacs}
-          />
-        </div>
+
         <PacketDetails
           selectedFile={selectFile}
           data={detailsMutation?.data}
