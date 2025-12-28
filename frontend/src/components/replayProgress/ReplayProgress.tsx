@@ -36,7 +36,9 @@ export const ReplayProgress = ({
         <CardHeader>
           <CardTitle>Packet Index</CardTitle>
         </CardHeader>
-        <CardContent>{socketData?.index}</CardContent>
+        <CardContent>
+          {socketData?.index} / {socketData?.packet_count}
+        </CardContent>
       </Card>
       <Card className="flex-1">
         <CardHeader>

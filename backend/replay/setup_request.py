@@ -1,15 +1,27 @@
-import logging
 from flask import current_app
-from backend.config import UPLOAD_FOLDER
+from backend.utils.validate_file_path import validate_file_path
 from backend.utils.parse_rewrite_json import parse_rewrite_json
 from core.replay.rewrite_packets import rewrite_packets
 from core.utils.read_pcap import read_pcap
 from backend.sockets.realtime import should_run, running_status
 from backend.extension import socketio
+import os
 
-logging.basicConfig(level=logging.INFO)
 
 def setup_request(request, apply_filter=True):
+    """
+    Setup and validate replay request parameters.
+    
+    Args:
+        request: Flask request object
+        apply_filter: Whether to apply index/range filtering
+    
+    Returns:
+        tuple: (packets, iface, sid)
+    
+    Raises:
+        ValueError: If validation fails
+    """
     file = request.form.get('file')
     iface = request.form.get("iface")
     sid = request.form.get("sid")
@@ -20,7 +32,18 @@ def setup_request(request, apply_filter=True):
     index_str = request.form.get("index") if apply_filter else None
     range_str = request.form.get("range") if apply_filter else None
     
-    current_app.logger.info("Request received: %s", request.args)
+    current_app.logger.info("Request received: file=%s, iface=%s", file, iface)
+
+    if not file:
+        raise ValueError("Missing file parameter")
+    
+    # Validate file path securely
+    file_path, error = validate_file_path(file)
+    if error:
+        raise ValueError("Invalid file path")
+    
+    if not os.path.isfile(file_path):
+        raise ValueError("File not found")
 
     mapped_rewrite_ips = {}
     mapped_rewrite_macs = {}
@@ -30,7 +53,11 @@ def setup_request(request, apply_filter=True):
     if rewrite_macs and len(rewrite_macs) > 0:
         mapped_rewrite_macs = parse_rewrite_json(rewrite_macs)
 
-    packets = read_pcap(UPLOAD_FOLDER + file)
+    try:
+        packets = read_pcap(file_path)
+    except Exception as e:
+        current_app.logger.error("Error reading PCAP file: %s", str(e))
+        raise ValueError(f"Error reading PCAP file: {str(e)}")
     total_packets = len(packets)
     
     # Filter packets by index or range (only if apply_filter is True)

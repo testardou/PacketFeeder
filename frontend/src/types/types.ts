@@ -14,6 +14,7 @@ export type ReplayProgressType = {
   size: number;
   remaining_time: number;
   next_packet: number;
+  packet_count: number;
 };
 
 export type RunStatusType = {

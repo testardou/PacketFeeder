@@ -21,9 +21,7 @@ from backend.extension import socketio
 
 # Absolute path du dossier parent (PacketFeeder)
 PARENT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(PARENT_DIR)
-
-print("DEBUG PYTHONPATH =", sys.path) 
+sys.path.append(PARENT_DIR) 
 
 app = Flask(__name__)
 

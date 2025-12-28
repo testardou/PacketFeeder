@@ -34,8 +34,24 @@ def replay_loop_common(packets, iface, sid, mode="fastest", emit_progress=True):
     if mode == "fastest":
         try:
             send_pcap(packets, iface)
+            logger.info(f"Successfully sent {total} packets in fastest mode for SID {sid}")
+        except (OSError, ValueError) as e:
+            error_msg = f"Failed to send packets in fastest mode for SID {sid} on interface {iface}: {e}"
+            logger.error(error_msg)
+            socketio.emit("replay_error", {
+                "sid": sid,
+                "error": str(e),
+                "message": error_msg
+            }, room=sid, namespace="/realtime")
+            raise
         except Exception as e:
-            logger.error(f"Error during fastest replay for SID {sid}: {e}")
+            error_msg = f"Unexpected error during fastest replay for SID {sid}: {e}"
+            logger.error(error_msg, exc_info=True)
+            socketio.emit("replay_error", {
+                "sid": sid,
+                "error": str(e),
+                "message": error_msg
+            }, room=sid, namespace="/realtime")
             raise
         finally:
             running_status[sid] = False
@@ -70,7 +86,8 @@ def replay_loop_common(packets, iface, sid, mode="fastest", emit_progress=True):
                     "timestamp": timestamp,
                     "size": len(pkt),
                     "remaining_time": remaining_time,
-                    "next_packet": next_packet_delay
+                    "next_packet": next_packet_delay,
+                    "packet_count": total
                 }, namespace="/realtime")
             
             # Handle timing based on mode
@@ -91,8 +108,17 @@ def replay_loop_common(packets, iface, sid, mode="fastest", emit_progress=True):
             # For "faster" mode, no sleep needed
             
             # Send the packet
-            send_pcap(pkt, iface)
-            packets_sent += 1
+            try:
+                send_pcap(pkt, iface)
+                packets_sent += 1
+            except (OSError, ValueError) as e:
+                logger.error(f"Failed to send packet {i} for SID {sid} on interface {iface}: {e}")
+                # Continue with next packet instead of stopping entire replay
+                continue
+            except Exception as e:
+                logger.error(f"Unexpected error sending packet {i} for SID {sid}: {e}")
+                # Re-raise unexpected errors
+                raise
             
             # Check again after sending packet
             if not should_run.get(sid, False):
@@ -101,8 +127,25 @@ def replay_loop_common(packets, iface, sid, mode="fastest", emit_progress=True):
             
             prev_timestamp = timestamp
             
+    except (OSError, ValueError) as e:
+        error_msg = f"Failed to send packets during replay for SID {sid} on interface {iface}: {e}"
+        logger.error(error_msg)
+        socketio.emit("replay_error", {
+            "sid": sid,
+            "error": str(e),
+            "message": error_msg,
+            "packets_sent": packets_sent
+        }, room=sid, namespace="/realtime")
+        raise
     except Exception as e:
-        logger.error(f"Error during replay for SID {sid}: {e}")
+        error_msg = f"Unexpected error during replay for SID {sid}: {e}"
+        logger.error(error_msg, exc_info=True)
+        socketio.emit("replay_error", {
+            "sid": sid,
+            "error": str(e),
+            "message": error_msg,
+            "packets_sent": packets_sent
+        }, room=sid, namespace="/realtime")
         raise
     finally:
         # Always update status when done
