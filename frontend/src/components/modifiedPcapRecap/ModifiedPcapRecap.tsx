@@ -22,7 +22,7 @@ export const ModifiedPcapRecap = ({
       <CardHeader className="bg-muted/50">
         <CardTitle className="text-base font-semibold">{cardTitle}</CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent>
         <ScrollArea className="h-72 rounded-md border">
           <div className="p-4">
             {rewriteValues?.map((element) => (

@@ -1,8 +1,8 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRecap";
 import { ProtocolData } from "./ProtocolData";
+import { SelectedProtocolModifications } from "./SelectedProtocolModifications";
 import type { PcapInfoType, RewriteValues } from "@/types/types";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useState } from "react";
@@ -115,121 +115,6 @@ export const PcapProtocolsScrollArea = ({
     );
   }
 
-  // Check if selected protocol has modifications
-  const getSelectedProtocolModifications = () => {
-    if (!selectedProtocol) return null;
-
-    switch (selectedProtocol) {
-      case "ip":
-        if (
-          rewriteValues.rewriteIps &&
-          rewriteValues.rewriteIps.length > 0 &&
-          rewriteValues.setRewriteIps
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified IPs"
-              rewriteValues={rewriteValues.rewriteIps}
-              setRewriteValues={rewriteValues.setRewriteIps}
-            />
-          );
-        }
-        return null;
-      case "mac":
-        if (
-          rewriteValues.rewriteMacs &&
-          rewriteValues.rewriteMacs.length > 0 &&
-          rewriteValues.setRewriteMacs
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified MACs"
-              rewriteValues={rewriteValues.rewriteMacs}
-              setRewriteValues={rewriteValues.setRewriteMacs}
-            />
-          );
-        }
-        return null;
-      case "ipv6":
-        if (
-          rewriteValues.rewriteIpv6s &&
-          rewriteValues.rewriteIpv6s.length > 0 &&
-          rewriteValues.setRewriteIpv6s
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified IPv6s"
-              rewriteValues={rewriteValues.rewriteIpv6s}
-              setRewriteValues={rewriteValues.setRewriteIpv6s}
-            />
-          );
-        }
-        return null;
-      case "arp":
-        if (
-          rewriteValues.rewriteArpIps &&
-          rewriteValues.rewriteArpIps.length > 0 &&
-          rewriteValues.setRewriteArpIps
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified ARP IPs"
-              rewriteValues={rewriteValues.rewriteArpIps}
-              setRewriteValues={rewriteValues.setRewriteArpIps}
-            />
-          );
-        }
-        return null;
-      case "dns":
-        if (
-          rewriteValues.rewriteDnsDomains &&
-          rewriteValues.rewriteDnsDomains.length > 0 &&
-          rewriteValues.setRewriteDnsDomains
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified DNS Domains"
-              rewriteValues={rewriteValues.rewriteDnsDomains}
-              setRewriteValues={rewriteValues.setRewriteDnsDomains}
-            />
-          );
-        }
-        return null;
-      case "tcp":
-        if (
-          rewriteValues.rewriteTcpPorts &&
-          rewriteValues.rewriteTcpPorts.length > 0 &&
-          rewriteValues.setRewriteTcpPorts
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified TCP Ports"
-              rewriteValues={rewriteValues.rewriteTcpPorts}
-              setRewriteValues={rewriteValues.setRewriteTcpPorts}
-            />
-          );
-        }
-        return null;
-      case "udp":
-        if (
-          rewriteValues.rewriteUdpPorts &&
-          rewriteValues.rewriteUdpPorts.length > 0 &&
-          rewriteValues.setRewriteUdpPorts
-        ) {
-          return (
-            <ModifiedPcapRecap
-              cardTitle="Modified UDP Ports"
-              rewriteValues={rewriteValues.rewriteUdpPorts}
-              setRewriteValues={rewriteValues.setRewriteUdpPorts}
-            />
-          );
-        }
-        return null;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="flex flex-row gap-4 w-fit">
       <Card className="w-fit border-2 bg-muted/50 p-4">
@@ -287,7 +172,12 @@ export const PcapProtocolsScrollArea = ({
       )}
 
       {/* Modifications Recap - Only for selected protocol */}
-      {selectedProtocol && getSelectedProtocolModifications()}
+      {selectedProtocol && (
+        <SelectedProtocolModifications
+          selectedProtocol={selectedProtocol}
+          rewriteValues={rewriteValues}
+        />
+      )}
     </div>
   );
 };

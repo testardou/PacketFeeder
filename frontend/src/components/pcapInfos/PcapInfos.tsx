@@ -31,13 +31,6 @@ export const PcapInfos = ({ pcapInfos, rewriteValues }: IPcapInfosProps) => {
             pcapInfos={pcapInfos}
             rewriteValues={rewriteValues}
           />
-          {/* <PcapRewriteInfos
-            pcapInfos={pcapInfos}
-            rewriteIps={rewriteIps}
-            rewriteMacs={rewriteMacs}
-            setRewriteIps={setRewriteIps}
-            setRewriteMacs={setRewriteMacs}
-          /> */}
         </div>
       )}
     </div>
