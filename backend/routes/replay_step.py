@@ -26,7 +26,8 @@ def calculate_indexes(index, total):
 @replay_step_bp.response(200, ReplayStepSchema)
 
 def replay_step():
-    packets, iface, _ = setup_request(request)
+    # Don't apply filter in step mode, as index is used for step-by-step navigation
+    packets, iface, _ = setup_request(request, apply_filter=False)
     index = int(request.form.get("index"))
     total = len(packets)
     progress = float((index + 1) / total * 100.0)

@@ -15,7 +15,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @rewrite_pcap_file_bp.route("/rewrite-pcap-file/", methods=["POST"])
 def rewrite_pcap_file():
-    print(request.form.get("file", ""))
     file = request.form.get("file", "")
     filename = request.form.get('filename')
     if len(file) == "":

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -17,6 +18,13 @@ export const SelectInterface = ({
   selectedInterface,
   setSelectedInterface,
 }: ISelectInterfaceProps) => {
+  // Auto-select first interface when interfaces are loaded and none is selected
+  useEffect(() => {
+    if (ifaces && ifaces.length > 0 && !selectedInterface) {
+      setSelectedInterface(ifaces[0]);
+    }
+  }, [ifaces, selectedInterface, setSelectedInterface]);
+
   return (
     <Select
       onValueChange={(value: string) => setSelectedInterface(value)}

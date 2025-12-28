@@ -13,6 +13,7 @@ import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
+import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 
 export const ReplayPage = () => {
   const [selectFile, setSelectFile] = useState<string | null>(null);
@@ -35,6 +36,8 @@ export const ReplayPage = () => {
     []
   );
   const [stepIndex, setStepIndex] = useState<number>(0);
+  const [filterIndex, setFilterIndex] = useState<number | null>(null);
+  const [filterRange, setFilterRange] = useState<string>("");
 
   const rewriteValues: RewriteValues = {
     rewriteIps,
@@ -62,6 +65,8 @@ export const ReplayPage = () => {
     setRewriteTcpPorts([]);
     setRewriteUdpPorts([]);
     setStepIndex(0);
+    setFilterIndex(null);
+    setFilterRange("");
   };
 
   const { data: ifaces_list, isLoading } = useQuery<InterfacesType>({
@@ -130,6 +135,12 @@ export const ReplayPage = () => {
           />
           <ReplayModes selected={selectedMode} setSelected={setSelectedMode} />
         </div>
+        <ReplayFilter
+          filterIndex={filterIndex}
+          setFilterIndex={setFilterIndex}
+          filterRange={filterRange}
+          setFilterRange={setFilterRange}
+        />
         <RunReplay
           selectedInterface={selectedInterface}
           rewriteIps={rewriteIps}
@@ -138,6 +149,8 @@ export const ReplayPage = () => {
           setStepIndex={setStepIndex}
           selectedMode={selectedMode}
           selectFile={selectFile}
+          filterIndex={filterIndex}
+          filterRange={filterRange}
         />
       </div>
     </div>

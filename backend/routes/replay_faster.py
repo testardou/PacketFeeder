@@ -1,37 +1,15 @@
 from backend.replay.setup_request import setup_request
+from backend.replay.replay_loop import replay_loop_common
 from flask import request, jsonify
 from backend.extension import socketio
-from backend.sockets.realtime import should_run
-from core.utils.send_pcap import send_pcap
 from flask_smorest import Blueprint
 
 
 replay_faster_bp = Blueprint("replay_faster", __name__)
 
 def replay_loop(packets, iface, sid):
-    total = len(packets)
-    first_timestamp = float(packets[0].time)
-    last_timestamp = float(packets[-1].time)
-    prev_timestamp = first_timestamp
-
-    for i, pkt in enumerate(packets):
-        if not should_run.get(sid, False):
-            print(f"Replay halted for SID {sid}")
-            break
-        timestamp = float(pkt.time)
-        if timestamp > prev_timestamp:
-            progress = float((i + 1) / total * 100.0)
-            socketio.emit("replay_progress", {
-                "progress": progress,
-                "index": i,
-                "timestamp": timestamp,
-                "size": len(pkt),
-                "remaining_time": last_timestamp - prev_timestamp,
-                "next_packet": timestamp - prev_timestamp
-            }, namespace="/realtime")
-            send_pcap(pkt, iface)
-            prev_timestamp = timestamp
-    socketio.emit("run_status", {"sid": sid, "running": False}, room=sid, namespace="/realtime")
+    """Replay loop for faster mode without timestamp delays."""
+    replay_loop_common(packets, iface, sid, mode="faster", emit_progress=True)
 
 
 @replay_faster_bp.route("/api/replay_faster/", methods=["POST"])

@@ -18,6 +18,8 @@ interface IRunReplayProps {
   setStepIndex: (index: number) => void;
   selectedMode: ReplayModeType;
   selectFile: string | null;
+  filterIndex: number | null;
+  filterRange: string;
 }
 
 export const RunReplay = ({
@@ -28,8 +30,10 @@ export const RunReplay = ({
   setStepIndex,
   selectedMode,
   selectFile,
+  filterIndex,
+  filterRange,
 }: IRunReplayProps) => {
-  const [clientSid, setClientSid] = useState(null);
+  const [clientSid, setClientSid] = useState<string | null>(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
   const [running, setRunning] = useState(false);
   const socket = io("http://localhost:5000/realtime", {
@@ -37,9 +41,6 @@ export const RunReplay = ({
   });
 
   useEffect(() => {
-    console.log("Initialisation listeners...");
-
-    const connected = () => console.log("WS connecté !");
     const replayProgress = (data: ReplayProgressType) => {
       setSocketData(data);
     };
@@ -47,19 +48,25 @@ export const RunReplay = ({
     const handleStatus = (data: RunStatusType) => {
       setRunning(data.running);
       if (!data.running) setSocketData(null);
-      console.log("RUNNIG", data);
     };
 
-    socket.on("connect", connected);
-    socket.on("sid", ({ sid }) => {
-      console.log("My SID:", sid);
+    const handleConnect = () => {
+      // Request current status when connecting
+      socket.emit("get_status");
+    };
+
+    const handleSid = ({ sid }: { sid: string }) => {
       setClientSid(sid);
-    });
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("sid", handleSid);
     socket.on("replay_progress", replayProgress);
     socket.on("run_status", handleStatus);
 
     return () => {
-      socket.off("connect", connected);
+      socket.off("connect", handleConnect);
+      socket.off("sid", handleSid);
       socket.off("replay_progress", replayProgress);
       socket.off("run_status", handleStatus);
     };
@@ -84,7 +91,17 @@ export const RunReplay = ({
       formData.append("sid", clientSid ?? "");
       formData.append("rewriteIps", JSON.stringify(rewriteIps));
       formData.append("rewriteMacs", JSON.stringify(rewriteMacs));
-      formData.append("index", stepIndex.toString());
+
+      // For step mode, use stepIndex; otherwise use filterIndex or filterRange
+      if (selectedMode === "step") {
+        formData.append("index", stepIndex.toString());
+      } else {
+        if (filterIndex !== null) {
+          formData.append("index", filterIndex.toString());
+        } else if (filterRange !== "") {
+          formData.append("range", filterRange);
+        }
+      }
 
       const res = await fetch(
         `http://localhost:5000/api/${urls[selectedMode]}/`,

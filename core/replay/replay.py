@@ -31,6 +31,15 @@ def add_parser(subparsers):
         nargs="+",
         help="Rewrite MAC addresses. Format: old:new ... Example: --rewrite-mac aa:bb:cc:dd:ee:ff:11:22:33 00:11:22:33:44:55:aa:bb:cc"
     )
+    parser.add_argument(
+        "--index",
+        type=int,
+        help="Replay only a specific packet by index (0-based). Example: --index 5"
+    )
+    parser.add_argument(
+        "--range",
+        help="Replay a range of packets by index (0-based). Format: start-end. Example: --range 5-10"
+    )
     parser.set_defaults(func=run)
 
 
@@ -39,7 +48,49 @@ def run(args):
     print(f"[Replay] Interface: {args.iface}")
     print(f"[Replay] Speed: {args.speed}")
     packets = read_pcap(args.pcap)
-    print(f"[Replay] Number of packets: {len(packets)}")
+    total_packets = len(packets)
+    print(f"[Replay] Total packets in PCAP: {total_packets}")
+
+    if not packets:
+        return
+    
+    # Validate index/range options
+    if args.index is not None and args.range is not None:
+        print(f"[Replay] Error: Cannot use both --index and --range options")
+        return
+    
+    # Filter packets by index or range
+    if args.index is not None:
+        if args.index < 0 or args.index >= total_packets:
+            print(f"[Replay] Error: Index {args.index} is out of range (0-{total_packets-1})")
+            return
+        packets = [packets[args.index]]
+        print(f"[Replay] Filtering: replaying only packet at index {args.index}")
+    elif args.range is not None:
+        try:
+            start_str, end_str = args.range.split("-", 1)
+            start = int(start_str.strip())
+            end = int(end_str.strip())
+            
+            if start < 0 or end >= total_packets:
+                print(f"[Replay] Error: Range {start}-{end} is out of bounds (0-{total_packets-1})")
+                return
+            if start > end:
+                print(f"[Replay] Error: Start index {start} must be <= end index {end}")
+                return
+            
+            packets = packets[start:end+1]
+            print(f"[Replay] Filtering: replaying packets from index {start} to {end} ({len(packets)} packets)")
+        except ValueError:
+            print(f"[Replay] Error: Invalid range format '{args.range}'. Use format: start-end (e.g., 5-10)")
+            return
+    
+    print(f"[Replay] Number of packets to replay: {len(packets)}")
+    
+    if not packets:
+        print(f"[Replay] No packets to replay")
+        return
+    
     first_timestamp = float(packets[0].time)
     prev_timestamp = first_timestamp
     ts = float(packets[-1].time) - first_timestamp
@@ -49,8 +100,6 @@ def run(args):
     s = int(ts % 60)
     ms = int((ts % 1) * 1000)
 
-    if not packets:
-        return
     try:
         ip_map = parse_mapping(args.rewrite_ip) if args.rewrite_ip else {}
         mac_map = parse_mapping(args.rewrite_mac) if args.rewrite_mac else {}
@@ -62,10 +111,10 @@ def run(args):
             print(f"[Replay] Total replay time: {d}d {h:02d}h {m:02d}m {s:02d}s {ms:03d}ms")
             for pkt in tqdm(packets, desc="Replaying PCAP"):
                 timestamp = float(pkt.time)
-                if timestamp > first_timestamp:
+                if timestamp > prev_timestamp:
                     time.sleep(timestamp - prev_timestamp)
-                    prev_timestamp = timestamp
                 send_pcap(pkt, iface=args.iface)
+                prev_timestamp = timestamp
 
         elif args.speed == 1:
             for pkt in tqdm(packets, desc="Replaying PCAP"):
