@@ -43,7 +43,9 @@ export const ReplayStepProgress = ({
           <CardHeader>
             <CardTitle>Packet Index</CardTitle>
           </CardHeader>
-          <CardContent>{data?.index ?? "-"}</CardContent>
+          <CardContent>
+            {data?.index ?? "-"} / {data?.packet_count ?? "-"}
+          </CardContent>
         </Card>
         <Card className="flex-1">
           <CardHeader>
@@ -58,7 +60,12 @@ export const ReplayStepProgress = ({
           <CardContent>{data?.size ? `${data?.size} bytes` : "-"}</CardContent>
         </Card>
       </div>
-      <PacketDetails data={data?.parsed_packet} selectedFile={selectFile} />
+      <PacketDetails
+        data={data?.parsed_packet}
+        selectedFile={selectFile}
+        highlightedIndex={data?.index}
+        hidePagination={true}
+      />
     </div>
   );
 };

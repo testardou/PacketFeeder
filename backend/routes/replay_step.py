@@ -10,7 +10,7 @@ from flask_smorest import Blueprint
 replay_step_bp = Blueprint("replay_step", __name__, url_prefix="/api")
 
 def calculate_indexes(index, total):
-    WINDOW_SIZE = 6
+    WINDOW_SIZE = 5
     OFFSET = 2
 
     start = index - OFFSET
