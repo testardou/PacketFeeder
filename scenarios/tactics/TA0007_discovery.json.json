@@ -1,0 +1,17 @@
+{
+  "mitre": {
+    "tactic_id": "TA0043",
+    "tactic_name": "Reconnaissance",
+    "url": "https://attack.mitre.org/tactics/TA0043/"
+  },
+
+  "description": "Reconnaissance consists of techniques adversaries use to gather information about the victim network, hosts, and services prior to initial access.",
+
+  "techniques": ["T1046", "T1016", "T1595", "T1590"],
+
+  "metadata": {
+    "domain": "enterprise",
+    "source": "MITRE ATT&CK",
+    "version": "1.0"
+  }
+}

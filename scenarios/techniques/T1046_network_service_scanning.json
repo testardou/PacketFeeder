@@ -1,0 +1,84 @@
+{
+  "mitre": {
+    "technique_id": "T1046",
+    "technique_name": "Network Service Scanning",
+    "url": "https://attack.mitre.org/techniques/T1046/",
+    "tactics": ["TA0043"]
+  },
+
+  "description": "Adversaries scan victim networks to identify open ports and available services that can be targeted for exploitation.",
+
+  "artifacts": [
+    "multiple TCP SYN packets",
+    "incomplete TCP handshakes",
+    "sequential or patterned destination ports",
+    "RST or SYN-ACK responses",
+    "UDP probes with ICMP unreachable replies"
+  ],
+
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1046-ssh-22-open",
+        "file": "pcaps/techniques/T1046/scan_tcp_22_ssh_open.pcap",
+        "name": "SSH scan (open)",
+        "description": "Targeted scan of TCP/22 showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        }
+      },
+      {
+        "id": "t1046-ssh-22-filtered",
+        "file": "pcaps/techniques/T1046/scan_tcp_22_ssh_filtered.pcap",
+        "name": "SSH scan (filtered)",
+        "description": "Targeted scan of TCP/22 with no responses (DROP).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        }
+      },
+      {
+        "id": "t1046-web-80-443",
+        "file": "pcaps/techniques/T1046/scan_tcp_80_443_web.pcap",
+        "name": "Web scan (80/443)",
+        "description": "Targeted scan of common web ports with mixed responses (SYN-ACK/RST).",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80, 443]
+        }
+      },
+      {
+        "id": "t1046-ntp-udp-123",
+        "file": "pcaps/techniques/T1046/scan_udp_123_ntp.pcap",
+        "name": "NTP UDP scan (123)",
+        "description": "UDP scan of port 123; responses may be ICMP unreachable or none.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "udp",
+          "ports": [123]
+        }
+      },
+      {
+        "id": "t1046-ssh-22-slow",
+        "file": "pcaps/techniques/T1046/scan_slow_tcp_22_ssh.pcap",
+        "name": "SSH scan (slow)",
+        "description": "Low-and-slow scan of TCP/22 intended to evade rate-based detection.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        }
+      }
+    ]
+  },
+
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
