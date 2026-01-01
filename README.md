@@ -178,6 +178,18 @@ OVS MIRROR (on lab-ovs):
 
 ## Roadmap
 
+### Lab
+
+- [x] KVM/libvirt + Open vSwitch host (bridges: `lab-ovs`, `ids-ovs`)
+- [x] pfSense routing/NAT on `lab-ovs` (`10.10.10.1/24`)
+- [x] DHCP/DNS on pfSense (`packetfeeder.lab`) with reservations
+  - attacker: `10.10.10.10`
+  - victim: `10.10.10.20`
+- [x] Broker VM up (MGMT + CAPTURE + FEED)
+- [x] Selective OVS mirroring on `lab-ovs` (attacker/victims → broker CAPTURE)
+- [ ] Add more victims/workloads and expand mirror selection
+- [ ] IDS engines on `ids-ovs` (Suricata/Zeek/Snort) + broker fan-out/redistribution
+
 ### PCAP File Management
 
 - [x] PCAP upload, listing, and deletion
