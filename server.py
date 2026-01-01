@@ -16,6 +16,7 @@ from backend.routes.upload_pcap_file import upload_pcap_file_bp
 from backend.routes.delete_pcap_file import delete_pcap_file_bp
 from backend.routes.details_packets_pcap import details_packets_pcap_bp
 from backend.routes.packet_payload import packet_payload_bp
+from backend.routes.get_scenarios import get_scenarios_bp
 from backend.sockets.realtime import ReplayNamespace
 from backend.extension import socketio
 
@@ -55,6 +56,7 @@ api.register_blueprint(get_interfaces_bp)
 api.register_blueprint(infos_pcap_bp)
 api.register_blueprint(details_packets_pcap_bp)
 api.register_blueprint(packet_payload_bp)
+api.register_blueprint(get_scenarios_bp)
 
 ### POST ###
 api.register_blueprint(replay_realtime_bp)

@@ -1,5 +1,5 @@
 from flask import current_app
-from backend.utils.validate_file_path import validate_file_path
+from backend.utils.validate_file_path import validate_file_path_auto
 from backend.utils.parse_rewrite_json import parse_rewrite_json
 from core.replay.rewrite_packets import rewrite_packets
 from core.utils.read_pcap import read_pcap
@@ -37,13 +37,10 @@ def setup_request(request, apply_filter=True):
     if not file:
         raise ValueError("Missing file parameter")
     
-    # Validate file path securely
-    file_path, error = validate_file_path(file)
+    # Validate file path securely (handles both UPLOAD_FOLDER files and scenario datasets)
+    file_path, error = validate_file_path_auto(file)
     if error:
         raise ValueError("Invalid file path")
-    
-    if not os.path.isfile(file_path):
-        raise ValueError("File not found")
 
     mapped_rewrite_ips = {}
     mapped_rewrite_macs = {}

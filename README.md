@@ -85,6 +85,97 @@ npm install
 npm run dev
 ```
 
+## KVM/libvirt + Open vSwitch Lab (PacketFeeder)
+
+### Goal
+
+This lab is designed to generate/replay traffic on an isolated network and capture it via a dedicated **broker** (no IDS engine installed on it). Traffic is duplicated using **selective OVS mirroring** (attacker + victims) to the broker, and will later be redistributed to detection engines (Suricata/Zeek/Snort) on a dedicated network.
+
+### Host components
+
+- Debian host: KVM/libvirt + Open vSwitch.
+- Bridges:
+  - `br0`: **MGMT/Internet** (home LAN `192.168.1.0/24`, gateway `192.168.1.254`)
+  - `lab-ovs`: **LAB** network (scenario traffic `10.10.10.0/24`)
+  - `ids-ovs`: **IDS feed** network (broker output to engines)
+
+### VMs and NICs
+
+- **pfSense**
+  - WAN: `br0` (Internet access via `192.168.1.254`)
+  - LAN: `lab-ovs` (`10.10.10.1/24`) + NAT
+- **attacker**
+  - MGMT: `br0` (administration)
+  - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.10`, default route via pfSense)
+- **victim (debian-1)**
+  - LAB only: `lab-ovs` (**DHCP reservation** `10.10.10.20`, no MGMT; reachable via SSH jump from attacker)
+- **broker**
+  - MGMT: `br0`
+  - CAPTURE: `lab-ovs` (UP + PROMISC, **no IP**)
+  - FEED: `ids-ovs` (traffic redistribution to IDS engines)
+
+### DNS / Domain
+
+- Lab domain: `packetfeeder.lab`
+- DNS is provided by pfSense (Unbound) with DHCP lease registration.
+  - Examples: `attacker.packetfeeder.lab` → `10.10.10.10`, `victim.packetfeeder.lab` → `10.10.10.20`
+
+### Capture (OVS mirroring)
+
+- A **selective OVS mirror** is configured on `lab-ovs`:
+  - `select-src-port` / `select-dst-port`: ports of the VMs to observe (attacker + victim)
+  - `output-port`: broker `lab-ovs` port (CAPTURE NIC)
+- Validation: run `tcpdump` on the broker capture interface.
+
+### Schema
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                          MGMT / HOME LAN  (192.168.1.0/24)    GW/Internet: 192.168.1.254                     │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+============================================== br0  (host bridge / MGMT) ======================================
+          |                                   |                                   |
+          |                                   |                                   |
+┌─────────▼────────────────────┐      ┌─────────▼─────────────────────┐      ┌─────────▼──────────────────┐
+│          pfSense VM          │      │         attacker VM           │      │          broker VM         │
+│------------------------------│      │-------------------------666---│      │----------------------------│
+│ WAN NIC  (br0) : DHCP        │      │ MGMT NIC (br0): 192.168…      │      │ MGMT NIC (br0): DHCP       │
+│ LAN NIC (lab-ovs): 10.10.10.1│      │ LAB  NIC (lab-ovs):10.10.10.10│      │ CAP  NIC (lab-ovs): NO IP  │
+│ NAT: LAN -> WAN -> br0       │      │ default -> 10.10.10.1         │      │ FEED NIC (ids-ovs): (future)│
+└─────────┬────────────────────┘      └─────────┬─────────────────────┘      └─────────┬──────────────────┘
+          |                                     |                                      |
+          |                                     |                                      |
+
+============================= lab-ovs  (OVS bridge / LAB 10.10.10.0/24 / packetfeeder.lab) =============================
+          |                                     |                                      |
+          |                                     |                                      |
+          |                                     |                                      |
+          |                            ┌────────▼──────────────────┐                   |
+          |                            │     victim VM (debian-1)  │                   |
+          |                            │---------------------------│                   |
+          |                            │ LAB NIC (lab-ovs):10.10.10.20│                |
+          |                            │ default -> 10.10.10.1      │                  |
+          |                            └────────────────────────────┘                  |
+          |                                     |                                      |
+          |                                     |                                      |
+          |                                     |                                      |
+
+============================================== ids-ovs  (OVS bridge / IDS FEED) ===============================================
+                                                                         |
+                                                                         |
+                                                               ┌─────────▼──────────────────┐
+                                                               │     IDS engines (future)   │
+                                                               │  Suricata / Zeek / Snort   │
+                                                               └────────────────────────────┘
+
+
+OVS MIRROR (on lab-ovs):
+  attacker(LAB) + victim(LAB)  ----------------------------------------------->  broker(CAP NIC)
+  (select-src-port/select-dst-port)                                               (output-port)
+
+```
+
 ## Roadmap
 
 ### PCAP File Management

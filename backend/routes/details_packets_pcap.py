@@ -1,4 +1,4 @@
-from backend.utils.validate_file_path import validate_file_path
+from backend.utils.validate_file_path import validate_file_path_auto
 from backend.schemas.packet_details import PacketDetailsSchema
 from core.pcap_infos.parse_packet import parse_packet
 from flask_smorest import Blueprint
@@ -33,14 +33,10 @@ def details_packets_pcap():
         current_app.logger.warning("No file parameter provided")
         return jsonify({"error": "No file specified"}), 400
     
-    # Validate file path securely
-    file_path, error = validate_file_path(file)
+    # Validate file path securely (handles both UPLOAD_FOLDER files and scenario datasets)
+    file_path, error = validate_file_path_auto(file)
     if error:
         return error
-
-    if not os.path.isfile(file_path):
-        current_app.logger.warning("File not found: %s", file_path)
-        return jsonify({"error": "File not found"}), 404
     
     try:
         packets = read_pcap(file_path)

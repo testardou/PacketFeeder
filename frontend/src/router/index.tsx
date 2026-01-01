@@ -3,8 +3,9 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 // import Layout from "@/layouts/Layout";
 import Replay from "@/pages/Replay";
 import Live from "@/pages/Live";
+import Scenarios from "@/pages/Scenarios";
 import Layout from "../layouts/Layout";
-import { Files } from "@/components/files/Files";
+import { Files } from "@/pages/Files";
 
 export const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "Scenarios",
-        element: <Replay />,
+        element: <Scenarios />,
       },
       {
         path: "live",
