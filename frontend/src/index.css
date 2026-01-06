@@ -1,4 +1,7 @@
-@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+/* Force la base de scan sur la racine du frontend */
+@import "tailwindcss" source("../");
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
