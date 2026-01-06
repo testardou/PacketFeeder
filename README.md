@@ -89,7 +89,7 @@ npm run dev
 
 ### Goal
 
-This lab is designed to generate/replay traffic on an isolated network and capture it via a dedicated **broker** (no IDS engine installed on it). Traffic is duplicated using **selective OVS mirroring** (attacker + victims) to the broker, and will later be redistributed to detection engines (Suricata/Zeek/Snort) on a dedicated network.
+This lab generates/replays traffic on an isolated network (lab-ovs) and captures it via a dedicated broker (no IDS engine installed). Traffic is copied with a persistent OVS mirror from lab-ovs to ids-ovs (via patch ports), then duplicated to the broker and ClearNDR using OpenFlow fanout on ids-ovs, with anti-return drop rules to prevent reinjection into the lab.
 
 ### Host components
 
@@ -168,7 +168,7 @@ This lab is designed to generate/replay traffic on an isolated network and captu
                      |                          |                          |
                      |                          |                          |
         ┌────────────▼─────────────┐  ┌─────────▼──────────────┐  ┌────────▼────────────────┐
-        │       broker VM          │  │       SELKS VM         │  │    Zeek/Snort VM        │
+        │       broker VM          │  │       ClearNDR VM      │  │    Zeek/Snort VM        │
         │--------------------------│  │------------------------│  │-------------------------│
         │ SENSOR NIC (ids-ovs):    │  │ SENSOR NIC (ids-ovs):  │  │ SENSOR NIC (ids-ovs):   │
         │ NO IP / promisc / PCAP   │  │ NO IP / promisc        │  │ NO IP / promisc         │
@@ -190,10 +190,11 @@ OpenFlow on ids-ovs:
 - [x] DHCP/DNS on pfSense (`packetfeeder.lab`) with reservations
   - attacker: `10.10.10.10`
   - victim: `10.10.10.20`
-- [x] Broker VM up (MGMT + CAPTURE + FEED)
+- [x] Broker VM up
 - [x] Selective OVS mirroring on `lab-ovs` (attacker/victims → broker CAPTURE)
 - [ ] Add more victims/workloads and expand mirror selection
-- [ ] IDS engines on `ids-ovs` (Suricata/Zeek/Snort) + broker fan-out/redistribution
+- [x] IDS engines on `ids-ovs` (ClearNDR)
+- [ ] IDS engines on `ids-ovs` (Suricata/Zeek/Snort)
 
 ### PCAP File Management
 
