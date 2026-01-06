@@ -5,13 +5,16 @@ import type {
   InterfacesType,
   NewValuesPcapType,
   PacketDetailsType,
+  PcapInfoType,
   ReplayModeType,
+  RewriteValues,
 } from "@/types/types";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import {
   Select,
   SelectContent,
@@ -97,13 +100,46 @@ export default function Scenarios() {
   );
   const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
   const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
+  const [rewriteIpv6s, setRewriteIpv6s] = useState<NewValuesPcapType[]>([]);
+  const [rewriteArpIps, setRewriteArpIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteDnsDomains, setRewriteDnsDomains] = useState<
+    NewValuesPcapType[]
+  >([]);
+  const [rewriteTcpPorts, setRewriteTcpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
+  const [rewriteUdpPorts, setRewriteUdpPorts] = useState<NewValuesPcapType[]>(
+    []
+  );
   const [stepIndex, setStepIndex] = useState<number>(0);
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState<string>("");
 
+  const rewriteValues: RewriteValues = {
+    rewriteIps,
+    setRewriteIps,
+    rewriteMacs,
+    setRewriteMacs,
+    rewriteIpv6s,
+    setRewriteIpv6s,
+    rewriteArpIps,
+    setRewriteArpIps,
+    rewriteDnsDomains,
+    setRewriteDnsDomains,
+    rewriteTcpPorts,
+    setRewriteTcpPorts,
+    rewriteUdpPorts,
+    setRewriteUdpPorts,
+  };
+
   const resetStates = () => {
     setRewriteIps([]);
     setRewriteMacs([]);
+    setRewriteIpv6s([]);
+    setRewriteArpIps([]);
+    setRewriteDnsDomains([]);
+    setRewriteTcpPorts([]);
+    setRewriteUdpPorts([]);
     setStepIndex(0);
     setFilterIndex(null);
     setFilterRange("");
@@ -232,6 +268,19 @@ export default function Scenarios() {
     },
   });
 
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(
+        `http://localhost:5000/api/infos-pcap?file=${file}`
+      );
+      if (!res.ok) throw new Error("API Error");
+      return res.json();
+    },
+    onSuccess: () => {
+      resetStates();
+    },
+  });
+
   const handleTacticChange = (tacticFile: string) => {
     setSelectedTactic(tacticFile);
     setSelectedTechnique(null);
@@ -249,10 +298,12 @@ export default function Scenarios() {
     if (fileName !== selectFile) {
       resetStates();
       detailsMutation.reset();
+      infosMutation.reset();
     }
     setSelectFile(fileName);
     if (fileName) {
       detailsMutation.mutate(fileName);
+      infosMutation.mutate(fileName);
     }
   };
 
@@ -643,6 +694,8 @@ export default function Scenarios() {
         <div className="flex flex-col gap-5">
           <h2 className="text-2xl">Configuration</h2>
 
+          <PcapInfos pcapInfos={infosMutation} rewriteValues={rewriteValues} />
+
           <PacketDetails
             selectedFile={selectFile}
             data={detailsMutation?.data}
@@ -669,6 +722,11 @@ export default function Scenarios() {
             selectedInterface={selectedInterface}
             rewriteIps={rewriteIps}
             rewriteMacs={rewriteMacs}
+            rewriteIpv6s={rewriteIpv6s}
+            rewriteArpIps={rewriteArpIps}
+            rewriteDnsDomains={rewriteDnsDomains}
+            rewriteTcpPorts={rewriteTcpPorts}
+            rewriteUdpPorts={rewriteUdpPorts}
             stepIndex={stepIndex}
             setStepIndex={setStepIndex}
             selectedMode={selectedMode}

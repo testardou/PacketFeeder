@@ -20,53 +20,9 @@
     "pcaps": [
       {
         "id": "t1046-ssh-22-open",
-        "file": "pcaps/techniques/T1046/scan_tcp_22_ssh_open.pcap",
-        "name": "SSH scan (open)",
+        "file": "pcaps/techniques/T1046/nmap_scan_22.pcap",
+        "name": "SSH scan",
         "description": "Targeted scan of TCP/22 showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [22]
-        }
-      },
-      {
-        "id": "t1046-ssh-22-filtered",
-        "file": "pcaps/techniques/T1046/scan_tcp_22_ssh_filtered.pcap",
-        "name": "SSH scan (filtered)",
-        "description": "Targeted scan of TCP/22 with no responses (DROP).",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [22]
-        }
-      },
-      {
-        "id": "t1046-web-80-443",
-        "file": "pcaps/techniques/T1046/scan_tcp_80_443_web.pcap",
-        "name": "Web scan (80/443)",
-        "description": "Targeted scan of common web ports with mixed responses (SYN-ACK/RST).",
-        "criticality": "medium",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [80, 443]
-        }
-      },
-      {
-        "id": "t1046-ntp-udp-123",
-        "file": "pcaps/techniques/T1046/scan_udp_123_ntp.pcap",
-        "name": "NTP UDP scan (123)",
-        "description": "UDP scan of port 123; responses may be ICMP unreachable or none.",
-        "criticality": "low",
-        "scope": {
-          "protocol": "udp",
-          "ports": [123]
-        }
-      },
-      {
-        "id": "t1046-ssh-22-slow",
-        "file": "pcaps/techniques/T1046/scan_slow_tcp_22_ssh.pcap",
-        "name": "SSH scan (slow)",
-        "description": "Low-and-slow scan of TCP/22 intended to evade rate-based detection.",
         "criticality": "high",
         "scope": {
           "protocol": "tcp",

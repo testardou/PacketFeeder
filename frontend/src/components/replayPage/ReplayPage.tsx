@@ -145,6 +145,11 @@ export const ReplayPage = () => {
           selectedInterface={selectedInterface}
           rewriteIps={rewriteIps}
           rewriteMacs={rewriteMacs}
+          rewriteIpv6s={rewriteIpv6s}
+          rewriteArpIps={rewriteArpIps}
+          rewriteDnsDomains={rewriteDnsDomains}
+          rewriteTcpPorts={rewriteTcpPorts}
+          rewriteUdpPorts={rewriteUdpPorts}
           stepIndex={stepIndex}
           setStepIndex={setStepIndex}
           selectedMode={selectedMode}

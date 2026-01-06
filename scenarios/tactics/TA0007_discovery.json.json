@@ -1,17 +1,13 @@
 {
   "mitre": {
-    "tactic_id": "TA0043",
-    "tactic_name": "Reconnaissance",
-    "url": "https://attack.mitre.org/tactics/TA0043/"
+    "tactic_id": "TA0007",
+    "tactic_name": "Discovery",
+    "url": "https://attack.mitre.org/tactics/TA0007/"
   },
-
-  "description": "Reconnaissance consists of techniques adversaries use to gather information about the victim network, hosts, and services prior to initial access.",
-
-  "techniques": ["T1046", "T1016", "T1595", "T1590"],
-
+  "description": "Discovery consists of techniques an adversary may use to gain knowledge about the system and internal network.",
+  "techniques": ["T1046"],
   "metadata": {
     "domain": "enterprise",
-    "source": "MITRE ATT&CK",
-    "version": "1.0"
+    "schema_version": "1.0"
   }
 }

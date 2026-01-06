@@ -1,17 +1,20 @@
 import type { PacketDetailsType, ReplayStepType } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Search, X } from "lucide-react";
 
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
   type ColumnDef,
+  type FilterFn,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -31,6 +34,31 @@ interface IPacketDetailsProps {
   hidePagination?: boolean;
 }
 
+// Custom filter function for IPs and ports
+const ipPortFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+  if (!filterValue) return true;
+
+  const searchTerm = filterValue.toLowerCase().trim();
+  const rowData = row.original as PacketDetailsType;
+
+  // Search in source IP
+  const src = String(rowData.src || "").toLowerCase();
+  // Search in destination IP
+  const dst = String(rowData.dst || "").toLowerCase();
+  // Search in source port
+  const sport = rowData.sport != null ? String(rowData.sport) : "";
+  // Search in destination port
+  const dport = rowData.dport != null ? String(rowData.dport) : "";
+
+  // Check if search term matches any IP or port
+  return (
+    src.includes(searchTerm) ||
+    dst.includes(searchTerm) ||
+    sport.includes(searchTerm) ||
+    dport.includes(searchTerm)
+  );
+};
+
 export const PacketDetails = ({
   data,
   selectedFile,
@@ -39,6 +67,7 @@ export const PacketDetails = ({
   hidePagination = false,
 }: IPacketDetailsProps) => {
   const [shownPayloadId, setShownPayloadId] = useState<string | null>(null);
+  const [searchFilter, setSearchFilter] = useState<string>("");
 
   const packetPayloadMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -55,9 +84,10 @@ export const PacketDetails = ({
     },
   });
 
-  // Reset shown payload when file changes
+  // Reset shown payload and search when file changes
   useEffect(() => {
     setShownPayloadId(null);
+    setSearchFilter("");
     packetPayloadMutation.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile]);
@@ -250,16 +280,44 @@ export const PacketDetails = ({
     [packetPayloadMutation, shownPayloadId]
   );
 
+  // Filter data based on search
+  const filteredData = useMemo(() => {
+    if (!searchFilter.trim()) return normalizedData;
+
+    return normalizedData.filter((row) => {
+      const rowData = row as PacketDetailsType;
+      const searchTerm = searchFilter.toLowerCase().trim();
+
+      const src = String(rowData.src || "").toLowerCase();
+      const dst = String(rowData.dst || "").toLowerCase();
+      const sport = rowData.sport != null ? String(rowData.sport) : "";
+      const dport = rowData.dport != null ? String(rowData.dport) : "";
+
+      return (
+        src.includes(searchTerm) ||
+        dst.includes(searchTerm) ||
+        sport.includes(searchTerm) ||
+        dport.includes(searchTerm)
+      );
+    });
+  }, [normalizedData, searchFilter]);
+
   const table = useReactTable({
-    data: normalizedData,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: ipPortFilterFn,
     initialState: {
       pagination: {
         pageSize: 25,
       },
     },
+    state: {
+      globalFilter: searchFilter,
+    },
+    onGlobalFilterChange: setSearchFilter,
   });
 
   return (
@@ -270,7 +328,37 @@ export const PacketDetails = ({
 
       {data && (
         <div className="w-fit flex flex-row gap-6">
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 space-y-3">
+            {/* Search Bar */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search by IP address or port (e.g., 192.168.1.1, 80, 443)"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  className="pl-9 pr-9"
+                />
+                {searchFilter && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                    onClick={() => setSearchFilter("")}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+              {searchFilter && (
+                <span className="text-sm text-muted-foreground">
+                  {table.getFilteredRowModel().rows.length} result
+                  {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""}
+                </span>
+              )}
+            </div>
+
             <div className="overflow-x-auto rounded-lg border bg-card">
               <Table className="w-full">
                 <TableHeader>

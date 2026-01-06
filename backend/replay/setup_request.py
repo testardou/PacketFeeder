@@ -27,6 +27,11 @@ def setup_request(request, apply_filter=True):
     sid = request.form.get("sid")
     rewrite_ips = request.form.get("rewriteIps", "")
     rewrite_macs = request.form.get("rewriteMacs", "")
+    rewrite_ipv6s = request.form.get("rewriteIpv6s", "")
+    rewrite_arp_ips = request.form.get("rewriteArpIps", "")
+    rewrite_dns_domains = request.form.get("rewriteDnsDomains", "")
+    rewrite_tcp_ports = request.form.get("rewriteTcpPorts", "")
+    rewrite_udp_ports = request.form.get("rewriteUdpPorts", "")
     
     # Get index/range filtering parameters (only if apply_filter is True)
     index_str = request.form.get("index") if apply_filter else None
@@ -44,11 +49,26 @@ def setup_request(request, apply_filter=True):
 
     mapped_rewrite_ips = {}
     mapped_rewrite_macs = {}
+    mapped_rewrite_ipv6s = {}
+    mapped_rewrite_arp_ips = {}
+    mapped_rewrite_dns_domains = {}
+    mapped_rewrite_tcp_ports = {}
+    mapped_rewrite_udp_ports = {}
     
     if rewrite_ips and len(rewrite_ips) > 0:
         mapped_rewrite_ips = parse_rewrite_json(rewrite_ips)
     if rewrite_macs and len(rewrite_macs) > 0:
         mapped_rewrite_macs = parse_rewrite_json(rewrite_macs)
+    if rewrite_ipv6s and len(rewrite_ipv6s) > 0:
+        mapped_rewrite_ipv6s = parse_rewrite_json(rewrite_ipv6s)
+    if rewrite_arp_ips and len(rewrite_arp_ips) > 0:
+        mapped_rewrite_arp_ips = parse_rewrite_json(rewrite_arp_ips)
+    if rewrite_dns_domains and len(rewrite_dns_domains) > 0:
+        mapped_rewrite_dns_domains = parse_rewrite_json(rewrite_dns_domains)
+    if rewrite_tcp_ports and len(rewrite_tcp_ports) > 0:
+        mapped_rewrite_tcp_ports = parse_rewrite_json(rewrite_tcp_ports)
+    if rewrite_udp_ports and len(rewrite_udp_ports) > 0:
+        mapped_rewrite_udp_ports = parse_rewrite_json(rewrite_udp_ports)
 
     try:
         packets = read_pcap(file_path)
@@ -86,7 +106,16 @@ def setup_request(request, apply_filter=True):
                 current_app.logger.error(f"Invalid range: {e}")
                 raise
     
-    packets = rewrite_packets(packets, ip_map=mapped_rewrite_ips, mac_map=mapped_rewrite_macs)
+    packets = rewrite_packets(
+        packets,
+        ip_map=mapped_rewrite_ips,
+        mac_map=mapped_rewrite_macs,
+        ipv6_map=mapped_rewrite_ipv6s,
+        arp_ip_map=mapped_rewrite_arp_ips,
+        dns_domain_map=mapped_rewrite_dns_domains,
+        tcp_port_map=mapped_rewrite_tcp_ports,
+        udp_port_map=mapped_rewrite_udp_ports
+    )
     should_run[sid] = True
     running_status[sid] = True  # Track that replay is running
     current_app.logger.info("Should run: %s", should_run)

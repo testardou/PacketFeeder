@@ -65,57 +65,56 @@ export const ReplayFilter = ({
   };
 
   return (
-    <Card className="w-full max-w-2xl border-2">
-      <CardHeader className="bg-muted/50 pb-3">
-        <CardTitle className="text-base font-semibold flex items-center gap-2">
-          <FileText className="h-4 w-4" />
-          Packet Filter
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 space-y-6">
+    <div className="flex flex-col gap-3 w-full max-w-3xl">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <FileText className="h-4 w-4" />
+        <span>Packet Filter</span>
+      </div>
+
+      <div className="flex flex-row items-center gap-4 flex-wrap">
         <RadioGroup
           value={displayedMode}
           onValueChange={(value) => handleModeChange(value as FilterMode)}
-          className="space-y-3"
+          className="flex flex-row gap-4"
         >
-          <div className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+          <div className="flex items-center space-x-2">
             <RadioGroupItem value="all" id="filter-all" />
             <Label
               htmlFor="filter-all"
-              className="cursor-pointer flex-1 flex items-center gap-2 font-normal"
+              className="cursor-pointer text-sm font-normal"
             >
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <span>All PCAP file</span>
+              All
             </Label>
           </div>
 
-          <div className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+          <div className="flex items-center space-x-2">
             <RadioGroupItem value="index" id="filter-index-option" />
             <Label
               htmlFor="filter-index-option"
-              className="cursor-pointer flex-1 flex items-center gap-2 font-normal"
+              className="cursor-pointer text-sm font-normal"
             >
-              <Hash className="h-4 w-4 text-muted-foreground" />
-              <span>Index</span>
+              Index
             </Label>
           </div>
 
-          <div className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+          <div className="flex items-center space-x-2">
             <RadioGroupItem value="range" id="filter-range-option" />
             <Label
               htmlFor="filter-range-option"
-              className="cursor-pointer flex-1 flex items-center gap-2 font-normal"
+              className="cursor-pointer text-sm font-normal"
             >
-              <List className="h-4 w-4 text-muted-foreground" />
-              <span>Range index</span>
+              Range
             </Label>
           </div>
         </RadioGroup>
 
         {displayedMode === "index" && (
-          <div className="space-y-2 pl-8 border-l-2 border-primary/20 bg-muted/30 p-4 rounded-md">
-            <Label htmlFor="filter-index" className="text-sm font-medium">
-              Single Index (0-based)
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor="filter-index"
+              className="text-sm text-muted-foreground whitespace-nowrap"
+            >
+              Index:
             </Label>
             <Input
               id="filter-index"
@@ -124,18 +123,18 @@ export const ReplayFilter = ({
               placeholder="e.g., 5"
               value={filterIndex !== null ? filterIndex.toString() : ""}
               onChange={(e) => handleIndexChange(e.target.value)}
-              className="max-w-xs"
+              className="w-24 h-8"
             />
-            <p className="text-xs text-muted-foreground">
-              Replay only the packet at the specified index
-            </p>
           </div>
         )}
 
         {displayedMode === "range" && (
-          <div className="space-y-2 pl-8 border-l-2 border-primary/20 bg-muted/30 p-4 rounded-md">
-            <Label htmlFor="filter-range" className="text-sm font-medium">
-              Range (start-end)
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor="filter-range"
+              className="text-sm text-muted-foreground whitespace-nowrap"
+            >
+              Range:
             </Label>
             <Input
               id="filter-range"
@@ -143,23 +142,11 @@ export const ReplayFilter = ({
               placeholder="e.g., 5-10"
               value={filterRange}
               onChange={(e) => handleRangeChange(e.target.value)}
-              className="max-w-xs"
+              className="w-32 h-8"
             />
-            <p className="text-xs text-muted-foreground">
-              Replay packets from start index to end index (inclusive)
-            </p>
           </div>
         )}
-
-        {displayedMode === "all" && (
-          <div className="pl-8 border-l-2 border-primary/20 bg-muted/30 p-4 rounded-md">
-            <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              All packets from the PCAP file will be replayed
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
