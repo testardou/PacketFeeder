@@ -35,7 +35,7 @@ interface IPacketDetailsProps {
 }
 
 // Custom filter function for IPs and ports
-const ipPortFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+const ipPortFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
   if (!filterValue) return true;
 
   const searchTerm = filterValue.toLowerCase().trim();
