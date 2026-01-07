@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env.local
+.env*.local
+# Note: .env, .env.development, .env.production should be committed
+# Only .local files are ignored (they contain sensitive local config)

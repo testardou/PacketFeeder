@@ -14,6 +14,7 @@ import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
+import { API_CONFIG } from "@/config/api";
 
 export const ReplayPage = () => {
   const [selectFile, setSelectFile] = useState<string | null>(null);
@@ -72,7 +73,7 @@ export const ReplayPage = () => {
   const { data: ifaces_list, isLoading } = useQuery<InterfacesType>({
     queryKey: ["interfaces"], // identifiant unique du cache
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/get_interfaces/");
+      const res = await fetch(`${API_CONFIG.API_BASE}/get_interfaces/`);
 
       if (!res.ok) {
         throw new Error("Erreur API");
@@ -84,7 +85,7 @@ export const ReplayPage = () => {
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const res = await fetch(
-        `http://localhost:5000/api/detail-packets-pcap?file=${file}`
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`
       );
 
       if (!res.ok) throw new Error("Erreur API");

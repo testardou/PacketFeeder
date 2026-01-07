@@ -10,6 +10,7 @@ import type {
 import { Label } from "@radix-ui/react-label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { API_CONFIG } from "@/config/api";
 
 export const Files = () => {
   const queryClient = useQueryClient();
@@ -69,7 +70,7 @@ export const Files = () => {
       formData.append("rewriteTcpPorts", JSON.stringify(rewriteTcpPorts));
       formData.append("rewriteUdpPorts", JSON.stringify(rewriteUdpPorts));
 
-      const res = await fetch("http://localhost:5000/api/rewrite-pcap-file/", {
+      const res = await fetch(`${API_CONFIG.API_BASE}/rewrite-pcap-file/`, {
         method: "POST",
         body: formData,
       });
@@ -86,7 +87,7 @@ export const Files = () => {
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const res = await fetch(
-        `http://localhost:5000/api/detail-packets-pcap?file=${file}`
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`
       );
 
       if (!res.ok) throw new Error("Erreur API");

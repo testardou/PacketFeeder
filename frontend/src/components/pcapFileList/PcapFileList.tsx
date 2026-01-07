@@ -18,6 +18,7 @@ import { useState } from "react";
 import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
 import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
+import { API_CONFIG } from "@/config/api";
 
 interface PcapFileListProps {
   pcapFiles?: string[];
@@ -51,7 +52,7 @@ export const PcapFileList = ({
       const formData = new FormData();
       formData.append("file", file ?? "");
 
-      const res = await fetch("http://localhost:5000/api/delete-pcap-file/", {
+      const res = await fetch(`${API_CONFIG.API_BASE}/delete-pcap-file/`, {
         method: "DELETE",
         body: formData,
       });

@@ -15,6 +15,7 @@ import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import { API_CONFIG } from "@/config/api";
 import {
   Select,
   SelectContent,
@@ -151,7 +152,7 @@ export default function Scenarios() {
   }>({
     queryKey: ["tactics"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/get-tactics/");
+      const res = await fetch(`${API_CONFIG.API_BASE}/get-tactics/`);
       if (!res.ok) throw new Error("Failed to load tactics");
       return res.json();
     },
@@ -163,7 +164,7 @@ export default function Scenarios() {
     queryFn: async () => {
       if (!selectedTactic) throw new Error("No tactic selected");
       const res = await fetch(
-        `http://localhost:5000/api/get-tactic/${selectedTactic}`
+        `${API_CONFIG.API_BASE}/get-tactic/${selectedTactic}`
       );
       if (!res.ok) throw new Error("Failed to load tactic");
       return res.json();
@@ -183,7 +184,7 @@ export default function Scenarios() {
         tacticData.techniques.map(async (techId) => {
           try {
             const res = await fetch(
-              `http://localhost:5000/api/get-technique/${techId}`
+              `${API_CONFIG.API_BASE}/get-technique/${techId}`
             );
             if (res.ok) {
               const data = await res.json();
@@ -206,7 +207,7 @@ export default function Scenarios() {
     queryFn: async () => {
       if (!selectedTechnique) throw new Error("No technique selected");
       const res = await fetch(
-        `http://localhost:5000/api/get-technique/${selectedTechnique}`
+        `${API_CONFIG.API_BASE}/get-technique/${selectedTechnique}`
       );
       if (!res.ok) throw new Error("Failed to load technique");
       return res.json();
@@ -221,7 +222,7 @@ export default function Scenarios() {
       queryFn: async () => {
         if (!selectedTechnique) throw new Error("No technique selected");
         const res = await fetch(
-          `http://localhost:5000/api/get-technique-pcaps/${selectedTechnique}`
+          `${API_CONFIG.API_BASE}/get-technique-pcaps/${selectedTechnique}`
         );
         if (!res.ok) throw new Error("Failed to load PCAP datasets");
         return res.json();
@@ -247,7 +248,7 @@ export default function Scenarios() {
     useQuery<InterfacesType>({
       queryKey: ["interfaces"],
       queryFn: async () => {
-        const res = await fetch("http://localhost:5000/api/get_interfaces/");
+        const res = await fetch(`${API_CONFIG.API_BASE}/get_interfaces/`);
         if (!res.ok) {
           throw new Error("Erreur API");
         }
@@ -258,7 +259,7 @@ export default function Scenarios() {
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const res = await fetch(
-        `http://localhost:5000/api/detail-packets-pcap?file=${file}`
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`
       );
       if (!res.ok) throw new Error("Erreur API");
       return res.json();
@@ -270,9 +271,7 @@ export default function Scenarios() {
 
   const infosMutation = useMutation<PcapInfoType, Error, string>({
     mutationFn: async (file: string) => {
-      const res = await fetch(
-        `http://localhost:5000/api/infos-pcap?file=${file}`
-      );
+      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
       if (!res.ok) throw new Error("API Error");
       return res.json();
     },

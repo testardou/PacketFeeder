@@ -2,6 +2,7 @@ import type { PacketDetailsType, ReplayStepType } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, Search, X } from "lucide-react";
+import { API_CONFIG } from "@/config/api";
 
 import {
   flexRender,
@@ -72,7 +73,7 @@ export const PacketDetails = ({
   const packetPayloadMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(
-        `http://localhost:5000/api/packet-payload?id=${id}&file=${selectedFile}`
+        `${API_CONFIG.API_BASE}/packet-payload?id=${id}&file=${selectedFile}`
       );
 
       if (!res.ok) throw new Error("Erreur API");

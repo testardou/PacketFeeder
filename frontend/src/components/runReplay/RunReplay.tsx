@@ -10,6 +10,7 @@ import type {
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { API_CONFIG } from "@/config/api";
 
 interface IRunReplayProps {
   selectedInterface: string | null;
@@ -47,7 +48,7 @@ export const RunReplay = ({
   const [clientSid, setClientSid] = useState<string | null>(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
   const [running, setRunning] = useState(false);
-  const socket = io("http://localhost:5000/realtime", {
+  const socket = io(API_CONFIG.SOCKET_URL, {
     autoConnect: true,
   });
 
@@ -119,13 +120,10 @@ export const RunReplay = ({
         }
       }
 
-      const res = await fetch(
-        `http://localhost:5000/api/${urls[selectedMode]}/`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await fetch(`${API_CONFIG.API_BASE}/${urls[selectedMode]}/`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!res.ok) throw new Error("Erreur API");
 

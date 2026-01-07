@@ -11,6 +11,7 @@ import {
   useQuery,
   type UseMutationResult,
 } from "@tanstack/react-query";
+import { API_CONFIG } from "@/config/api";
 
 interface IHandleFilesProps {
   selectFile: string | null;
@@ -36,7 +37,7 @@ export const HandleFiles = ({
   const pcapFilesMutation = useQuery<PcapFilesType>({
     queryKey: ["pcap_files"], // identifiant unique du cache
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/get-pcap-files/");
+      const res = await fetch(`${API_CONFIG.API_BASE}/get-pcap-files/`);
 
       if (!res.ok) {
         throw new Error("API Error");
@@ -48,9 +49,7 @@ export const HandleFiles = ({
 
   const infosMutation = useMutation<PcapInfoType, Error, string>({
     mutationFn: async (file: string) => {
-      const res = await fetch(
-        `http://localhost:5000/api/infos-pcap?file=${file}`
-      );
+      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
 
       if (!res.ok) throw new Error("API Error");
 

@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { API_CONFIG } from "@/config/api";
 
 interface UuploadPcapFileProps {
   files?: string[];
@@ -34,7 +35,7 @@ export const UploadPcapFile = ({
       const formData = new FormData();
       formData.append("file", file ?? "");
 
-      const res = await fetch("http://localhost:5000/api/upload-pcap-file/", {
+      const res = await fetch(`${API_CONFIG.API_BASE}/upload-pcap-file/`, {
         method: "POST",
         body: formData,
       });
