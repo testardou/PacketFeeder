@@ -1,8 +1,7 @@
 @import "tailwindcss" source(none);
 
-/* Chemins RELATIFS à frontend/src/index.css */
-@source ".";
-@source "../index.html";
+@source "./index.html";
+@source "./src";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
