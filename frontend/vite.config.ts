@@ -10,12 +10,12 @@ export default defineConfig({
     host: true,
   },
   plugins: [
-    tailwindcss(),
     react({
       babel: {
         plugins: [["babel-plugin-react-compiler"]],
       },
     }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
