@@ -9,7 +9,6 @@ export default defineConfig({
     port: 3000,
     host: true,
   },
-  base: "./",
   plugins: [
     react({
       babel: {
@@ -22,12 +21,5 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  build: {
-    // Ensure CSS is properly extracted and minified
-    cssCodeSplit: true,
-    cssMinify: true,
-    // Generate manifest for better caching
-    manifest: true,
   },
 });
