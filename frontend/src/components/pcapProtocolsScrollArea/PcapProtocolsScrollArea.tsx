@@ -1,6 +1,6 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtocolData } from "./ProtocolData";
 import { SelectedProtocolModifications } from "./SelectedProtocolModifications";
 import type { PcapInfoType, RewriteValues } from "@/types/types";
@@ -117,13 +117,13 @@ export const PcapProtocolsScrollArea = ({
 
   return (
     <div className="flex flex-row gap-4 w-fit">
-      <Card className="w-fit border-2 bg-muted/50 p-4">
+      <Card className="h-96 border-2 bg-muted/50">
         <CardHeader>
           <CardTitle className="text-base font-semibold">Protocols</CardTitle>
         </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-96 w-48 rounded-md border p-4">
-            <div className=" space-y-2">
+        <div className="px-6 pb-6">
+          <ScrollArea className="h-72 w-48 rounded-md border p-4">
+            <div className="space-y-2">
               {availableProtocols.map((protocol) => (
                 <Button
                   key={protocol.key}
@@ -142,19 +142,21 @@ export const PcapProtocolsScrollArea = ({
               ))}
             </div>
           </ScrollArea>
-        </CardContent>
+        </div>
       </Card>
 
       {/* Protocol Data */}
       {selectedProtocol && (
-        <ScrollArea className="h-96 w-96 rounded-md border bg-muted/50">
-          <div className="p-4">
-            <h3 className="text-lg font-semibold mb-4">
+        <Card className="h-96 border-2 bg-muted/50">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold">
               {
                 availableProtocols.find((p) => p.key === selectedProtocol)
                   ?.label
               }
-            </h3>
+            </CardTitle>
+          </CardHeader>
+          <div className="px-6 pb-6">
             <ProtocolData
               selectedProtocol={selectedProtocol}
               protocol={availableProtocols.find(
@@ -168,7 +170,7 @@ export const PcapProtocolsScrollArea = ({
               portRegex={portRegex}
             />
           </div>
-        </ScrollArea>
+        </Card>
       )}
 
       {/* Modifications Recap - Only for selected protocol */}

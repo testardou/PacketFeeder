@@ -1,5 +1,5 @@
 import type { NewValuesPcapType } from "@/types/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
@@ -18,11 +18,11 @@ export const ModifiedPcapRecap = ({
 }: IModifiedPcapRecapProps) => {
   if (rewriteValues === undefined || rewriteValues.length === 0) return null;
   return (
-    <Card className="w-fit border-2">
+    <Card className="h-96 border-2 bg-muted/50">
       <CardHeader className="bg-muted/50">
         <CardTitle className="text-base font-semibold">{cardTitle}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <div className="px-6 pb-6">
         <ScrollArea className="h-72 rounded-md border">
           <div className="p-4">
             {rewriteValues?.map((element) => (
@@ -49,7 +49,7 @@ export const ModifiedPcapRecap = ({
             ))}
           </div>
         </ScrollArea>
-      </CardContent>
+      </div>
     </Card>
   );
 };
