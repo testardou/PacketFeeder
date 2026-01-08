@@ -36,7 +36,9 @@ interface IPacketDetailsProps {
 }
 
 // Custom filter function for IPs and ports
-const ipPortFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
+const ipPortFilterFn: FilterFn<
+  PacketDetailsType | { [key: string]: unknown }
+> = (row, _columnId, filterValue) => {
   if (!filterValue) return true;
 
   const searchTerm = filterValue.toLowerCase().trim();
@@ -312,7 +314,7 @@ export const PacketDetails = ({
     globalFilterFn: ipPortFilterFn,
     initialState: {
       pagination: {
-        pageSize: 25,
+        pageSize: 20,
       },
     },
     state: {
