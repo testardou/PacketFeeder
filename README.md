@@ -98,33 +98,29 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - `br0`: **MGMT/Internet** (home LAN `192.168.1.0/24`, gateway `192.168.1.254`)
   - `lab-ovs`: **LAB** network (scenario traffic `10.10.10.0/24`)
   - `wan-ovs`: **EXTERNAL** network (simulated attacker subnet `172.16.10.0/24`)
-  - `ids-ovs`: **IDS feed** network (broker output to engines)
+  - `ids-ovs`: **IDS feed** network (mirrored lab traffic distribution to sensors/engines)
 
 ### VMs and NICs
 
 - **pfSense**
   - WAN: `br0`
-  - LAN: `lab-ovs` (`10.10.10.1/24`) + NAT
-  - OPT1 (External): `wan-ovs` (172.16.10.1/24)
+  - LAN: `lab-ovs` (`10.10.10.1/24`)
+  - OPT1 (External): `wan-ovs` (`172.16.10.1/24`)
 - **attacker-ext** (simulated external attacker)
   - MGMT: `br0`
-  - EXTERNAL: `wan-ovs` (DHCP via pfSense, e.g. `172.16.10.40/24`)
-  - Routing: `10.10.10.0/24` routed via pfSense `172.16.10.1` (external → internal traffic generation)
+  - EXTERNAL: `wan-ovs` (**DHCP reservation** `172.16.10.40/24`)
 - **attacker**
   - MGMT: `br0`
-  - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.10`, default route via pfSense)
+  - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.10`)
 - **debian-ssh**
-  - LAB only: `lab-ovs` (**DHCP reservation** `10.10.10.20`, no MGMT; reachable via SSH jump from attacker)
+  - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.20`)
 - **debian-web**
-  - LAB: `lab-ovs` (web target / services host)
+  - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.40`)
 - **winsrv**
-  - LAB: `lab-ovs` (Windows Server 2025 target host)
-- **victim (debian-1)**
-  - LAB only: `lab-ovs` (**DHCP reservation** `10.10.10.20`, no MGMT; reachable via SSH jump from attacker)
+  - LAB: `lab-ovs` (Windows Server 2025 target host / **DHCP reservation** `10.10.10.30`)
 - **broker**
   - MGMT: `br0`
-  - CAPTURE: `lab-ovs` (UP + PROMISC, **no IP**)
-  - FEED: `ids-ovs` (traffic redistribution to IDS engines)
+  - CAPTURE: `ids-ovs` (UP + PROMISC, **no IP**) — PCAP capture interface (receives mirrored lab traffic via `patch-ids2lab` fan-out)
 
 ### DNS / Domain
 
