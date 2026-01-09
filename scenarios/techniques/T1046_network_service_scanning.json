@@ -19,10 +19,10 @@
   "datasets": {
     "pcaps": [
       {
-        "id": "t1046-ssh-22-open",
+        "id": "t1046-internal-horizontal-ssh-22-open",
         "file": "pcaps/techniques/T1046/nmap_scan_22.pcap",
-        "name": "SSH scan",
-        "description": "Targeted scan of TCP/22 showing SYN-ACK responses.",
+        "name": "Internal horizontal SSH scan",
+        "description": "Internal horizontal scan of TCP/22 showing SYN-ACK responses.",
         "criticality": "high",
         "scope": {
           "protocol": "tcp",

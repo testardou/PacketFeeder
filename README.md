@@ -97,16 +97,28 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - Bridges:
   - `br0`: **MGMT/Internet** (home LAN `192.168.1.0/24`, gateway `192.168.1.254`)
   - `lab-ovs`: **LAB** network (scenario traffic `10.10.10.0/24`)
+  - `wan-ovs`: **EXTERNAL** network (simulated attacker subnet `172.16.10.0/24`)
   - `ids-ovs`: **IDS feed** network (broker output to engines)
 
 ### VMs and NICs
 
 - **pfSense**
-  - WAN: `br0` (Internet access via `192.168.1.254`)
+  - WAN: `br0`
   - LAN: `lab-ovs` (`10.10.10.1/24`) + NAT
+  - OPT1 (External): `wan-ovs` (172.16.10.1/24)
+- **attacker-ext** (simulated external attacker)
+  - MGMT: `br0`
+  - EXTERNAL: `wan-ovs` (DHCP via pfSense, e.g. `172.16.10.40/24`)
+  - Routing: `10.10.10.0/24` routed via pfSense `172.16.10.1` (external → internal traffic generation)
 - **attacker**
-  - MGMT: `br0` (administration)
+  - MGMT: `br0`
   - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.10`, default route via pfSense)
+- **debian-ssh**
+  - LAB only: `lab-ovs` (**DHCP reservation** `10.10.10.20`, no MGMT; reachable via SSH jump from attacker)
+- **debian-web**
+  - LAB: `lab-ovs` (web target / services host)
+- **winsrv**
+  - LAB: `lab-ovs` (Windows Server 2025 target host)
 - **victim (debian-1)**
   - LAB only: `lab-ovs` (**DHCP reservation** `10.10.10.20`, no MGMT; reachable via SSH jump from attacker)
 - **broker**
@@ -118,66 +130,77 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 - Lab domain: `packetfeeder.lab`
 - DNS is provided by pfSense (Unbound) with DHCP lease registration.
-  - Examples: `attacker.packetfeeder.lab` → `10.10.10.10`, `victim.packetfeeder.lab` → `10.10.10.20`
+  - Examples: `attacker.packetfeeder.lab` → `10.10.10.10`, `debian-ssh.packetfeeder.lab` → `10.10.10.20`
 
-### Capture (OVS mirroring)
+### Capture (lab-ovs -> ids-ovs)
 
-- A **selective OVS mirror** is configured on `lab-ovs`:
-  - `select-src-port` / `select-dst-port`: ports of the VMs to observe (attacker + victim)
-  - `output-port`: broker `lab-ovs` port (CAPTURE NIC)
-- Validation: run `tcpdump` on the broker capture interface.
+- `lab-ovs` uses an **OVS Mirror** to copy lab traffic to the IDS bus:
+  - Mirror name: `mir-lab-to-ids`
+  - `select_all=true` (mirrors all traffic on `lab-ovs`)
+  - `output-port`: the `lab-ovs` patch interface toward `ids-ovs` (e.g., `patch-lab2ids`)
+- The copied stream crosses the patch pair:
+  - `patch-lab2ids` (on `lab-ovs`) <=> `patch-ids2lab` (on `ids-ovs`)
+
+### Distribution (ids-ovs -> sensors)
+
+- `ids-ovs` does **explicit fan-out** using OpenFlow (no generic `FLOOD`):
+  - `in_port=patch-ids2lab` -> `output:tap-bkr-ids,output:tap-clear-ids`
+  - `in_port=tap-bkr-ids` -> `drop` (anti-injection)
+  - `in_port=tap-clear-ids` -> `drop` (anti-injection)
+  - default -> `drop` (fail-closed)
 
 ### Schema
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 MGMT / HOME LAN (192.168.1.0/24)   GW/Internet: 192.168.1.254                │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                        MGMT / HOME LAN (192.168.1.0/24)   GW/Internet: 192.168.1.254                              │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 
-============================================== br0  (MGMT bridge) ==================================================
-                     |                         |                         |
-                     |                         |                         |
-        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐
-        │        pfSense VM        │  │      attacker VM      │  │       broker VM         │
-        │--------------------------│  │-----------------------│  │-------------------------│
-        │ WAN NIC (br0) : DHCP     │  │ MGMT NIC (br0) : DHCP │  │ MGMT NIC (br0) : DHCP   │
-        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘
+===================================================== br0  (MGMT bridge) =========================================================
+                     |                          |                         |                            |
+                     |                          |                         |                            |
+        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐  ┌────────▼─────────────────┐
+        │        pfSense VM        │  │      attacker VM      │  │       broker VM         │  │     attacker-ext VM      │
+        │--------------------------│  │-----------------------│  │-------------------------│  │--------------------------│
+        │ WAN NIC (br0) : DHCP     │  │ MGMT NIC (br0) : DHCP │  │ MGMT NIC (br0) : DHCP   │  │ MGMT NIC (br0) : DHCP    │
+        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘  └──────────────────────────┘
 
 
-============================================= lab-ovs  (LAB bridge) ===================================================
-                     |                          |                         |
-                     |                          |                         |
-        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐
-        │        pfSense VM        │  │      attacker VM      │  │      victim VM          │
-        │--------------------------│  │-----------------------│  │-------------------------│
-        │ LAN NIC (lab-ovs):       │  │ LAB NIC (lab-ovs):    │  │ LAB NIC (lab-ovs):      │
-        │ 10.10.10.1/24            │  │ 10.10.10.x/24         │  │ 10.10.10.x/24           │
-        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘
+==================================================== wan-ovs  (EXTERNAL bridge) ====================================================
+                     |                          |
+                     |                          |
+        ┌────────────▼─────────────┐  ┌─────────▼────────────────┐
+        │        pfSense VM        │  │     attacker-ext VM      │
+        │--------------------------│  │--------------------------│
+        │ OPT1 (wan-ovs):          │  │ EXTERNAL (wan-ovs):      │
+        │ 172.16.10.1/24           │  │ 172.16.10.40/24          │
+        └──────────────────────────┘  └──────────────────────────┘
 
 
-                         OVS MIRROR on lab-ovs  (select-all=true, output-port=patch-lab2ids)
-                         ──────────────────────────────────────────────────────────────────>
-                         (this is a COPY of lab traffic; it is NOT a normal network link)
 
-                                   patch-lab2ids  <=====>  patch-ids2lab
-                                     (on lab-ovs)            (on ids-ovs)
-
-
-============================================= ids-ovs  (IDS FEED BUS) =================================================
-                     |                          |                          |
-                     |                          |                          |
-        ┌────────────▼─────────────┐  ┌─────────▼──────────────┐  ┌────────▼────────────────┐
-        │       broker VM          │  │       ClearNDR VM      │  │    Zeek/Snort VM        │
-        │--------------------------│  │------------------------│  │-------------------------│
-        │ SENSOR NIC (ids-ovs):    │  │ SENSOR NIC (ids-ovs):  │  │ SENSOR NIC (ids-ovs):   │
-        │ NO IP / promisc / PCAP   │  │ NO IP / promisc        │  │ NO IP / promisc         │
-        └──────────────────────────┘  └────────────────────────┘  └─────────────────────────┘
+==================================================== lab-ovs  (LAB bridge) ==========================================================
+                     |                          |                         |                            |                            |
+                     |                          |                         |                            |                            |
+        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐  ┌────────▼────────────────┐  ┌────────▼───────────┐
+        │        pfSense VM        │  │      attacker VM      │  │     debian-ssh VM       │  │     debian-web VM       │  │      winsrv VM     │
+        │--------------------------│  │-----------------------│  │-------------------------│  │-------------------------│  │--------------------│
+        │ LAN NIC (lab-ovs):       │  │ LAB NIC (lab-ovs):    │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs): │
+        │ 10.10.10.1/24            │  │ 10.10.10.10/24        │  │ 10.10.10.20/24          │  │ 10.10.10.40/24          │  │ 10.10.10.30/24     │
+        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘  └─────────────────────────┘  └────────────────────┘
 
 
-OpenFlow on ids-ovs:
-  - packets entering from patch-ids2lab  -> FLOOD to all sensor ports (broker/SELKS/Zeek/Snort)
-  - packets entering from any sensor port -> DROP (anti-injection back toward the lab)
+
+==================================================== ids-ovs  (IDS FEED BUS) ========================================================
+                     |                          |
+                     |                          |
+        ┌────────────▼─────────────┐  ┌─────────▼──────────────┐
+        │       broker VM          │  │       ClearNDR VM       │
+        │--------------------------│  │-------------------------│
+        │ SENSOR NIC (ids-ovs):    │  │ SENSOR NIC (ids-ovs):   │
+        │ tap-bkr-ids              │  │ tap-clear-ids           │
+        │ NO IP / promisc / PCAP   │  │ NO IP / promisc         │
+        └──────────────────────────┘  └─────────────────────────┘
 
 ```
 
@@ -188,11 +211,9 @@ OpenFlow on ids-ovs:
 - [x] KVM/libvirt + Open vSwitch host (bridges: `lab-ovs`, `ids-ovs`)
 - [x] pfSense routing/NAT on `lab-ovs` (`10.10.10.1/24`)
 - [x] DHCP/DNS on pfSense (`packetfeeder.lab`) with reservations
-  - attacker: `10.10.10.10`
-  - victim: `10.10.10.20`
 - [x] Broker VM up
 - [x] Selective OVS mirroring on `lab-ovs` (attacker/victims → broker CAPTURE)
-- [ ] Add more victims/workloads and expand mirror selection
+- [x] Add more victims/workloads and expand mirror selection
 - [x] IDS engines on `ids-ovs` (ClearNDR)
 - [ ] IDS engines on `ids-ovs` (Suricata/Zeek/Snort)
 
