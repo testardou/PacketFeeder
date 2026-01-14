@@ -23,6 +23,7 @@ export interface PcapDataset {
     protocol: string;
     ports?: number[];
   };
+  filter?: string[];
 }
 
 export interface PcapDataResponse {
@@ -51,4 +52,3 @@ export interface Technique {
     schema_version?: string;
   };
 }
-

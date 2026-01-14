@@ -234,7 +234,6 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 - [ ] PCAP-based scenario definitions
 - [ ] MITRE ATT&CK–aligned attack scenarios
-
   - [ ] Discovery (TA0007)
     - [ ] T1046 — Network Service Discovery
     - [ ] T1018 — Remote System Discovery
@@ -245,7 +244,6 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1110 — Brute Force
   - [ ] Lateral Movement (TA0008)
     - [ ] T1021 — Remote Services
-
 - [ ] Repeatable and deterministic scenario execution
 
 ### Live Network Interaction
