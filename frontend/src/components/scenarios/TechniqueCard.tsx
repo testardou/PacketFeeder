@@ -303,7 +303,7 @@ export function TechniqueCard({
                             {dataset.description}
                           </p>
                           {dataset.command && (
-                            <p className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded break-all">
+                            <p className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit break-all">
                               {dataset.command}
                             </p>
                           )}

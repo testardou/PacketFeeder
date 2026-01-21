@@ -23,7 +23,7 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
       </div>
       <p className="text-sm text-muted-foreground">{dataset.description}</p>
       {dataset.command && (
-        <p className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-1 rounded break-all">
+        <p className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-1 rounded w-fit break-all">
           {dataset.command}
         </p>
       )}
