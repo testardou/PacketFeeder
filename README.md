@@ -117,7 +117,9 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - **debian-web**
   - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.40`)
 - **winsrv**
-  - LAB: `lab-ovs` (Windows Server 2025 target host / **DHCP reservation** `10.10.10.30`)
+  - LAB: `lab-ovs` (Windows Server 2025 target host / Active Directory / **DHCP reservation** `10.10.10.30`)
+- **win11**
+  - LAB: `lab-ovs` (Windows 11 target host / **DHCP reservation** `10.10.10.50`)
 - **broker**
   - MGMT: `br0`
   - CAPTURE: `ids-ovs` (UP + PROMISC, **no IP**) — PCAP capture interface (receives mirrored lab traffic via `patch-ids2lab` fan-out)
@@ -175,15 +177,15 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 
 
-==================================================== lab-ovs  (LAB bridge) ==========================================================
-                     |                          |                         |                            |                            |
-                     |                          |                         |                            |                            |
-        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐  ┌────────▼────────────────┐  ┌────────▼───────────┐
-        │        pfSense VM        │  │      attacker VM      │  │     debian-ssh VM       │  │     debian-web VM       │  │      winsrv VM     │
-        │--------------------------│  │-----------------------│  │-------------------------│  │-------------------------│  │--------------------│
-        │ LAN NIC (lab-ovs):       │  │ LAB NIC (lab-ovs):    │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs): │
-        │ 10.10.10.1/24            │  │ 10.10.10.10/24        │  │ 10.10.10.20/24          │  │ 10.10.10.40/24          │  │ 10.10.10.30/24     │
-        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘  └─────────────────────────┘  └────────────────────┘
+======================================================================= lab-ovs  (LAB bridge) ==================================================================
+                     |                          |                         |                            |                            |                       |
+                     |                          |                         |                            |                            |                       |
+        ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐  ┌────────▼────────────────┐  ┌────────▼───────────┐  ┌────────▼───────────┐
+        │        pfSense VM        │  │      attacker VM      │  │     debian-ssh VM       │  │     debian-web VM       │  │   winsrv VM (AD)   │  │      win 11 VM     │
+        │--------------------------│  │-----------------------│  │-------------------------│  │-------------------------│  │--------------------│  │--------------------│
+        │ LAN NIC (lab-ovs):       │  │ LAB NIC (lab-ovs):    │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs): │  │ LAB NIC (lab-ovs): │
+        │ 10.10.10.1/24            │  │ 10.10.10.10/24        │  │ 10.10.10.20/24          │  │ 10.10.10.40/24          │  │ 10.10.10.30/24     │  │ 10.10.10.50/24     │
+        └──────────────────────────┘  └───────────────────────┘  └─────────────────────────┘  └─────────────────────────┘  └────────────────────┘  └────────────────────┘
 
 
 
