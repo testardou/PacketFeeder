@@ -302,6 +302,11 @@ export function TechniqueCard({
                           <p className="text-[10px] text-muted-foreground line-clamp-1">
                             {dataset.description}
                           </p>
+                          {dataset.command && (
+                            <p className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded break-all">
+                              {dataset.command}
+                            </p>
+                          )}
                           <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
                             <span className="px-1.5 py-0.5 bg-secondary rounded shrink-0">
                               {dataset.scope.protocol.toUpperCase()}

@@ -24,6 +24,7 @@ export interface PcapDataset {
     ports?: number[];
   };
   filter?: string[];
+  command?: string;
 }
 
 export interface PcapDataResponse {

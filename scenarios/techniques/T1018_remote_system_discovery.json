@@ -27,7 +27,8 @@
           "protocol": "icmp",
           "ports": []
         },
-        "filter": ["external", "unauth", "traceroute", "icmp", "medium"]
+        "filter": ["external", "unauth", "traceroute", "icmp", "medium"],
+        "command": "traceroute -n 10.10.10.40"
       },
       {
         "id": "t1018-external-unauth-dns-srv-dig",
@@ -48,7 +49,8 @@
           "udp",
           "53",
           "medium"
-        ]
+        ],
+        "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
       },
       {
         "id": "t1018-external-unauth-icmp-sweep-fping",
@@ -60,7 +62,8 @@
           "protocol": "icmp",
           "ports": []
         },
-        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high"]
+        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high"],
+        "command": "fping -a -g 10.10.10.0/24"
       },
       {
         "id": "t1018-internal-auth-ad-computers-ldapsearch-389",
@@ -81,7 +84,8 @@
           "389",
           "tcp",
           "high"
-        ]
+        ],
+        "command": "kinit bob@AD.PACKETFEEDER.LAB\nkvno ldap/win-be108jub3nb.ad.packetfeeder.lab\nldapsearch -Y GSSAPI -H ldap://win-be108jub3nb.ad.packetfeeder.lab -b \"DC=ad,DC=packetfeeder,DC=lab\" \"(objectCategory=computer)\" dNSHostName"
       },
       {
         "id": "t1018-internal-auth-domain-computers-net-group",
@@ -101,7 +105,8 @@
           "rpc",
           "smb",
           "high"
-        ]
+        ],
+        "command": "net group \"Domain Computers\" /domain"
       },
       {
         "id": "t1018-internal-auth-domain-dclist-nltest",
@@ -122,19 +127,8 @@
           "rpc",
           "smb",
           "high"
-        ]
-      },
-      {
-        "id": "t1018-auth-win-dclist-nltest",
-        "file": "pcaps/techniques/t1018/t1018_auth_win_dclist__nltest.pcap",
-        "name": "Windows domain controller list (nltest)",
-        "description": "Authenticated Windows domain controller list enumeration using nltest.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [135, 445]
-        },
-        "filter": ["auth", "win", "dclist", "nltest", "rpc", "smb", "high"]
+        ],
+        "command": "nltest /dclist:ad.packetfeeder.lab"
       },
       {
         "id": "t1018-internal-unauth-arp-sweep-arp-scan",
@@ -146,11 +140,12 @@
           "protocol": "arp",
           "ports": []
         },
-        "filter": ["internal", "unauth", "arp", "sweep", "arp-scan", "high"]
+        "filter": ["internal", "unauth", "arp", "sweep", "arp-scan", "high"],
+        "command": "arp-scan --interface enp2s0 --localnet"
       },
       {
         "id": "t1018-internal-unauth-dns-ptr-dig-x",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_ptr__dig-x_10.10.10.1.pcap",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_ptr__dig-x.pcap",
         "name": "Internal DNS PTR query (dig -x)",
         "description": "Internal DNS PTR reverse lookup query using dig -x for hostname discovery.",
         "criticality": "medium",
@@ -167,7 +162,8 @@
           "udp",
           "53",
           "medium"
-        ]
+        ],
+        "command": "dig @10.10.10.30 -x 10.10.10.1"
       },
       {
         "id": "t1018-internal-unauth-dns-srv-dig",
@@ -188,7 +184,8 @@
           "udp",
           "53",
           "medium"
-        ]
+        ],
+        "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
       },
       {
         "id": "t1018-internal-unauth-hostscan-nmap-sn",
@@ -208,7 +205,8 @@
           "sn",
           "icmp",
           "high"
-        ]
+        ],
+        "command": "nmap -sn 10.10.10.0/24"
       },
       {
         "id": "t1018-internal-unauth-icmp-sweep-fping",
@@ -220,11 +218,12 @@
           "protocol": "icmp",
           "ports": []
         },
-        "filter": ["internal", "unauth", "icmp", "sweep", "fping", "high"]
+        "filter": ["internal", "unauth", "icmp", "sweep", "fping", "high"],
+        "command": "fping -a -g 10.10.10.0/24"
       },
       {
         "id": "t1018-internal-unauth-nbns-query-nmblookup",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_nbns_query__nmblookup-10.10.10.40.pcap",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_nbns_query__nmblookup.pcap",
         "name": "Internal NetBIOS Name Service query (nmblookup)",
         "description": "Internal NetBIOS Name Service (NBNS) query using nmblookup for Windows host discovery.",
         "criticality": "high",
@@ -241,7 +240,8 @@
           "udp",
           "137",
           "high"
-        ]
+        ],
+        "command": "nmblookup -A 10.10.10.40"
       },
       {
         "id": "t1018-internal-unauth-traceroute-dc",
@@ -253,7 +253,8 @@
           "protocol": "icmp",
           "ports": []
         },
-        "filter": ["internal", "unauth", "traceroute", "dc", "icmp", "medium"]
+        "filter": ["internal", "unauth", "traceroute", "dc", "icmp", "medium"],
+        "command": "traceroute -n 10.10.10.30"
       }
     ]
   },

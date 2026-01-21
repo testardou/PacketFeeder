@@ -3,11 +3,11 @@
     "technique_id": "T1046",
     "technique_name": "Network Service Discovery",
     "url": "https://attack.mitre.org/techniques/T1046/",
-    "tactics": ["TA0043"]
+    "tactics": [
+      "TA0043"
+    ]
   },
-
   "description": "Adversaries scan victim networks to identify open ports and available services that can be targeted for exploitation.",
-
   "artifacts": [
     "multiple TCP SYN packets",
     "incomplete TCP handshakes",
@@ -15,7 +15,6 @@
     "RST or SYN-ACK responses",
     "UDP probes with ICMP unreachable replies"
   ],
-
   "datasets": {
     "pcaps": [
       {
@@ -26,9 +25,20 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
-        "filter": ["external", "horizontal", "tcp", "22", "nmap", "syn", "high"]
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "22",
+          "nmap",
+          "syn",
+          "high"
+        ],
+        "command": "nmap -sS -p 22 10.10.10.0/24"
       },
       {
         "id": "t1046-external-horizontal-tcp-443-open-masscan",
@@ -38,7 +48,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [443]
+          "ports": [
+            443
+          ]
         },
         "filter": [
           "external",
@@ -48,7 +60,8 @@
           "https",
           "masscan",
           "high"
-        ]
+        ],
+        "command": "masscan -p443 10.10.10.0/24 --rate=1000"
       },
       {
         "id": "t1046-external-horizontal-tcp-443-open-nmap-sS",
@@ -58,7 +71,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [443]
+          "ports": [
+            443
+          ]
         },
         "filter": [
           "external",
@@ -69,7 +84,8 @@
           "nmap",
           "syn",
           "high"
-        ]
+        ],
+        "command": "nmap -sS -p 443 10.10.10.0/24"
       },
       {
         "id": "t1046-external-horizontal-tcp-80-443-open-rustscan",
@@ -79,7 +95,10 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [80, 443]
+          "ports": [
+            80,
+            443
+          ]
         },
         "filter": [
           "external",
@@ -91,7 +110,8 @@
           "https",
           "rustscan",
           "high"
-        ]
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 80,443"
       },
       {
         "id": "t1046-external-horizontal-tcp-80-open-naabu-syn",
@@ -101,7 +121,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [80]
+          "ports": [
+            80
+          ]
         },
         "filter": [
           "external",
@@ -112,7 +134,8 @@
           "naabu",
           "syn",
           "high"
-        ]
+        ],
+        "command": "naabu -host 10.10.10.0/24 -p 80 -syn"
       },
       {
         "id": "t1046-external-horizontal-tcp-80-open-nmap-sS",
@@ -122,7 +145,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [80]
+          "ports": [
+            80
+          ]
         },
         "filter": [
           "external",
@@ -133,7 +158,8 @@
           "nmap",
           "syn",
           "high"
-        ]
+        ],
+        "command": "nmap -sS -p 80 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-naabu-connect",
@@ -143,9 +169,20 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
-        "filter": ["internal", "connect", "tcp", "22", "ssh", "naabu", "high"]
+        "filter": [
+          "internal",
+          "connect",
+          "tcp",
+          "22",
+          "ssh",
+          "naabu",
+          "high"
+        ],
+        "command": "naabu -host 10.10.10.0/24 -p 22 -nc"
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-nmap-sT",
@@ -155,9 +192,20 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
-        "filter": ["internal", "connect", "tcp", "22", "ssh", "nmap", "high"]
+        "filter": [
+          "internal",
+          "connect",
+          "tcp",
+          "22",
+          "ssh",
+          "nmap",
+          "high"
+        ],
+        "command": "nmap -sT -p 22 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-rustscan",
@@ -167,7 +215,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
         "filter": [
           "internal",
@@ -177,7 +227,8 @@
           "ssh",
           "rustscan",
           "high"
-        ]
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 22 --ulimit 5000"
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-masscan",
@@ -187,7 +238,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
         "filter": [
           "internal",
@@ -197,7 +250,8 @@
           "ssh",
           "masscan",
           "high"
-        ]
+        ],
+        "command": "masscan -p22 10.10.10.0/24 --rate=1000"
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-naabu-syn",
@@ -207,7 +261,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
         "filter": [
           "internal",
@@ -218,7 +274,8 @@
           "naabu",
           "syn",
           "high"
-        ]
+        ],
+        "command": "naabu -host 10.10.10.0/24 -p 22 -syn"
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-nmap-sS",
@@ -228,7 +285,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
         "filter": [
           "internal",
@@ -239,7 +298,8 @@
           "nmap",
           "syn",
           "high"
-        ]
+        ],
+        "command": "nmap -sS -p 22 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-rustscan",
@@ -249,7 +309,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [22]
+          "ports": [
+            22
+          ]
         },
         "filter": [
           "internal",
@@ -259,7 +321,8 @@
           "ssh",
           "rustscan",
           "high"
-        ]
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 22"
       },
       {
         "id": "t1046-internal-horizontal-tcp-443-open-nmap-sS",
@@ -269,7 +332,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [443]
+          "ports": [
+            443
+          ]
         },
         "filter": [
           "internal",
@@ -280,7 +345,8 @@
           "nmap",
           "syn",
           "high"
-        ]
+        ],
+        "command": "nmap -sS -p 443 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-horizontal-tcp-80-open-nmap-sS",
@@ -290,7 +356,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [80]
+          "ports": [
+            80
+          ]
         },
         "filter": [
           "internal",
@@ -301,7 +369,8 @@
           "nmap",
           "syn",
           "high"
-        ]
+        ],
+        "command": "nmap -sS -p 80 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-udp-161-closed-icmp-naabu-udp",
@@ -311,9 +380,20 @@
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
-          "ports": [161]
+          "ports": [
+            161
+          ]
         },
-        "filter": ["internal", "udp", "161", "snmp", "naabu", "icmp", "medium"]
+        "filter": [
+          "internal",
+          "udp",
+          "161",
+          "snmp",
+          "naabu",
+          "icmp",
+          "medium"
+        ],
+        "command": "naabu -host 10.10.10.0/24 -p 161 -udp"
       },
       {
         "id": "t1046-internal-udp-161-closed-icmp-nmap-sU",
@@ -323,9 +403,20 @@
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
-          "ports": [161]
+          "ports": [
+            161
+          ]
         },
-        "filter": ["internal", "udp", "161", "snmp", "nmap", "icmp", "medium"]
+        "filter": [
+          "internal",
+          "udp",
+          "161",
+          "snmp",
+          "nmap",
+          "icmp",
+          "medium"
+        ],
+        "command": "nmap -sU -p 161 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-masscan",
@@ -335,9 +426,20 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [1, 1024]
+          "ports": [
+            1,
+            1024
+          ]
         },
-        "filter": ["internal", "vertical", "tcp", "masscan", "high", "range"]
+        "filter": [
+          "internal",
+          "vertical",
+          "tcp",
+          "masscan",
+          "high",
+          "range"
+        ],
+        "command": "masscan -p1-1024 10.10.10.0/24 --rate=1000"
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-naabu-syn",
@@ -347,7 +449,10 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [1, 1024]
+          "ports": [
+            1,
+            1024
+          ]
         },
         "filter": [
           "internal",
@@ -357,7 +462,8 @@
           "syn",
           "high",
           "range"
-        ]
+        ],
+        "command": "naabu -host 10.10.10.0/24 -p 1-1024 -syn"
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-nmap-sS",
@@ -367,7 +473,10 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [1, 1024]
+          "ports": [
+            1,
+            1024
+          ]
         },
         "filter": [
           "internal",
@@ -377,7 +486,8 @@
           "syn",
           "high",
           "range"
-        ]
+        ],
+        "command": "nmap -sS -p 1-1024 10.10.10.0/24"
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-rustscan",
@@ -387,9 +497,20 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [1, 1024]
+          "ports": [
+            1,
+            1024
+          ]
         },
-        "filter": ["internal", "vertical", "tcp", "rustscan", "high", "range"]
+        "filter": [
+          "internal",
+          "vertical",
+          "tcp",
+          "rustscan",
+          "high",
+          "range"
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 1-1024"
       },
       {
         "id": "t1046-internal-vertical-tcp-top1000-mixed-nmap-sS",
@@ -399,7 +520,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [1000]
+          "ports": [
+            1000
+          ]
         },
         "filter": [
           "internal",
@@ -409,11 +532,11 @@
           "syn",
           "high",
           "top1000"
-        ]
+        ],
+        "command": "nmap -sS --top-ports 1000 10.10.10.0/24"
       }
     ]
   },
-
   "metadata": {
     "domain": "enterprise",
     "confidence": "high",

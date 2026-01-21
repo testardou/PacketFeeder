@@ -22,6 +22,11 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
         </span>
       </div>
       <p className="text-sm text-muted-foreground">{dataset.description}</p>
+      {dataset.command && (
+        <p className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-1 rounded break-all">
+          {dataset.command}
+        </p>
+      )}
       <div className="flex items-center gap-3 text-xs">
         <span className="px-2 py-1 bg-secondary rounded-md">
           {dataset.scope.protocol.toUpperCase()}
