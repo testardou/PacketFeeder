@@ -238,7 +238,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - [ ] MITRE ATT&CK–aligned attack scenarios
   - [ ] Discovery (TA0007)
     - [x] T1046 — Network Service Discovery
-    - [ ] T1018 — Remote System Discovery
+    - [x] T1018 — Remote System Discovery
     - [ ] T1135 — Network Share Discovery
     - [ ] T1016 — System Network Configuration Discovery
     - [ ] T1049 — System Network Connections Discovery
