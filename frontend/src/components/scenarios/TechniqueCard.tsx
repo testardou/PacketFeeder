@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
-import { ExternalLink, Search, X } from "lucide-react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { ExternalLink, Search, X, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Technique, PcapDataset } from "@/types/scenarios";
-import { DatasetFilters } from "./DatasetFilters";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface TechniqueCardProps {
   technique: Technique;
@@ -23,6 +23,29 @@ export function TechniqueCard({
 }: TechniqueCardProps) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const filterDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Get all available filters from datasets
+  const availableFilters = useMemo(() => {
+    if (!pcapData || !Array.isArray(pcapData.datasets)) return [];
+    const filterSet = new Set<string>();
+    pcapData.datasets.forEach((dataset) => {
+      if (dataset.filter) {
+        dataset.filter.forEach((filter) => filterSet.add(filter));
+      }
+    });
+    return Array.from(filterSet).sort();
+  }, [pcapData]);
+
+  // Filter available filters based on search query
+  const filteredAvailableFilters = useMemo(() => {
+    if (!searchQuery.trim()) return availableFilters;
+    const query = searchQuery.toLowerCase().trim();
+    return availableFilters.filter((filter) =>
+      filter.toLowerCase().includes(query)
+    );
+  }, [availableFilters, searchQuery]);
 
   // Filter datasets based on selected filters and search query
   const filteredDatasets = useMemo(() => {
@@ -41,117 +64,43 @@ export function TechniqueCard({
       });
     }
 
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((dataset) => {
-        return (
-          dataset.name.toLowerCase().includes(query) ||
-          dataset.description.toLowerCase().includes(query) ||
-          dataset.file.toLowerCase().includes(query) ||
-          dataset.id.toLowerCase().includes(query)
-        );
-      });
-    }
-
     return filtered;
-  }, [pcapData, selectedFilters, searchQuery]);
+  }, [pcapData, selectedFilters]);
 
-  // Determine which category a filter belongs to (same logic as DatasetFilters)
-  const getFilterCategory = (filter: string): string => {
-    // Numbers only = ports
-    if (/^\d+$/.test(filter)) {
-      return "ports";
-    }
-    // Short words (2-4 characters) in uppercase = protocols/acronyms
-    else if (
-      filter.length >= 2 &&
-      filter.length <= 4 &&
-      filter === filter.toUpperCase()
-    ) {
-      return "protocols";
-    }
-    // Very short words (3-5 characters) in lowercase = services/acronyms
-    else if (
-      filter.length >= 3 &&
-      filter.length <= 5 &&
-      /^[a-z]+$/.test(filter)
-    ) {
-      return "services";
-    }
-    // Short words (4-6 characters) = attributes/criticality
-    else if (
-      filter.length >= 4 &&
-      filter.length <= 6 &&
-      /^[a-z]+$/.test(filter)
-    ) {
-      return "attributes";
-    }
-    // Medium words (7-10 characters) = types/actions
-    else if (
-      filter.length >= 7 &&
-      filter.length <= 10 &&
-      /^[a-z]+$/.test(filter)
-    ) {
-      return "scanType";
-    }
-    // Long words (>10 characters) or with hyphens = tools/compounds
-    else if (filter.length > 10 || /-/.test(filter)) {
-      return "tools";
-    }
-    // Words with numbers = ports/versions
-    else if (/\d/.test(filter)) {
-      return "ports";
-    }
-    return "other";
-  };
-
-  // Get all filters in the same category as the given filter
-  const getFiltersInSameCategory = (filter: string): string[] => {
-    if (!pcapData?.datasets) return [];
-    const category = getFilterCategory(filter);
-    const filterSet = new Set<string>();
-
-    pcapData.datasets.forEach((dataset) => {
-      if (dataset.filter) {
-        dataset.filter.forEach((f) => {
-          if (getFilterCategory(f) === category) {
-            filterSet.add(f);
-          }
-        });
-      }
-    });
-
-    return Array.from(filterSet);
-  };
-
+  // Handle filter toggle
   const handleFilterToggle = (filter: string) => {
     setSelectedFilters((prev) => {
-      // If filter is already selected, deselect it
       if (prev.includes(filter)) {
         return prev.filter((f) => f !== filter);
       }
-
-      // Get all filters in the same category
-      const filtersInSameCategory = getFiltersInSameCategory(filter);
-
-      // Remove all filters from the same category
-      const withoutSameCategory = prev.filter(
-        (f) => !filtersInSameCategory.includes(f)
-      );
-
-      // Add the new filter
-      return [...withoutSameCategory, filter];
+      return [...prev, filter];
     });
   };
 
   const handleClearFilters = () => {
     setSelectedFilters([]);
-  };
-
-  const handleClearSearch = () => {
     setSearchQuery("");
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterDropdownRef.current &&
+        !filterDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsFilterDropdownOpen(false);
+      }
+    };
+
+    if (isFilterDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterDropdownOpen]);
 
   return (
     <div className="space-y-4 p-4 bg-muted/50 rounded-lg border">
@@ -226,36 +175,132 @@ export function TechniqueCard({
             </p>
           </div>
 
-          {/* Search input */}
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search datasets..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-8 h-8 text-xs"
-            />
-            {searchQuery && (
-              <button
+          {/* Multi-select avec barre de recherche intégrée */}
+          <div className="relative" ref={filterDropdownRef}>
+            <div className="space-y-2">
+              {/* Bouton trigger pour ouvrir le multi-select */}
+              <Button
                 type="button"
-                onClick={handleClearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                variant="outline"
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                className="w-full justify-between h-9 text-xs"
               >
-                <X className="h-3 w-3" />
-              </button>
-            )}
-          </div>
+                <span className="flex items-center gap-2">
+                  <Search className="h-3.5 w-3.5" />
+                  {selectedFilters.length > 0
+                    ? `${selectedFilters.length} filtre${
+                        selectedFilters.length > 1 ? "s" : ""
+                      } sélectionné${selectedFilters.length > 1 ? "s" : ""}`
+                    : "Rechercher et filtrer les datasets"}
+                </span>
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 transition-transform",
+                    isFilterDropdownOpen && "rotate-180"
+                  )}
+                />
+              </Button>
 
-          {/* Filter component */}
-          {pcapData.datasets.length > 0 && (
-            <DatasetFilters
-              datasets={pcapData.datasets}
-              selectedFilters={selectedFilters}
-              onFilterToggle={handleFilterToggle}
-              onClearFilters={handleClearFilters}
-            />
-          )}
+              {/* Tags des filtres sélectionnés */}
+              {selectedFilters.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedFilters.map((filter) => (
+                    <span
+                      key={filter}
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-md text-xs"
+                    >
+                      {filter}
+                      <button
+                        type="button"
+                        onClick={() => handleFilterToggle(filter)}
+                        className="hover:text-primary/70"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {selectedFilters.length > 0 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearFilters}
+                      className="text-xs"
+                    >
+                      Tout effacer
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {/* Dropdown avec barre de recherche */}
+              {isFilterDropdownOpen && (
+                <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-md">
+                  {/* Barre de recherche intégrée */}
+                  <div className="p-2 border-b">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Rechercher un filtre..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-7 pr-7 h-8 text-xs"
+                        autoFocus
+                      />
+                      {searchQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Liste des filtres */}
+                  <div className="max-h-[200px] overflow-auto">
+                    <div className="p-2 space-y-1">
+                      {filteredAvailableFilters.length > 0 ? (
+                        filteredAvailableFilters.map((filter) => {
+                          const isSelected = selectedFilters.includes(filter);
+                          return (
+                            <button
+                              key={filter}
+                              type="button"
+                              onClick={() => handleFilterToggle(filter)}
+                              className={cn(
+                                "w-full flex items-center gap-2 px-2 py-1.5 rounded-sm text-xs text-left hover:bg-accent transition-colors",
+                                isSelected && "bg-accent"
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  "flex h-4 w-4 items-center justify-center rounded-sm border",
+                                  isSelected
+                                    ? "bg-primary border-primary text-primary-foreground"
+                                    : "border-input"
+                                )}
+                              >
+                                {isSelected && <Check className="h-3 w-3" />}
+                              </div>
+                              <span>{filter}</span>
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <div className="p-4 text-center text-xs text-muted-foreground">
+                          Aucun filtre trouvé
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Scrollable dataset list */}
           <ScrollArea className="h-[400px]">
@@ -327,7 +372,7 @@ export function TechniqueCard({
                 })
               ) : (
                 <div className="p-4 text-center text-xs text-muted-foreground border rounded-md bg-muted/30">
-                  No datasets match the selected filters or search query.
+                  Aucun dataset ne correspond aux filtres sélectionnés.
                 </div>
               )}
             </div>

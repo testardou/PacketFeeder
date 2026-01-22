@@ -99,6 +99,10 @@ def parse_ip_other(pkt, index=None):
     if not ip:
         return None
 
+    # Check if IP layer has payload
+    payload = bytes(ip.payload) if ip.payload else b""
+    has_payload = len(payload) > 0
+
     return {
         "id": index,
         "timestamp": pkt.time,
@@ -108,8 +112,8 @@ def parse_ip_other(pkt, index=None):
         "sport": None,
         "dport": None,
         "length": len(pkt),
-        "has_payload": False,
-        "payload_len": 0,
+        "has_payload": has_payload,
+        "payload_len": len(payload),
     }
 
 def parse_packet(pkt, index):

@@ -3,9 +3,7 @@
     "technique_id": "T1046",
     "technique_name": "Network Service Discovery",
     "url": "https://attack.mitre.org/techniques/T1046/",
-    "tactics": [
-      "TA0043"
-    ]
+    "tactics": ["TA0043"]
   },
   "description": "Adversaries scan victim networks to identify open ports and available services that can be targeted for exploitation.",
   "artifacts": [
@@ -25,9 +23,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "external",
@@ -38,7 +34,7 @@
           "syn",
           "high"
         ],
-        "command": "nmap -sS -p 22 10.10.10.0/24"
+        "command": "nmap -sS -Pn -n -p 22 10.10.10.0/24"
       },
       {
         "id": "t1046-external-horizontal-tcp-443-open-masscan",
@@ -48,9 +44,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            443
-          ]
+          "ports": [443]
         },
         "filter": [
           "external",
@@ -71,9 +65,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            443
-          ]
+          "ports": [443]
         },
         "filter": [
           "external",
@@ -95,10 +87,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            80,
-            443
-          ]
+          "ports": [80, 443]
         },
         "filter": [
           "external",
@@ -121,9 +110,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            80
-          ]
+          "ports": [80]
         },
         "filter": [
           "external",
@@ -145,9 +132,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            80
-          ]
+          "ports": [80]
         },
         "filter": [
           "external",
@@ -169,19 +154,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
-        "filter": [
-          "internal",
-          "connect",
-          "tcp",
-          "22",
-          "ssh",
-          "naabu",
-          "high"
-        ],
+        "filter": ["internal", "connect", "tcp", "22", "ssh", "naabu", "high"],
         "command": "naabu -host 10.10.10.0/24 -p 22 -nc"
       },
       {
@@ -192,19 +167,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
-        "filter": [
-          "internal",
-          "connect",
-          "tcp",
-          "22",
-          "ssh",
-          "nmap",
-          "high"
-        ],
+        "filter": ["internal", "connect", "tcp", "22", "ssh", "nmap", "high"],
         "command": "nmap -sT -p 22 10.10.10.0/24"
       },
       {
@@ -215,9 +180,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "internal",
@@ -238,9 +201,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "internal",
@@ -261,9 +222,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "internal",
@@ -285,9 +244,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "internal",
@@ -309,9 +266,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            22
-          ]
+          "ports": [22]
         },
         "filter": [
           "internal",
@@ -332,9 +287,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            443
-          ]
+          "ports": [443]
         },
         "filter": [
           "internal",
@@ -356,9 +309,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            80
-          ]
+          "ports": [80]
         },
         "filter": [
           "internal",
@@ -380,19 +331,9 @@
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
-          "ports": [
-            161
-          ]
+          "ports": [161]
         },
-        "filter": [
-          "internal",
-          "udp",
-          "161",
-          "snmp",
-          "naabu",
-          "icmp",
-          "medium"
-        ],
+        "filter": ["internal", "udp", "161", "snmp", "naabu", "icmp", "medium"],
         "command": "naabu -host 10.10.10.0/24 -p 161 -udp"
       },
       {
@@ -403,19 +344,9 @@
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
-          "ports": [
-            161
-          ]
+          "ports": [161]
         },
-        "filter": [
-          "internal",
-          "udp",
-          "161",
-          "snmp",
-          "nmap",
-          "icmp",
-          "medium"
-        ],
+        "filter": ["internal", "udp", "161", "snmp", "nmap", "icmp", "medium"],
         "command": "nmap -sU -p 161 10.10.10.0/24"
       },
       {
@@ -426,19 +357,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            1,
-            1024
-          ]
+          "ports": [1, 1024]
         },
-        "filter": [
-          "internal",
-          "vertical",
-          "tcp",
-          "masscan",
-          "high",
-          "range"
-        ],
+        "filter": ["internal", "vertical", "tcp", "masscan", "high", "range"],
         "command": "masscan -p1-1024 10.10.10.0/24 --rate=1000"
       },
       {
@@ -449,10 +370,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            1,
-            1024
-          ]
+          "ports": [1, 1024]
         },
         "filter": [
           "internal",
@@ -473,10 +391,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            1,
-            1024
-          ]
+          "ports": [1, 1024]
         },
         "filter": [
           "internal",
@@ -497,19 +412,9 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            1,
-            1024
-          ]
+          "ports": [1, 1024]
         },
-        "filter": [
-          "internal",
-          "vertical",
-          "tcp",
-          "rustscan",
-          "high",
-          "range"
-        ],
+        "filter": ["internal", "vertical", "tcp", "rustscan", "high", "range"],
         "command": "rustscan -a 10.10.10.0/24 -p 1-1024"
       },
       {
@@ -520,9 +425,7 @@
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
-          "ports": [
-            1000
-          ]
+          "ports": [1000]
         },
         "filter": [
           "internal",
