@@ -18,30 +18,99 @@
   "datasets": {
     "pcaps": [
       {
-        "id": "t1018-external-unauth-traceroute",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth__traceroute.pcap",
-        "name": "External traceroute (unauth)",
-        "description": "External traceroute showing network path discovery.",
+        "id": "t1018-internal-unauth-arp-sweep-arp-scan",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_arp_sweep__arp-scan.pcap",
+        "name": "Internal ARP sweep (arp-scan)",
+        "description": "Internal ARP sweep using arp-scan for host discovery on local network.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "arp",
+          "ports": []
+        },
+        "filter": ["internal", "unauth", "arp", "sweep", "arp-scan", "high"],
+        "command": "arp-scan --interface enp2s0 --localnet"
+      },
+      {
+        "id": "t1018-internal-unauth-icmp-sweep-fping",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_icmp_sweep__fping.pcap",
+        "name": "Internal ICMP sweep (fping)",
+        "description": "Internal ICMP ping sweep using fping showing echo requests to multiple hosts.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "icmp",
+          "ports": []
+        },
+        "filter": ["internal", "unauth", "icmp", "sweep", "fping", "high"],
+        "command": "fping -a -g 10.10.10.0/24"
+      },
+      {
+        "id": "t1018-internal-unauth-hostscan-nmap-sn",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_hostscan__nmap-sn.pcap",
+        "name": "Internal host scan (nmap -sn)",
+        "description": "Internal host discovery scan using nmap -sn (ping scan) showing ICMP and ARP probes.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "icmp",
+          "ports": []
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "hostscan",
+          "nmap",
+          "sn",
+          "icmp",
+          "high"
+        ],
+        "command": "nmap -sn 10.10.10.0/24"
+      },
+      {
+        "id": "t1018-internal-unauth-traceroute-dc",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_traceroute__dc.pcap",
+        "name": "Internal traceroute to domain controller",
+        "description": "Internal traceroute to domain controller showing network path discovery.",
         "criticality": "medium",
         "scope": {
           "protocol": "icmp",
           "ports": []
         },
-        "filter": ["external", "unauth", "traceroute", "icmp", "medium"],
-        "command": "traceroute -n 10.10.10.40"
+        "filter": ["internal", "unauth", "traceroute", "dc", "icmp", "medium"],
+        "command": "traceroute -n 10.10.10.30"
       },
       {
-        "id": "t1018-external-unauth-dns-srv-dig",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth_dns_srv__dig.pcap",
-        "name": "External DNS SRV query (dig)",
-        "description": "External DNS SRV query using dig for service discovery.",
+        "id": "t1018-internal-unauth-dns-ptr-dig-x",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_ptr__dig-x.pcap",
+        "name": "Internal DNS PTR query (dig -x)",
+        "description": "Internal DNS PTR reverse lookup query using dig -x for hostname discovery.",
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
           "ports": [53]
         },
         "filter": [
-          "external",
+          "internal",
+          "unauth",
+          "dns",
+          "ptr",
+          "dig",
+          "udp",
+          "53",
+          "medium"
+        ],
+        "command": "dig @10.10.10.30 -x 10.10.10.1"
+      },
+      {
+        "id": "t1018-internal-unauth-dns-srv-dig",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_srv__dig.pcap",
+        "name": "Internal DNS SRV query (dig)",
+        "description": "Internal DNS SRV query using dig for service discovery.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
           "unauth",
           "dns",
           "srv",
@@ -53,17 +122,26 @@
         "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
       },
       {
-        "id": "t1018-external-unauth-icmp-sweep-fping",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth_icmp_sweep__fping.pcap",
-        "name": "External ICMP sweep (fping)",
-        "description": "External ICMP ping sweep using fping showing echo requests to multiple hosts.",
+        "id": "t1018-internal-unauth-nbns-query-nmblookup",
+        "file": "pcaps/techniques/t1018/t1018_internal_unauth_nbns_query__nmblookup.pcap",
+        "name": "Internal NetBIOS Name Service query (nmblookup)",
+        "description": "Internal NetBIOS Name Service (NBNS) query using nmblookup for Windows host discovery.",
         "criticality": "high",
         "scope": {
-          "protocol": "icmp",
-          "ports": []
+          "protocol": "udp",
+          "ports": [137]
         },
-        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high"],
-        "command": "fping -a -g 10.10.10.0/24"
+        "filter": [
+          "internal",
+          "unauth",
+          "nbns",
+          "netbios",
+          "nmblookup",
+          "udp",
+          "137",
+          "high"
+        ],
+        "command": "nmblookup -A 10.10.10.40"
       },
       {
         "id": "t1018-internal-auth-ad-computers-ldapsearch-389",
@@ -131,52 +209,43 @@
         "command": "nltest /dclist:ad.packetfeeder.lab"
       },
       {
-        "id": "t1018-internal-unauth-arp-sweep-arp-scan",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_arp_sweep__arp-scan.pcap",
-        "name": "Internal ARP sweep (arp-scan)",
-        "description": "Internal ARP sweep using arp-scan for host discovery on local network.",
+        "id": "t1018-external-unauth-icmp-sweep-fping",
+        "file": "pcaps/techniques/t1018/t1018_external_unauth_icmp_sweep__fping.pcap",
+        "name": "External ICMP sweep (fping)",
+        "description": "External ICMP ping sweep using fping showing echo requests to multiple hosts.",
         "criticality": "high",
         "scope": {
-          "protocol": "arp",
+          "protocol": "icmp",
           "ports": []
         },
-        "filter": ["internal", "unauth", "arp", "sweep", "arp-scan", "high"],
-        "command": "arp-scan --interface enp2s0 --localnet"
+        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high"],
+        "command": "fping -a -g 10.10.10.0/24"
       },
       {
-        "id": "t1018-internal-unauth-dns-ptr-dig-x",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_ptr__dig-x.pcap",
-        "name": "Internal DNS PTR query (dig -x)",
-        "description": "Internal DNS PTR reverse lookup query using dig -x for hostname discovery.",
+        "id": "t1018-external-unauth-traceroute",
+        "file": "pcaps/techniques/t1018/t1018_external_unauth__traceroute.pcap",
+        "name": "External traceroute (unauth)",
+        "description": "External traceroute showing network path discovery.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "icmp",
+          "ports": []
+        },
+        "filter": ["external", "unauth", "traceroute", "icmp", "medium"],
+        "command": "traceroute -n 10.10.10.40"
+      },
+      {
+        "id": "t1018-external-unauth-dns-srv-dig",
+        "file": "pcaps/techniques/t1018/t1018_external_unauth_dns_srv__dig.pcap",
+        "name": "External DNS SRV query (dig)",
+        "description": "External DNS SRV query using dig for service discovery.",
         "criticality": "medium",
         "scope": {
           "protocol": "udp",
           "ports": [53]
         },
         "filter": [
-          "internal",
-          "unauth",
-          "dns",
-          "ptr",
-          "dig",
-          "udp",
-          "53",
-          "medium"
-        ],
-        "command": "dig @10.10.10.30 -x 10.10.10.1"
-      },
-      {
-        "id": "t1018-internal-unauth-dns-srv-dig",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_dns_srv__dig.pcap",
-        "name": "Internal DNS SRV query (dig)",
-        "description": "Internal DNS SRV query using dig for service discovery.",
-        "criticality": "medium",
-        "scope": {
-          "protocol": "udp",
-          "ports": [53]
-        },
-        "filter": [
-          "internal",
+          "external",
           "unauth",
           "dns",
           "srv",
@@ -186,75 +255,6 @@
           "medium"
         ],
         "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
-      },
-      {
-        "id": "t1018-internal-unauth-hostscan-nmap-sn",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_hostscan__nmap-sn.pcap",
-        "name": "Internal host scan (nmap -sn)",
-        "description": "Internal host discovery scan using nmap -sn (ping scan) showing ICMP and ARP probes.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "icmp",
-          "ports": []
-        },
-        "filter": [
-          "internal",
-          "unauth",
-          "hostscan",
-          "nmap",
-          "sn",
-          "icmp",
-          "high"
-        ],
-        "command": "nmap -sn 10.10.10.0/24"
-      },
-      {
-        "id": "t1018-internal-unauth-icmp-sweep-fping",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_icmp_sweep__fping.pcap",
-        "name": "Internal ICMP sweep (fping)",
-        "description": "Internal ICMP ping sweep using fping showing echo requests to multiple hosts.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "icmp",
-          "ports": []
-        },
-        "filter": ["internal", "unauth", "icmp", "sweep", "fping", "high"],
-        "command": "fping -a -g 10.10.10.0/24"
-      },
-      {
-        "id": "t1018-internal-unauth-nbns-query-nmblookup",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_nbns_query__nmblookup.pcap",
-        "name": "Internal NetBIOS Name Service query (nmblookup)",
-        "description": "Internal NetBIOS Name Service (NBNS) query using nmblookup for Windows host discovery.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "udp",
-          "ports": [137]
-        },
-        "filter": [
-          "internal",
-          "unauth",
-          "nbns",
-          "netbios",
-          "nmblookup",
-          "udp",
-          "137",
-          "high"
-        ],
-        "command": "nmblookup -A 10.10.10.40"
-      },
-      {
-        "id": "t1018-internal-unauth-traceroute-dc",
-        "file": "pcaps/techniques/t1018/t1018_internal_unauth_traceroute__dc.pcap",
-        "name": "Internal traceroute to domain controller",
-        "description": "Internal traceroute to domain controller showing network path discovery.",
-        "criticality": "medium",
-        "scope": {
-          "protocol": "icmp",
-          "ports": []
-        },
-        "filter": ["internal", "unauth", "traceroute", "dc", "icmp", "medium"],
-        "command": "traceroute -n 10.10.10.30"
       }
     ]
   },
