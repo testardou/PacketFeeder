@@ -117,7 +117,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - **debian-web**
   - LAB: `lab-ovs` (**DHCP reservation** `10.10.10.40`)
 - **winsrv**
-  - LAB: `lab-ovs` (Windows Server 2025 target host / Active Directory / **DHCP reservation** `10.10.10.30`)
+  - LAB: `lab-ovs` (Windows Server 2025 target host / Domain Controller / **DHCP reservation** `10.10.10.30`)
 - **win11**
   - LAB: `lab-ovs` (Windows 11 target host / **DHCP reservation** `10.10.10.50`)
 - **broker**
@@ -181,7 +181,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
                      |                          |                         |                            |                            |                       |
                      |                          |                         |                            |                            |                       |
         ┌────────────▼─────────────┐  ┌─────────▼─────────────┐  ┌────────▼────────────────┐  ┌────────▼────────────────┐  ┌────────▼───────────┐  ┌────────▼───────────┐
-        │        pfSense VM        │  │      attacker VM      │  │     debian-ssh VM       │  │     debian-web VM       │  │   winsrv VM (AD)   │  │      win 11 VM     │
+        │        pfSense VM        │  │      attacker VM      │  │     debian-ssh VM       │  │     debian-web VM       │  │   winsrv VM (DC)   │  │      win 11 VM     │
         │--------------------------│  │-----------------------│  │-------------------------│  │-------------------------│  │--------------------│  │--------------------│
         │ LAN NIC (lab-ovs):       │  │ LAB NIC (lab-ovs):    │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs):      │  │ LAB NIC (lab-ovs): │  │ LAB NIC (lab-ovs): │
         │ 10.10.10.1/24            │  │ 10.10.10.10/24        │  │ 10.10.10.20/24          │  │ 10.10.10.40/24          │  │ 10.10.10.30/24     │  │ 10.10.10.50/24     │
