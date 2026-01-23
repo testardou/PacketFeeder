@@ -234,7 +234,9 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 ### Scenario Mode
 
-- [ ] PCAP-based scenario definitions
+- [x] PCAP-based scenario definitions
+- [x] Frontend scenatio mode
+- [ ] CLI scenario mode
 - [ ] MITRE ATT&CK–aligned attack scenarios
   - [ ] Discovery (TA0007)
     - [x] T1046 — Network Service Discovery
