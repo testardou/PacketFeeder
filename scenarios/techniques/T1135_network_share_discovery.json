@@ -1,0 +1,80 @@
+{
+  "mitre": {
+    "technique_id": "T1135",
+    "technique_name": "Network Share Discovery",
+    "url": "https://attack.mitre.org/techniques/T1135/",
+    "tactics": ["TA0007"]
+  },
+  "description": "Adversaries may look for folders and drives accessible on remote systems as a means of identifying sources of information to gather as a precursor for Collection and to identify potential systems of interest for Lateral Movement.",
+  "artifacts": [
+    "SMB protocol negotiation packets (TCP/445)",
+    "SMB Tree Connect requests to IPC$ and ADMIN$ shares",
+    "SMB Tree Connect requests to named shares (C$, D$, etc.)",
+    "SMB2/3 session establishment and authentication attempts",
+    "NetBIOS Session Service (NBSS) traffic on TCP/139",
+    "NFS mount requests and RPC calls (TCP/2049, UDP/2049)",
+    "RPC endpoint mapper queries (TCP/135) for SMB-related services",
+    "SMB enumeration commands (net view, net share, smbclient -L)",
+    "SMB2/3 tree connect responses indicating share availability",
+    "SMB error responses (STATUS_ACCESS_DENIED, STATUS_BAD_NETWORK_NAME)"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1135-internal-domainadmin-smb-share-enum-net-view-all",
+        "file": "pcaps/techniques/T1135/t1135_internal_domainadmin_smb_share_enum__net_view_all.pcap",
+        "name": "Internal domain admin SMB share enumeration (net view /all)",
+        "description": "Internal authenticated domain admin SMB share enumeration using net view /all command showing comprehensive share discovery.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "share-enum",
+          "net-view",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "net view \\\\10.10.10.30 /all"
+      },
+      {
+        "id": "t1135-internal-domainadmin-smb-unc-browse-adminshares-cmd-dir",
+        "file": "pcaps/techniques/T1135/t1135_internal_domainadmin_smb_unc_browse_adminshares__cmd_dir.pcap",
+        "name": "Internal domain admin SMB UNC browse admin shares (cmd dir)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "cmd",
+          "dir",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "dir \\\\10.10.10.30\\C$;dir \\\\10.10.10.30\\ADMIN$"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
