@@ -68,6 +68,185 @@
           "high"
         ],
         "command": "dir \\\\10.10.10.30\\C$;dir \\\\10.10.10.30\\ADMIN$"
+      },
+      {
+        "id": "t1135-internal-domainadmin-smb-unc-browse-adminshares-impacket-smbclient-ls",
+        "file": "pcaps/techniques/T1135/t1135_internal_domainadmin_smb_unc_browse_adminshares__impacket_smbclient_ls.pcap",
+        "name": "Internal domain admin SMB UNC browse admin shares (impacket-smbclient ls)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"use C$\nls\nuse ADMIN$\nls\nexit\n\" | smbclient.py 'AD/Administrator'@10.10.10.30 -port 445"
+      }, 
+      {
+        "id": "t1135-internal-user-smb-share-enum-net-view-all",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_share_enum__net_view_all.pcap",
+        "name": "Internal user SMB share enumeration (net view /all)",
+        "description": "Internal authenticated user SMB share enumeration using net view /all command showing comprehensive share discovery.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "share-enum",
+          "net-view",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "net view \\\\10.10.10.30 /all"
+      },
+      {
+        "id": "t1135-internal-user-smb-unc-browse-success-cmd-dir",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_unc_browse_success__cmd_dir.pcap",
+        "name": "Internal user SMB UNC browse public shares (cmd dir)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "unc",
+          "browse",
+          "user",
+          "cmd",
+          "dir",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "dir \\\\10.10.10.30\\Public;dir \\\\10.10.10.30\\Scans$"
+      },
+      {
+        "id": "t1135-internal-user-smb-unc-browse-denied-cmd-dir",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_unc_browse_denied__cmd_dir.pcap",
+        "name": "Internal user SMB UNC browse admin shares (cmd dir)",
+        "description": "Internal authenticated user SMB UNC path browsing of admin shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "cmd",
+          "dir",
+          "tcp",
+          "445"
+        ],
+        "command": "dir \\\\10.10.10.30\\ADMIN$"
+      },
+      {
+        "id": "t1135-internal-user-smb-unc-browse-denied-impacket-smbclient-use",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_unc_browse_denied__impacket_smbclient_use.pcap",
+        "name": "Internal user SMB UNC browse admin shares (impacket-smbclient use)",
+        "description": "Internal authenticated user SMB UNC path browsing attempt of admin shares using impacket-smbclient use command showing access denied responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "use",
+          "denied",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"use C$\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 445"
+      },
+      {
+        "id": "t1135-internal-user-smb-share-enum-impacket-smbclient-shares",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_share_enum__impacket_smbclient_shares.pcap",
+        "name": "Internal user SMB share enumeration (impacket-smbclient shares)",
+        "description": "Internal authenticated user SMB share enumeration using impacket-smbclient shares command showing Tree Connect requests and share discovery.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "share-enum",
+          "impacket",
+          "smbclient",
+          "shares",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"shares\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 445"
+      },
+      {
+        "id": "t1135-internal-user-smb-unc-browse-success-impacket-smbclient-ls",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_unc_browse_success__impacket_smbclient_ls.pcap",
+        "name": "Internal user SMB UNC browse public shares (impacket-smbclient ls)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "unc",
+          "browse",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"use Public\nls\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 445"
       }
     ]
   },
