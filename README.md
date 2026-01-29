@@ -242,10 +242,10 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1046 — Network Service Discovery
     - [x] T1018 — Remote System Discovery
     - [x] T1135 — Network Share Discovery
-    - [ ] T1016 — System Network Configuration Discovery
-    - [ ] T1049 — System Network Connections Discovery
   - [ ] Credential Access (TA0006)
-    - [ ] T1110 — Brute Force
+    - [ ] T1110.001 – Password Guessing
+    - [ ] T1110.003 – Password Spraying
+    - [ ] T1110.004 – Credential Stuffing
   - [ ] Lateral Movement (TA0008)
     - [ ] T1021 — Remote Services
 - [ ] Repeatable and deterministic scenario execution
