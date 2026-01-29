@@ -247,6 +247,142 @@
           "high"
         ],
         "command": "printf \"use Public\nls\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 445"
+      },
+      {
+        "id": "t1135-internal-domainadmin-smb-netbios-share-enum-impacket-smbclient-shares",
+        "file": "pcaps/techniques/T1135/t1135_internal_domainadmin_smb_netbios_share_enum__impacket_smbclient_shares.pcap",
+        "name": "Internal domain admin SMB NetBIOS share enumeration (impacket-smbclient shares)",
+        "description": "Internal authenticated domain admin SMB share enumeration over NetBIOS Session Service using impacket-smbclient shares command showing Tree Connect requests.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [139]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "netbios",
+          "share-enum",
+          "impacket",
+          "smbclient",
+          "shares",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"shares\nexit\n\" | smbclient.py 'AD/Administrator'@10.10.10.30 -port 139"
+      },
+      {
+        "id": "t1135-internal-domainadmin-smb-netbios-unc-browse-adminshares-impacket-smbclient-ls",
+        "file": "pcaps/techniques/T1135/t1135_internal_domainadmin_smb_netbios_unc_browse_adminshares__impacket_smbclient_ls.pcap",
+        "name": "Internal domain admin SMB NetBIOS UNC browse admin shares (impacket-smbclient ls)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares over NetBIOS Session Service using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [139]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "netbios",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"use C$\nls\nuse ADMIN$\nls\nexit\n\" | smbclient.py 'AD/Administrator'@10.10.10.30 -port 139"
+      },
+      {
+        "id": "t1135-internal-user-smb-netbios-share-enum-impacket-smbclient-shares",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_netbios_share_enum__impacket_smbclient_shares.pcap",
+        "name": "Internal user SMB NetBIOS share enumeration (impacket-smbclient shares)",
+        "description": "Internal authenticated user SMB share enumeration over NetBIOS Session Service using impacket-smbclient shares command showing Tree Connect requests and share discovery.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [139]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "netbios",
+          "share-enum",
+          "impacket",
+          "smbclient",
+          "shares",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"shares\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 139"
+      },
+      {
+        "id": "t1135-internal-user-smb-netbios-unc-browse-denied-impacket-smbclient-use",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_netbios_unc_browse_denied__impacket_smbclient_use.pcap",
+        "name": "Internal user SMB NetBIOS UNC browse admin shares (impacket-smbclient use)",
+        "description": "Internal authenticated user SMB UNC path browsing attempt of admin shares over NetBIOS Session Service using impacket-smbclient use command showing access denied responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [139]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "netbios",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "use",
+          "denied",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"use C$\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 139"
+      },
+      {
+        "id": "t1135-internal-user-smb-netbios-unc-browse-success-impacket-smbclient-ls",
+        "file": "pcaps/techniques/T1135/t1135_internal_user_smb_netbios_unc_browse_success__impacket_smbclient_ls.pcap",
+        "name": "Internal user SMB NetBIOS UNC browse public shares (impacket-smbclient ls)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares over NetBIOS Session Service using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [139]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "netbios",
+          "unc",
+          "browse",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"use Public\nls\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 139"
       }
     ]
   },
