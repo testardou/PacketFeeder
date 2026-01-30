@@ -1,0 +1,109 @@
+{
+  "mitre": {
+    "technique_id": "T1087.002",
+    "technique_name": "Account Discovery: Domain Account",
+    "url": "https://attack.mitre.org/techniques/T1087/002/",
+    "tactics": ["TA0007"]
+  },
+  "description": "Adversaries may attempt to get a listing of domain accounts. This information can help adversaries determine which domain accounts exist on a system to aid in follow-on behavior.",
+  "artifacts": [
+    "RPC endpoint mapper connections (TCP/135) for domain account enumeration",
+    "SMB protocol negotiation packets (TCP/445) associated with domain account queries",
+    "LDAP queries (TCP/389, TCP/636) for domain user and group enumeration",
+    "NetBIOS Session Service (NBSS) traffic on TCP/139 for domain account discovery",
+    "RPC calls to SAMR (Security Account Manager Remote) protocol for account enumeration",
+    "RPC calls to LSARPC (Local Security Authority Remote) protocol for account enumeration",
+    "Domain controller responses containing user and group account information",
+    "Sequential or patterned account enumeration behavior"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1087.002-internal-auth-domain-users-enum-net",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_enum__net.pcap",
+        "name": "Internal domain users enumeration (net user)",
+        "description": "Internal authenticated domain users enumeration using net user command showing RPC calls to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "users",
+          "enum",
+          "net",
+          "rpc",
+          "smb",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "net user /domain"
+      },
+      {
+        "id": "t1087.002-internal-auth-domain-users-group-enum-net",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_group_enum__net.pcap",
+        "name": "Internal domain users group enumeration (net group)",
+        "description": "Internal authenticated domain users group enumeration using net group command showing RPC calls to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "users",
+          "group",
+          "enum",
+          "net",
+          "rpc",
+          "smb",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "net group \"Domain Users\" /domain"
+      },
+      {
+        "id": "t1087.002-internal-auth-domain-admins-group-enum-net",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_admins_group_enum__net.pcap",
+        "name": "Internal domain admins group enumeration (net group)",
+        "description": "Internal authenticated domain administrators group enumeration using net group command showing RPC calls to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "admins",
+          "group",
+          "enum",
+          "net",
+          "rpc",
+          "smb",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "net group \"Domain Admins\" /domain"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+

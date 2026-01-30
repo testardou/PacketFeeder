@@ -241,6 +241,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Discovery (TA0007)
     - [x] T1046 — Network Service Discovery
     - [x] T1018 — Remote System Discovery
+    - [ ] T1087.002 — Account Discovery: Domain Account
     - [x] T1135 — Network Share Discovery
   - [ ] Credential Access (TA0006)
     - [ ] T1110.001 – Password Guessing
