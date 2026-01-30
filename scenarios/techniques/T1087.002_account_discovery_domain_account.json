@@ -97,6 +97,61 @@
           "high"
         ],
         "command": "net group \"Domain Admins\" /domain"
+      },
+      {
+        "id": "t1087.002-internal-auth-domain-users-enum-rpcclient",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_enum__rpcclient.pcap",
+        "name": "Internal domain users enumeration (rpcclient)",
+        "description": "Internal authenticated domain users enumeration using rpcclient command showing RPC calls to SAMR and LSARPC protocols.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "users",
+          "enum",
+          "rpcclient",
+          "rpc",
+          "samr",
+          "lsarpc",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "rpcclient -U 'AD/bob' 10.10.10.30 -c 'enumdomusers'"
+      },
+      {
+        "id": "t1087.002-internal-auth-domain-admins-group-enum-rpcclient",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_admins_group_enum__rpcclient.pcap",
+        "name": "Internal domain admins group enumeration (rpcclient)",
+        "description": "Internal authenticated domain administrators group enumeration using rpcclient command showing RPC calls to SAMR and LSARPC protocols.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "admins",
+          "group",
+          "enum",
+          "rpcclient",
+          "rpc",
+          "samr",
+          "lsarpc",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "rpcclient -U 'AD/bob' 10.10.10.30 -c 'querygroupmem 512'"
       }
     ]
   },
