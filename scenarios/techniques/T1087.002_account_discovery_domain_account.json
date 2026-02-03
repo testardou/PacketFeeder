@@ -12,6 +12,8 @@
     "LDAP queries (TCP/389, TCP/636) for domain user and group enumeration",
     "LDAP search requests and responses for Active Directory objects (person, group, exchange)",
     "LDAP queries from PowerShell ADSIsearcher for domain account enumeration",
+    "Kerberos AS-REQ requests (TCP/88, UDP/88) for username enumeration",
+    "Kerberos AS-REP responses indicating valid or invalid usernames",
     "NetBIOS Session Service (NBSS) traffic on TCP/139 for domain account discovery",
     "RPC calls to SAMR (Security Account Manager Remote) protocol for account enumeration",
     "RPC calls to LSARPC (Local Security Authority Remote) protocol for account enumeration",
@@ -251,7 +253,56 @@
           "389",
           "high"
         ],
-        "command": "([adsisearcher]\"objectcategory=user\").FindAll();"}
+        "command": "([adsisearcher]\"objectcategory=user\").FindAll();"
+      },
+      {
+        "id": "t1087.002-internal-auth-kerberos-username-enum-kerbrute",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_kerberos_username_enum__kerbrute.pcap",
+        "name": "Internal Kerberos username enumeration (kerbrute authenticated)",
+        "description": "Internal authenticated Kerberos username enumeration using kerbrute showing AS-REQ requests to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "kerberos",
+          "username",
+          "enum",
+          "kerbrute",
+          "as-req",
+          "tcp",
+          "88",
+          "high"
+        ],
+        "command": "kerbrute userenum --dc 10.10.10.30 -d ad.packetfeeder.lab wordlist/user_mixed.txt"
+      },
+      {
+        "id": "t1087.002-internal-unauth-kerberos-username-enum-kerbrute",
+        "file": "pcaps/techniques/T1087.002/t1087.002_internal_unauth_kerberos_username_enum__kerbrute.pcap",
+        "name": "Internal Kerberos username enumeration (kerbrute unauthenticated)",
+        "description": "Internal unauthenticated Kerberos username enumeration using kerbrute showing AS-REQ requests to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "kerberos",
+          "username",
+          "enum",
+          "kerbrute",
+          "as-req",
+          "tcp",
+          "88",
+          "high"
+        ],
+        "command": "kerbrute userenum --dc 10.10.10.30 -d ad.packetfeeder.lab wordlist/user_invalid.txt"
+      }
     ]
   },
   "metadata": {
