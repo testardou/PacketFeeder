@@ -3,6 +3,7 @@ Routes for managing MITRE ATT&CK scenarios.
 """
 import os
 import json
+import re
 from flask import current_app, jsonify
 from flask_smorest import Blueprint
 from backend.config import PROJECT_ROOT
@@ -95,7 +96,8 @@ def get_technique(technique_id):
     try:
         # Security: ensure technique_id is safe
         technique_id = technique_id.upper().strip()
-        if not technique_id.startswith("T") or not technique_id[1:].isdigit():
+        # Accept format T1234 or T1234.001 (sub-techniques)
+        if not re.match(r'^T\d+(\.\d+)?$', technique_id):
             return jsonify({"error": "Invalid technique ID format"}), 400
         
         techniques_dir = os.path.join(SCENARIOS_ROOT, "techniques")
