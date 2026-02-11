@@ -244,7 +244,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1087.002 — Account Discovery: Domain Account
     - [x] T1135 — Network Share Discovery
   - [ ] Credential Access (TA0006)
-    - [ ] T1110.001 – Password Guessing
+    - [x] T1110.001 – Password Guessing
     - [ ] T1110.003 – Password Spraying
     - [ ] T1110.004 – Credential Stuffing
   - [ ] Lateral Movement (TA0008)
