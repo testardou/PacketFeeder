@@ -255,6 +255,29 @@
           "medium"
         ],
         "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
+      },
+      {
+        "id": "t1018-internal-auth-win-dclist-nltest",
+        "file": "pcaps/techniques/t1018/t1018_auth_win_dclist__nltest.pcap",
+        "name": "Internal Windows DC list (nltest)",
+        "description": "Internal authenticated Windows domain controller list enumeration using nltest from a Windows host.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "windows",
+          "domain",
+          "dclist",
+          "nltest",
+          "rpc",
+          "smb",
+          "high"
+        ],
+        "command": "nltest /dclist:ad.packetfeeder.lab"
       }
     ]
   },
