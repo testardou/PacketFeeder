@@ -246,7 +246,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Credential Access (TA0006)
     - [x] T1110.001 – Password Guessing
     - [x] T1110.003 – Password Spraying
-    - [ ] T1110.004 – Credential Stuffing
+    - [x] T1110.004 – Credential Stuffing
   - [ ] Lateral Movement (TA0008)
     - [ ] T1021 — Remote Services
 - [ ] Repeatable and deterministic scenario execution
