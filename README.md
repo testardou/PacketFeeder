@@ -249,7 +249,15 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1110.004 – Credential Stuffing
   - [ ] Lateral Movement (TA0008)
     - [ ] T1021 — Remote Services
-- [ ] Repeatable and deterministic scenario execution
+
+### Attack Builder
+
+- [ ] Compose attack chains from event PCAPs
+- [ ] Reorder / duplicate / remove steps
+- [ ] Basic pacing (delays between steps)
+- [ ] Build a single PCAP (merged timeline)
+- [ ] Export chain config
+- [ ] Simple builder UI (timeline / drag-and-drop)
 
 ### Live Network Interaction
 
