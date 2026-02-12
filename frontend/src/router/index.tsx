@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Replay from "@/pages/Replay";
 import Live from "@/pages/Live";
 import Scenarios from "@/pages/Scenarios";
+import ChainBuilder from "@/pages/ChainBuilder";
 import Layout from "../layouts/Layout";
 import { Files } from "@/pages/Files";
 
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "Scenarios",
         element: <Scenarios />,
+      },
+      {
+        path: "chain-builder",
+        element: <ChainBuilder />,
       },
       {
         path: "live",
