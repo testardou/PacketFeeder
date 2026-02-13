@@ -107,6 +107,94 @@
           "high"
         ],
         "command": "secretsdump.py -just-dc AD/Administrator@10.10.10.30"
+      },
+      {
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-netexec",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi__netexec.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - successful (netexec)",
+        "description": "Internal authenticated NTDS dump using netexec (CrackMapExec fork) via DRSUAPI protocol showing successful extraction of credential hashes from Active Directory domain database.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ntds",
+          "drsuapi",
+          "netexec",
+          "crackmapexec",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "netexec smb 10.10.10.30 -u maintenance -p 'P@ssword' -d AD --ntds"
+      },
+      {
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-failed-noprivs-netexec",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi_failed_noprivs__netexec.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - failed no privileges (netexec)",
+        "description": "Internal authenticated NTDS dump attempt using netexec (CrackMapExec fork) via DRSUAPI protocol showing failed access due to insufficient privileges (user authenticated but lacks domain admin rights).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ntds",
+          "drsuapi",
+          "netexec",
+          "crackmapexec",
+          "credential",
+          "dumping",
+          "failed",
+          "noprivs",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "netexec smb 10.10.10.30 -u bob -p 'Password123!' -d AD --ntds"
+      },
+      {
+        "id": "t1003.003-internal-unauth-ntds-dump-drsuapi-failed-badpwd-netexec",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_unauth_ntds_dump_drsuapi_failed_badpwd__netexec.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - failed bad password (netexec)",
+        "description": "Internal unauthenticated NTDS dump attempt using netexec (CrackMapExec fork) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "ntds",
+          "drsuapi",
+          "netexec",
+          "crackmapexec",
+          "credential",
+          "dumping",
+          "failed",
+          "badpwd",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "netexec smb 10.10.10.30 -u maintenance -p 'WrongPassword!' -d AD --ntds"
       }
     ]
   },
