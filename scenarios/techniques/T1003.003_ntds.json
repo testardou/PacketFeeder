@@ -1,0 +1,119 @@
+{
+  "mitre": {
+    "technique_id": "T1003.003",
+    "technique_name": "OS Credential Dumping: NTDS",
+    "url": "https://attack.mitre.org/techniques/T1003/003/",
+    "tactics": ["TA0006"]
+  },
+  "description": "Adversaries may attempt to access or create a copy of the Active Directory domain database in order to steal credential information, as well as obtain other information about domain members such as devices, users, and access rights. The Active Directory domain database is stored in the NTDS.dit file. By default, the NTDS.dit file is only readable by domain administrators.",
+  "artifacts": [
+    "DRSUAPI (Directory Replication Service) protocol requests to domain controllers",
+    "NTDS.dit file access attempts",
+    "Volume Shadow Copy Service (VSS) operations",
+    "LDAP queries for domain database information",
+    "SMB connections to ADMIN$ share for NTDS.dit extraction",
+    "authentication attempts to domain controllers with elevated privileges",
+    "DRSUAPI DsGetNCChanges requests",
+    "DRSUAPI DsBind requests",
+    "failed access attempts due to insufficient privileges",
+    "failed authentication attempts to domain controllers"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-secretsdump",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi__secretsdump.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - successful (secretsdump)",
+        "description": "Internal authenticated NTDS dump using secretsdump.py (impacket) via DRSUAPI protocol showing successful extraction of credential hashes from Active Directory domain database.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ntds",
+          "drsuapi",
+          "secretsdump",
+          "impacket",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "secretsdump.py -just-dc AD/Administrator@10.10.10.30"
+      },
+      {
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-failed-noprivs-secretsdump",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi_failed_noprivs__secretsdump.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - failed no privileges (secretsdump)",
+        "description": "Internal authenticated NTDS dump attempt using secretsdump.py (impacket) via DRSUAPI protocol showing failed access due to insufficient privileges (user authenticated but lacks domain admin rights).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ntds",
+          "drsuapi",
+          "secretsdump",
+          "impacket",
+          "credential",
+          "dumping",
+          "failed",
+          "noprivs",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "secretsdump.py -just-dc AD/bob@10.10.10.30"
+      },
+      {
+        "id": "t1003.003-internal-unauth-ntds-dump-drsuapi-failed-badpwd-secretsdump",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_unauth_ntds_dump_drsuapi_failed_badpwd__secretsdump.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - failed bad password (secretsdump)",
+        "description": "Internal unauthenticated NTDS dump attempt using secretsdump.py (impacket) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "ntds",
+          "drsuapi",
+          "secretsdump",
+          "impacket",
+          "credential",
+          "dumping",
+          "failed",
+          "badpwd",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "secretsdump.py -just-dc AD/Administrator@10.10.10.30"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
