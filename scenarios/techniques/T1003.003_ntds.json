@@ -109,6 +109,34 @@
         "command": "secretsdump.py -just-dc AD/Administrator@10.10.10.30"
       },
       {
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-mimikatz",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi__mimikatz.pcap",
+        "name": "Internal NTDS dump via DRSUAPI - successful (mimikatz)",
+        "description": "Internal authenticated NTDS dump using mimikatz via DRSUAPI protocol (DCSync) showing successful extraction of credential hashes from Active Directory domain database.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ntds",
+          "drsuapi",
+          "mimikatz",
+          "dcsync",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "mimikatz.exe \"lsadump::dcsync /domain:ad.packetfeeer.lab /all\""
+      },
+      {
         "id": "t1003.003-internal-auth-ntds-dump-drsuapi-netexec",
         "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi__netexec.pcap",
         "name": "Internal NTDS dump via DRSUAPI - successful (netexec)",
