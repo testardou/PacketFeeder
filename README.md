@@ -247,8 +247,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1110.001 – Password Guessing
     - [x] T1110.003 – Password Spraying
     - [x] T1110.004 – Credential Stuffing
-    - [ ] T1003.002 - OS Credential Dumping: Security Account Manager
-    - [ ] T1003.003 - OS Credential Dumping: NTDS
+    - [x] T1003 - OS Credential Dumping
+    - [x] T1003.003 - OS Credential Dumping: NTDS
   - [ ] Lateral Movement (TA0008)
     - [ ] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [ ] T1021.004 — Remote Services: SSH
