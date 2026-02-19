@@ -1,0 +1,107 @@
+{
+  "mitre": {
+    "technique_id": "T1021.001",
+    "technique_name": "Remote Services: Remote Desktop Protocol",
+    "url": "https://attack.mitre.org/techniques/T1021/001/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may use Valid Accounts to log into a computer using the Remote Desktop Protocol (RDP). The adversary may then perform actions as the logged-on user. RDP is a common feature in Windows operating systems. RDP is based on the T.120 family of protocol standards and permits an individual to connect to and use another computer.",
+  "artifacts": [
+    "RDP connection attempts on TCP/3389",
+    "RDP protocol negotiation and TLS handshake",
+    "RDP CredSSP authentication",
+    "successful RDP session establishment",
+    "failed RDP authentication attempts",
+    "invalid password rejection",
+    "failed access due to insufficient privileges",
+    "lateral movement via RDP remote access",
+    "xfreerdp client connections",
+    "remote desktop protocol traffic"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1021.001-internal-auth-rdp-login-xfreerdp",
+        "file": "pcaps/techniques/t1021.001/t1021.001_internal_auth_rdp_login__xfreerdp.pcap",
+        "name": "Internal RDP login - successful (xfreerdp)",
+        "description": "Internal authenticated lateral movement using RDP with xfreerdp showing successful remote desktop connection to target host.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [3389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "rdp",
+          "login",
+          "xfreerdp",
+          "lateral",
+          "movement",
+          "tcp",
+          "3389",
+          "critical"
+        ],
+        "command": "xfreerdp3 /u:Administrator /p:'P@ssword123!' /v:10.10.10.50 /cert:ignore"
+      },
+      {
+        "id": "t1021.001-internal-auth-rdp-login-failed-noprivs-xfreerdp",
+        "file": "pcaps/techniques/t1021.001/t1021.001_internal_auth_rdp_login_failed_noprivs__xfreerdp.pcap",
+        "name": "Internal RDP login - failed no privileges (xfreerdp)",
+        "description": "Internal authenticated RDP login attempt using xfreerdp showing failed access due to insufficient privileges (user authenticated but lacks RDP access rights on target).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [3389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "rdp",
+          "login",
+          "xfreerdp",
+          "lateral",
+          "movement",
+          "failed",
+          "noprivs",
+          "tcp",
+          "3389",
+          "high"
+        ],
+        "command": "xfreerdp3 /u:damien /p:'P@ssword789!' /v:10.10.10.50 /cert:ignore"
+      },
+      {
+        "id": "t1021.001-internal-auth-rdp-login-failed-badpass-xfreerdp",
+        "file": "pcaps/techniques/t1021.001/t1021.001_internal_auth_rdp_login_failed_badpass__xfreerdp.pcap",
+        "name": "Internal RDP login - failed bad password (xfreerdp)",
+        "description": "Internal RDP login attempt using xfreerdp showing failed authentication due to incorrect password.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [3389]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "rdp",
+          "login",
+          "xfreerdp",
+          "lateral",
+          "movement",
+          "failed",
+          "badpass",
+          "tcp",
+          "3389",
+          "high"
+        ],
+        "command": "xfreerdp3 /u:Administrator /p:'P@ssword123' /v:10.10.10.30"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
