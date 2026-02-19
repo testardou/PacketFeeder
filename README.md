@@ -253,6 +253,9 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH
+    - [x] T1021.006 — Remote Services: Windows Remote Management
+  - [ ]  Defense Evasion (TA0005)
+    - [ ] T1550 - Use Alternate Authentication Material
 
 ### Attack Builder
 

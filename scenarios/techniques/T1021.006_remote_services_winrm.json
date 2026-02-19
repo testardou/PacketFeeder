@@ -1,0 +1,107 @@
+{
+  "mitre": {
+    "technique_id": "T1021.006",
+    "technique_name": "Remote Services: Windows Remote Management",
+    "url": "https://attack.mitre.org/techniques/T1021/006/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may use Valid Accounts to interact with remote systems using Windows Remote Management (WinRM). The adversary may then perform actions as the logged-on user. WinRM is the name of the Windows remote management protocol that allows a user to interact with a remote system over an HTTP(S) service.",
+  "artifacts": [
+    "WinRM connection attempts on TCP/5985 (HTTP) or TCP/5986 (HTTPS)",
+    "WS-Management protocol traffic",
+    "SOAP over HTTP(S) for remote command execution",
+    "successful WinRM session establishment",
+    "failed WinRM authentication attempts",
+    "invalid password rejection",
+    "failed access due to insufficient privileges",
+    "lateral movement via WinRM remote access",
+    "evilwinrm client connections",
+    "PowerShell remoting over WinRM"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1021.006-internal-auth-winrm-exec-evilwinrm",
+        "file": "pcaps/techniques/t1021.006/t1021.006_internal_auth_winrm_exec__evilwinrm.pcap",
+        "name": "Internal WinRM exec - successful (evilwinrm)",
+        "description": "Internal authenticated lateral movement using WinRM with evilwinrm showing successful remote command execution on target host.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [5985, 5986]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "winrm",
+          "evilwinrm",
+          "lateral",
+          "movement",
+          "tcp",
+          "5985",
+          "5986",
+          "critical"
+        ],
+        "command": "evil-winrm -i 10.10.10.50 -u Administrator -p 'P@ssword123!'"
+      },
+      {
+        "id": "t1021.006-internal-auth-winrm-exec-failed-badpass-evilwinrm",
+        "file": "pcaps/techniques/t1021.006/t1021.006_internal_auth_winrm_exec_failed_badpass__evilwinrm.pcap",
+        "name": "Internal WinRM exec - failed bad password (evilwinrm)",
+        "description": "Internal WinRM exec attempt using evilwinrm showing failed authentication due to incorrect password.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [5985, 5986]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "winrm",
+          "evilwinrm",
+          "lateral",
+          "movement",
+          "failed",
+          "badpass",
+          "tcp",
+          "5985",
+          "5986",
+          "high"
+        ],
+        "command": "evil-winrm -i 10.10.10.50 -u Administrator -p 'P@ssword123'"
+      },
+      {
+        "id": "t1021.006-internal-unauth-winrm-exec-failed-noprivs-evilwinrm",
+        "file": "pcaps/techniques/t1021.006/t1021.006_internal_unauth_winrm_exec_failed_noprivs__evilwinrm.pcap",
+        "name": "Internal WinRM exec - failed no privileges (evilwinrm)",
+        "description": "Internal authenticated WinRM exec attempt using evilwinrm showing failed access due to insufficient privileges (user authenticated but lacks WinRM/admin rights on target).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [5985, 5986]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "winrm",
+          "evilwinrm",
+          "lateral",
+          "movement",
+          "failed",
+          "noprivs",
+          "tcp",
+          "5985",
+          "5986",
+          "high"
+        ],
+        "command": "evil-winrm -i 10.10.10.50 -u testuser -p 'P@ssword123!'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
