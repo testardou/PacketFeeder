@@ -250,7 +250,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1003 - OS Credential Dumping
     - [x] T1003.003 - OS Credential Dumping: NTDS
   - [ ] Lateral Movement (TA0008)
-    - [ ] T1021.002 — Remote Services: SMB/Windows Admin Shares
+    - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [ ] T1021.004 — Remote Services: SSH
 
 ### Attack Builder

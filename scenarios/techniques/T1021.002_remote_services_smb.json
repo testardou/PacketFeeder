@@ -1,0 +1,198 @@
+{
+  "mitre": {
+    "technique_id": "T1021.002",
+    "technique_name": "Remote Services: SMB/Windows Admin Shares",
+    "url": "https://attack.mitre.org/techniques/T1021/002/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may use Valid Accounts to interact with a remote network share using Server Message Block (SMB). The adversary may then perform actions as the logged-on user. Windows admin shares are a feature of the Windows operating system that allow administrators to remotely access a disk volume on a network system. These are hidden network shares created by default that allow administrative users to access the root directory of every volume.",
+  "artifacts": [
+    "SMB connections to ADMIN$, C$, IPC$ shares",
+    "SMB protocol negotiation and session setup",
+    "SMB tree connect requests to administrative shares",
+    "RPC over SMB (TCP/445) for remote command execution",
+    "PsExec-style service creation via SMB",
+    "WMI over SMB for remote command execution",
+    "Service Control Manager (SCM) RPC calls",
+    "authentication attempts with domain or local credentials",
+    "failed authentication attempts",
+    "failed access attempts due to insufficient privileges",
+    "remote command execution traffic",
+    "impacket psexec/wmiexec patterns"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1021.002-internal-auth-smb-psexec-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_psexec__impacket.pcap",
+        "name": "Internal SMB PsExec - successful (impacket)",
+        "description": "Internal authenticated lateral movement using psexec.py (impacket) via SMB admin shares showing successful remote command execution on target host.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "psexec",
+          "impacket",
+          "lateral",
+          "movement",
+          "admin",
+          "share",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "psexec.py 'Administrator:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1021.002-internal-auth-smb-psexec-failed-noprivs-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_psexec_failed_noprivs__impacket.pcap",
+        "name": "Internal SMB PsExec - failed no privileges (impacket)",
+        "description": "Internal authenticated PsExec attempt using psexec.py (impacket) via SMB admin shares showing failed access due to insufficient privileges (user authenticated but lacks admin rights on target).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "psexec",
+          "impacket",
+          "lateral",
+          "movement",
+          "failed",
+          "noprivs",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "psexec.py 'testuser:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1021.002-internal-auth-smb-psexec-failed-badpass-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_psexec_failed_badpass__impacket.pcap",
+        "name": "Internal SMB PsExec - failed bad password (impacket)",
+        "description": "Internal unauthenticated PsExec attempt using psexec.py (impacket) via SMB admin shares showing failed authentication due to incorrect credentials.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "smb",
+          "psexec",
+          "impacket",
+          "lateral",
+          "movement",
+          "failed",
+          "badpass",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "psexec.py 'Administrator:P@ssword123@10.10.10.50'"
+      },
+      {
+        "id": "t1021.002-internal-auth-smb-wmiexec-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_wmiexec__impacket.pcap",
+        "name": "Internal SMB WMIExec - successful (impacket)",
+        "description": "Internal authenticated lateral movement using wmiexec.py (impacket) via SMB showing successful remote command execution through WMI on target host.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "wmiexec",
+          "wmi",
+          "impacket",
+          "lateral",
+          "movement",
+          "admin",
+          "share",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "wmiexec.py 'Administrator:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1021.002-internal-auth-smb-wmiexec-failed-noprivs-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_wmiexec_failed_noprivs__impacket.pcap",
+        "name": "Internal SMB WMIExec - failed no privileges (impacket)",
+        "description": "Internal authenticated WMIExec attempt using wmiexec.py (impacket) via SMB showing failed access due to insufficient privileges (user authenticated but lacks admin rights on target).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "wmiexec",
+          "wmi",
+          "impacket",
+          "lateral",
+          "movement",
+          "failed",
+          "noprivs",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "wmiexec.py 'testuser:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1021.002-internal-auth-smb-wmiexec-failed-badpass-impacket",
+        "file": "pcaps/techniques/t1021.002/t1021.002_internal_auth_smb_wmiexec_failed_badpass__impacket.pcap",
+        "name": "Internal SMB WMIExec - failed bad password (impacket)",
+        "description": "Internal unauthenticated WMIExec attempt using wmiexec.py (impacket) via SMB showing failed authentication due to incorrect credentials.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "smb",
+          "wmiexec",
+          "wmi",
+          "impacket",
+          "lateral",
+          "movement",
+          "failed",
+          "badpass",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "wmiexec.py 'Administrator:P@ssword123@10.10.10.50'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
