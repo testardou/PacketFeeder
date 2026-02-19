@@ -1,0 +1,133 @@
+{
+  "mitre": {
+    "technique_id": "T1021.004",
+    "technique_name": "Remote Services: SSH",
+    "url": "https://attack.mitre.org/techniques/T1021/004/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may use Valid Accounts to log into a computer using the Secure Shell (SSH) protocol. SSH is a standard means of remote access on Linux and macOS systems. Adversaries may use SSH to move laterally in a network and access systems that do not have other remote access services enabled.",
+  "artifacts": [
+    "SSH connection attempts on TCP/22",
+    "SSH protocol negotiation and key exchange",
+    "SSH authentication via password",
+    "SSH authentication via public key",
+    "successful SSH session establishment",
+    "failed SSH authentication attempts",
+    "invalid username rejection",
+    "invalid password rejection",
+    "lateral movement via SSH remote access",
+    "openssh client connections"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1021.004-internal-auth-ssh-login-openssh",
+        "file": "pcaps/techniques/t1021.004/t1021.004_internal_auth_ssh_login__openssh.pcap",
+        "name": "Internal SSH login - successful password (openssh)",
+        "description": "Internal authenticated lateral movement using SSH with password authentication showing successful remote access to target host via openssh.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ssh",
+          "login",
+          "password",
+          "openssh",
+          "lateral",
+          "movement",
+          "tcp",
+          "22",
+          "critical"
+        ],
+        "command": "ssh admin@10.10.10.20"
+      },
+      {
+        "id": "t1021.004-internal-auth-ssh-keyauth-openssh",
+        "file": "pcaps/techniques/t1021.004/t1021.004_internal_auth_ssh_keyauth__openssh.pcap",
+        "name": "Internal SSH login - successful key auth (openssh)",
+        "description": "Internal authenticated lateral movement using SSH with public key authentication showing successful remote access to target host via openssh.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ssh",
+          "keyauth",
+          "publickey",
+          "openssh",
+          "lateral",
+          "movement",
+          "tcp",
+          "22",
+          "critical"
+        ],
+        "command": "ssh -i ~/.ssh/id_rsa admin@10.10.10.20"
+      },
+      {
+        "id": "t1021.004-internal-auth-ssh-login-failed-badpass-openssh",
+        "file": "pcaps/techniques/t1021.004/t1021.004_internal_auth_ssh_login_failed_badpass__openssh.pcap",
+        "name": "Internal SSH login - failed bad password (openssh)",
+        "description": "Internal SSH login attempt using password authentication showing failed authentication due to incorrect password.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "ssh",
+          "login",
+          "openssh",
+          "lateral",
+          "movement",
+          "failed",
+          "badpass",
+          "tcp",
+          "22",
+          "high"
+        ],
+        "command": "ssh admin@10.10.10.20"
+      },
+      {
+        "id": "t1021.004-internal-auth-ssh-login-failed-nouser-openssh",
+        "file": "pcaps/techniques/t1021.004/t1021.004_internal_auth_ssh_login_failed_nouser__openssh.pcap",
+        "name": "Internal SSH login - failed invalid user (openssh)",
+        "description": "Internal SSH login attempt showing failed authentication due to invalid or non-existent username.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "ssh",
+          "login",
+          "openssh",
+          "lateral",
+          "movement",
+          "failed",
+          "nouser",
+          "tcp",
+          "22",
+          "high"
+        ],
+        "command": "ssh admino@10.10.10.20"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
+
