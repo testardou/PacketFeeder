@@ -122,7 +122,13 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - LAB: `lab-ovs` (Windows 11 target host / **DHCP reservation** `10.10.10.50`)
 - **broker**
   - MGMT: `br0`
-  - CAPTURE: `ids-ovs` (UP + PROMISC, **no IP**) — PCAP capture interface (receives mirrored lab traffic via `patch-ids2lab` fan-out)
+  - CAPTURE: `ids-ovs` (`tap-brk-ids`,UP + PROMISC, **no IP**) — PCAP capture interface (receives mirrored lab traffic via `patch-ids2lab` fan-out)
+- **clearndr**
+  - MGMT: `br0`
+  - SENSOR: `ids-ovs` (`tap-clear-ids`, UP + PROMISC, **no IP**) — NDR engine (receives mirrored lab traffic via fan-out)
+- **snort**
+  - MGMT: `br0`
+  - SENSOR: `ids-ovs` (`tap-snort-ids`, UP + PROMISC, **no IP**) — Snort 3 IDS engine (receives mirrored lab traffic via fan-out, 4875 rules loaded)
 
 ### DNS / Domain
 
@@ -190,15 +196,15 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 
 ==================================================== ids-ovs  (IDS FEED BUS) ========================================================
-                     |                          |
-                     |                          |
-        ┌────────────▼─────────────┐  ┌─────────▼──────────────┐
-        │       broker VM          │  │       ClearNDR VM       │
-        │--------------------------│  │-------------------------│
-        │ SENSOR NIC (ids-ovs):    │  │ SENSOR NIC (ids-ovs):   │
-        │ tap-bkr-ids              │  │ tap-clear-ids           │
-        │ NO IP / promisc / PCAP   │  │ NO IP / promisc         │
-        └──────────────────────────┘  └─────────────────────────┘
+                     |                             |                            |              
+                     |                             |                            |              
+        ┌────────────▼─────────────┐  ┌────────────▼────────────┐  ┌────────────▼─────────────┐
+        │       broker VM          │  │       ClearNDR VM       │  │           Snort          │
+        │--------------------------│  │-------------------------│  │--------------------------│
+        │ SENSOR NIC (ids-ovs):    │  │ SENSOR NIC (ids-ovs):   │  │ SENSOR NIC (ids-ovs):    │
+        │ tap-bkr-ids              │  │ tap-clear-ids           │  │ tap-snort-ids            │
+        │ NO IP / promisc / PCAP   │  │ NO IP / promisc         │  │ NO IP / promisc          │
+        └──────────────────────────┘  └─────────────────────────┘  └──────────────────────────┘
 
 ```
 
@@ -212,8 +218,11 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - [x] Broker VM up
 - [x] Selective OVS mirroring on `lab-ovs` (attacker/victims → broker CAPTURE)
 - [x] Add more victims/workloads and expand mirror selection
-- [x] IDS engines on `ids-ovs` (ClearNDR)
-- [ ] IDS engines on `ids-ovs` (Suricata/Zeek/Snort)
+- [x] IDS engines on `ids-ovs`
+  - [x] ClearNDR
+  - [x] Snort
+  - [ ] Zeek
+
 
 ### PCAP File Management
 
