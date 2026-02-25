@@ -1,5 +1,12 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { ExternalLink, Search, X, ChevronDown, Check } from "lucide-react";
+import {
+  ExternalLink,
+  Search,
+  X,
+  ChevronDown,
+  Check,
+  GripVertical,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Technique, PcapDataset } from "@/types/scenarios";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,6 +19,8 @@ interface TechniqueCardProps {
   pcapData?: { datasets?: PcapDataset[]; files?: string[] };
   pcapFilesLoading?: boolean;
   onDatasetSelect: (fileName: string) => void;
+  draggablePcaps?: boolean;
+  tacticId?: string | null;
 }
 
 export function TechniqueCard({
@@ -20,6 +29,8 @@ export function TechniqueCard({
   pcapData,
   pcapFilesLoading,
   onDatasetSelect,
+  draggablePcaps = false,
+  tacticId = null,
 }: TechniqueCardProps) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -80,6 +91,43 @@ export function TechniqueCard({
   const handleClearFilters = () => {
     setSelectedFilters([]);
     setSearchQuery("");
+  };
+
+  const handleDatasetDragStart = (
+    e: React.DragEvent,
+    dataset: PcapDataset
+  ) => {
+    if (!draggablePcaps) {
+      e.preventDefault();
+      return;
+    }
+
+    const dragData = {
+      techniqueId: technique.mitre.technique_id,
+      technique,
+      tacticId: tacticId || undefined,
+      pcapFile: dataset.file,
+    };
+
+    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleFileDragStart = (e: React.DragEvent, file: string) => {
+    if (!draggablePcaps) {
+      e.preventDefault();
+      return;
+    }
+
+    const dragData = {
+      techniqueId: technique.mitre.technique_id,
+      technique,
+      tacticId: tacticId || undefined,
+      pcapFile: file,
+    };
+
+    e.dataTransfer.setData("application/json", JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = "move";
   };
 
   // Close dropdown when clicking outside
@@ -309,65 +357,81 @@ export function TechniqueCard({
                 filteredDatasets.map((dataset) => {
                   const isSelected = selectFile === dataset.file;
                   return (
-                    <button
+                    <div
                       key={dataset.id}
-                      type="button"
-                      onClick={() => onDatasetSelect(dataset.file)}
+                      draggable={draggablePcaps}
+                      onDragStart={(e) => handleDatasetDragStart(e, dataset)}
                       className={cn(
-                        "w-full p-2 bg-background border rounded-md transition-all text-left",
+                        "w-full p-2 bg-background border rounded-md transition-all",
+                        draggablePcaps && "cursor-grab active:cursor-grabbing",
                         isSelected
                           ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                           : "hover:bg-muted/50 hover:border-muted-foreground/50"
                       )}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0 space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium text-xs truncate">
-                              {dataset.name}
-                            </span>
-                            <span
-                              className={cn(
-                                "px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0",
-                                dataset.criticality === "high"
-                                  ? "bg-red-500/10 text-red-600 dark:text-red-400"
-                                  : dataset.criticality === "medium"
-                                  ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
-                                  : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                      <div className="flex items-start gap-2">
+                        {draggablePcaps && (
+                          <div className="flex flex-col items-center gap-1 shrink-0 pt-1">
+                            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+                              <GripVertical className="h-3.5 w-3.5" />
+                            </div>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onDatasetSelect(dataset.file)}
+                          className="flex-1 text-left"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0 space-y-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-medium text-xs truncate">
+                                  {dataset.name}
+                                </span>
+                                <span
+                                  className={cn(
+                                    "px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0",
+                                    dataset.criticality === "high"
+                                      ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                                      : dataset.criticality === "medium"
+                                      ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                  )}
+                                >
+                                  {dataset.criticality}
+                                </span>
+                                {isSelected && (
+                                  <span className="text-[10px] text-primary font-medium shrink-0">
+                                    ✓
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-muted-foreground line-clamp-1">
+                                {dataset.description}
+                              </p>
+                              {dataset.command && (
+                                <p className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit break-all">
+                                  {dataset.command}
+                                </p>
                               )}
-                            >
-                              {dataset.criticality}
-                            </span>
-                            {isSelected && (
-                              <span className="text-[10px] text-primary font-medium shrink-0">
-                                ✓
-                              </span>
-                            )}
+                              <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
+                                <span className="px-1.5 py-0.5 bg-secondary rounded shrink-0">
+                                  {dataset.scope.protocol.toUpperCase()}
+                                </span>
+                                {dataset.scope.ports && (
+                                  <span className="text-muted-foreground shrink-0">
+                                    {dataset.scope.ports.join(", ")}
+                                  </span>
+                                )}
+                                <span className="text-muted-foreground font-mono truncate max-w-[120px]">
+                                  {dataset.file.split("/").pop()}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-[10px] text-muted-foreground line-clamp-1">
-                            {dataset.description}
-                          </p>
-                          {dataset.command && (
-                            <p className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded w-fit break-all">
-                              {dataset.command}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
-                            <span className="px-1.5 py-0.5 bg-secondary rounded shrink-0">
-                              {dataset.scope.protocol.toUpperCase()}
-                            </span>
-                            {dataset.scope.ports && (
-                              <span className="text-muted-foreground shrink-0">
-                                {dataset.scope.ports.join(", ")}
-                              </span>
-                            )}
-                            <span className="text-muted-foreground font-mono truncate max-w-[120px]">
-                              {dataset.file.split("/").pop()}
-                            </span>
-                          </div>
-                        </div>
+                        </button>
                       </div>
-                    </button>
+                    </div>
                   );
                 })
               ) : (
@@ -393,26 +457,33 @@ export function TechniqueCard({
               .map((file: string) => {
                 const isSelected = selectFile === file;
                 return (
-                  <button
+                  <div
                     key={file}
-                    type="button"
-                    onClick={() => onDatasetSelect(file)}
+                    draggable={draggablePcaps}
+                    onDragStart={(e) => handleFileDragStart(e, file)}
                     className={cn(
                       "w-full p-3 bg-background border rounded-md transition-all text-left",
+                      draggablePcaps && "cursor-grab active:cursor-grabbing",
                       isSelected
                         ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                         : "hover:bg-muted/50 hover:border-muted-foreground/50"
                     )}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm">{file}</span>
-                      {isSelected && (
-                        <span className="text-xs text-primary font-medium">
-                          ✓ Selected
-                        </span>
-                      )}
-                    </div>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => onDatasetSelect(file)}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm">{file}</span>
+                        {isSelected && (
+                          <span className="text-xs text-primary font-medium">
+                            ✓ Selected
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  </div>
                 );
               })}
           </div>

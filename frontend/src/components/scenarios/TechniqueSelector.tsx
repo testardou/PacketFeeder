@@ -18,6 +18,9 @@ interface TechniqueSelectorProps {
   pcapFilesLoading?: boolean;
   onTechniqueChange: (techniqueId: string) => void;
   onDatasetSelect: (fileName: string) => void;
+  hideCard?: boolean;
+  draggable?: boolean;
+  tacticId?: string | null;
 }
 
 export function TechniqueSelector({
@@ -30,6 +33,9 @@ export function TechniqueSelector({
   pcapFilesLoading,
   onTechniqueChange,
   onDatasetSelect,
+  hideCard = false,
+  draggable = false,
+  tacticId = null,
 }: TechniqueSelectorProps) {
   if (!tacticData) return null;
 
@@ -57,13 +63,15 @@ export function TechniqueSelector({
           })}
         </SelectContent>
       </Select>
-      {techniqueData && (
+      {techniqueData && !hideCard && (
         <TechniqueCard
           technique={techniqueData}
           selectFile={selectFile}
           pcapData={pcapData}
           pcapFilesLoading={pcapFilesLoading}
           onDatasetSelect={onDatasetSelect}
+          draggablePcaps={draggable}
+          tacticId={tacticId}
         />
       )}
     </div>
