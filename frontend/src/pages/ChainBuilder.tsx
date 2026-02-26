@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -13,6 +15,21 @@ import { Plus, Play, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useChainBuilderQueries } from "@/hooks/useChainBuilderQueries";
 import { useChainItems } from "@/hooks/useChainItems";
 import { useBuildChain } from "@/hooks/useBuildChain";
+import { PacketDetails } from "@/components/packetDetails/PacketDetails";
+import { SelectInterface } from "@/components/selectInterface/SelectInterface";
+import { ReplayModes } from "@/components/replayModes/ReplayModes";
+import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
+import { RunReplay } from "@/components/runReplay/RunReplay";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import { API_CONFIG } from "@/config/api";
+import type {
+  InterfacesType,
+  NewValuesPcapType,
+  PacketDetailsType,
+  PcapInfoType,
+  ReplayModeType,
+  RewriteValues,
+} from "@/types/types";
 
 export default function ChainBuilder() {
   const {
@@ -41,7 +58,70 @@ export default function ChainBuilder() {
     reorderItems,
   } = useChainItems();
 
-  const { mutate: buildChain, isPending, isSuccess, isError, error } = useBuildChain();
+  // --- Build chain ---
+  const {
+    mutate: buildChain,
+    isPending: isBuildPending,
+    isSuccess: isBuildSuccess,
+    isError: isBuildError,
+    error: buildError,
+    data: buildData,
+  } = useBuildChain();
+
+  // --- Replay state ---
+  const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
+  const [selectedInterface, setSelectedInterface] = useState<string | null>(null);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [filterIndex, setFilterIndex] = useState<number | null>(null);
+  const [filterRange, setFilterRange] = useState("");
+
+  // --- Rewrite state ---
+  const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
+  const [rewriteIpv6s, setRewriteIpv6s] = useState<NewValuesPcapType[]>([]);
+  const [rewriteArpIps, setRewriteArpIps] = useState<NewValuesPcapType[]>([]);
+  const [rewriteDnsDomains, setRewriteDnsDomains] = useState<NewValuesPcapType[]>([]);
+  const [rewriteTcpPorts, setRewriteTcpPorts] = useState<NewValuesPcapType[]>([]);
+  const [rewriteUdpPorts, setRewriteUdpPorts] = useState<NewValuesPcapType[]>([]);
+
+  const rewriteValues: RewriteValues = {
+    rewriteIps, setRewriteIps,
+    rewriteMacs, setRewriteMacs,
+    rewriteIpv6s, setRewriteIpv6s,
+    rewriteArpIps, setRewriteArpIps,
+    rewriteDnsDomains, setRewriteDnsDomains,
+    rewriteTcpPorts, setRewriteTcpPorts,
+    rewriteUdpPorts, setRewriteUdpPorts,
+  };
+
+  const { data: ifacesList } = useQuery<InterfacesType>({
+    queryKey: ["interfaces"],
+    queryFn: async () => {
+      const res = await fetch(`${API_CONFIG.API_BASE}/get_interfaces/`);
+      if (!res.ok) throw new Error("Failed to load interfaces");
+      return res.json();
+    },
+  });
+
+  const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`
+      );
+      if (!res.ok) throw new Error("Failed to load packet details");
+      return res.json();
+    },
+  });
+
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(
+        `${API_CONFIG.API_BASE}/infos-pcap/?file=${file}`
+      );
+      if (!res.ok) throw new Error("Failed to load PCAP infos");
+      return res.json();
+    },
+  });
 
   const handleAddTechnique = () => {
     if (!techniqueData || !selectedTechnique || !selectFile) return;
@@ -53,9 +133,30 @@ export default function ChainBuilder() {
     );
   };
 
+  const handleBuildChain = () => {
+    buildChain(chainItems, {
+      onSuccess: (data) => {
+        setStepIndex(0);
+        setFilterIndex(null);
+        setFilterRange("");
+        setRewriteIps([]);
+        setRewriteMacs([]);
+        setRewriteIpv6s([]);
+        setRewriteArpIps([]);
+        setRewriteDnsDomains([]);
+        setRewriteTcpPorts([]);
+        setRewriteUdpPorts([]);
+        detailsMutation.mutate(data.file);
+        infosMutation.mutate(data.file);
+      },
+    });
+  };
+
   if (tacticsLoading) {
     return <p>Loading...</p>;
   }
+
+  const mergedFile = buildData?.file ?? null;
 
   return (
     <div className="p-6 space-y-4">
@@ -130,35 +231,90 @@ export default function ChainBuilder() {
         </div>
       </div>
 
+      {/* Build Chain button */}
       <div className="flex flex-col gap-2">
         <Button
           className="w-full"
           size="lg"
-          disabled={chainItems.length === 0 || isPending}
-          onClick={() => buildChain(chainItems)}
+          disabled={chainItems.length === 0 || isBuildPending}
+          onClick={handleBuildChain}
         >
-          {isPending ? (
+          {isBuildPending ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
             <Play className="h-4 w-4 mr-2" />
           )}
-          {isPending ? "Building chain..." : "Build Chain"}
+          {isBuildPending ? "Building chain..." : "Build Chain"}
         </Button>
 
-        {isError && (
+        {isBuildError && (
           <p className="flex items-center gap-2 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 shrink-0" />
-            {error.message}
+            {buildError.message}
           </p>
         )}
 
-        {isSuccess && (
+        {isBuildSuccess && buildData && (
           <p className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
-            Chain validated successfully
+            Chain built — {buildData.packet_count} packets, {buildData.duration}s total duration
           </p>
         )}
       </div>
+
+      {/* Replay section — shown after successful build */}
+      {isBuildSuccess && mergedFile && (
+        <div className="flex flex-col gap-5">
+          <h2 className="text-2xl font-bold">Replay</h2>
+
+          <PcapInfos
+            pcapInfos={infosMutation}
+            rewriteValues={rewriteValues}
+          />
+
+          <PacketDetails
+            selectedFile={mergedFile}
+            data={detailsMutation.data}
+            isPending={detailsMutation.isPending}
+          />
+
+          <div className="flex flex-row gap-20">
+            <SelectInterface
+              selectedInterface={selectedInterface}
+              setSelectedInterface={setSelectedInterface}
+              ifaces={ifacesList?.interfaces}
+            />
+            <ReplayModes
+              selected={selectedMode}
+              setSelected={setSelectedMode}
+            />
+          </div>
+
+          <ReplayFilter
+            filterIndex={filterIndex}
+            setFilterIndex={setFilterIndex}
+            filterRange={filterRange}
+            setFilterRange={setFilterRange}
+          />
+
+          <RunReplay
+            selectedInterface={selectedInterface}
+            rewriteIps={rewriteIps}
+            rewriteMacs={rewriteMacs}
+            rewriteIpv6s={rewriteIpv6s}
+            rewriteArpIps={rewriteArpIps}
+            rewriteDnsDomains={rewriteDnsDomains}
+            rewriteTcpPorts={rewriteTcpPorts}
+            rewriteUdpPorts={rewriteUdpPorts}
+            stepIndex={stepIndex}
+            setStepIndex={setStepIndex}
+            selectedMode={selectedMode}
+            selectFile={mergedFile}
+            filterIndex={filterIndex}
+            filterRange={filterRange}
+          />
+        </div>
+      )}
     </div>
   );
 }

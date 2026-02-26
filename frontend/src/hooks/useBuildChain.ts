@@ -2,22 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import { API_CONFIG } from "@/config/api";
 import type { ChainItem } from "@/components/chainbuilder/types";
 
-interface BuildChainPcapItem {
-  type: "pcap";
-  pcap_file: string;
-  technique_id: string | null;
-  tactic_id: string | null;
-}
-
-interface BuildChainSleepItem {
-  type: "sleep";
-  duration: number;
-}
-
-export type BuildChainResultItem = BuildChainPcapItem | BuildChainSleepItem;
-
 export interface BuildChainResponse {
-  items: BuildChainResultItem[];
+  file: string;
+  packet_count: number;
+  duration: number;
 }
 
 function toApiItems(items: ChainItem[]) {
@@ -37,7 +25,9 @@ function toApiItems(items: ChainItem[]) {
   });
 }
 
-async function postBuildChain(items: ChainItem[]): Promise<BuildChainResponse> {
+async function postBuildChain(
+  items: ChainItem[]
+): Promise<BuildChainResponse> {
   const res = await fetch(`${API_CONFIG.API_BASE}/build-chain/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
