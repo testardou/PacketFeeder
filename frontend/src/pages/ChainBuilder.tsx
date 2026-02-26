@@ -9,9 +9,10 @@ import { TacticSelector } from "@/components/scenarios/TacticSelector";
 import { TechniqueSelector } from "@/components/scenarios/TechniqueSelector";
 import { TechniqueChainList } from "@/components/chainbuilder/TechniqueChainList";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Play, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useChainBuilderQueries } from "@/hooks/useChainBuilderQueries";
 import { useChainItems } from "@/hooks/useChainItems";
+import { useBuildChain } from "@/hooks/useBuildChain";
 
 export default function ChainBuilder() {
   const {
@@ -39,6 +40,8 @@ export default function ChainBuilder() {
     removeItem,
     reorderItems,
   } = useChainItems();
+
+  const { mutate: buildChain, isPending, isSuccess, isError, error } = useBuildChain();
 
   const handleAddTechnique = () => {
     if (!techniqueData || !selectedTechnique || !selectFile) return;
@@ -125,6 +128,36 @@ export default function ChainBuilder() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button
+          className="w-full"
+          size="lg"
+          disabled={chainItems.length === 0 || isPending}
+          onClick={() => buildChain(chainItems)}
+        >
+          {isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Play className="h-4 w-4 mr-2" />
+          )}
+          {isPending ? "Building chain..." : "Build Chain"}
+        </Button>
+
+        {isError && (
+          <p className="flex items-center gap-2 text-sm text-destructive">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {error.message}
+          </p>
+        )}
+
+        {isSuccess && (
+          <p className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            Chain validated successfully
+          </p>
+        )}
       </div>
     </div>
   );
