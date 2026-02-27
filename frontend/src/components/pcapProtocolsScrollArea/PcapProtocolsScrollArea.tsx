@@ -4,11 +4,10 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtocolData } from "./ProtocolData";
 import { SelectedProtocolModifications } from "./SelectedProtocolModifications";
 import type { PcapInfoType, RewriteValues } from "@/types/types";
-import type { UseMutationResult } from "@tanstack/react-query";
 import { useState } from "react";
 
 interface IPcapProtocolsScrollAreaProps {
-  pcapInfos?: UseMutationResult<PcapInfoType, Error, string, unknown>;
+  pcapInfosData?: PcapInfoType;
   rewriteValues: RewriteValues;
 }
 
@@ -24,10 +23,9 @@ type ProtocolType =
   | null;
 
 export const PcapProtocolsScrollArea = ({
-  pcapInfos,
+  pcapInfosData,
   rewriteValues,
 }: IPcapProtocolsScrollAreaProps) => {
-  const pcapInfosData = pcapInfos?.data;
   const protocols = pcapInfosData?.protocols;
   const [selectedProtocol, setSelectedProtocol] = useState<ProtocolType>(null);
 

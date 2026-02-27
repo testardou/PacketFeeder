@@ -18,6 +18,8 @@ from backend.routes.details_packets_pcap import details_packets_pcap_bp
 from backend.routes.packet_payload import packet_payload_bp
 from backend.routes.get_scenarios import get_scenarios_bp
 from backend.routes.build_chain import build_chain_bp
+from backend.routes.chain_infos import chain_infos_bp
+from backend.routes.replay_chain import replay_chain_bp
 from backend.sockets.realtime import ReplayNamespace
 from backend.extension import socketio
 
@@ -67,6 +69,8 @@ api.register_blueprint(replay_step_bp)
 api.register_blueprint(upload_pcap_file_bp)
 api.register_blueprint(rewrite_pcap_file_bp)
 api.register_blueprint(build_chain_bp)
+api.register_blueprint(chain_infos_bp)
+api.register_blueprint(replay_chain_bp)
 
 ### DELETE ###
 api.register_blueprint(delete_pcap_file_bp)

@@ -5,7 +5,6 @@ import utc from "dayjs/plugin/utc";
 
 import type { UseMutationResult } from "@tanstack/react-query";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
-// import { PcapRewriteInfos } from "@/components/pcapRewriteInfos/PcapRewriteInfos";
 import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 
 dayjs.extend(utc);
@@ -26,9 +25,9 @@ export const PcapInfos = ({ pcapInfos, rewriteValues }: IPcapInfosProps) => {
       {pcapInfos?.isSuccess && (
         <div>
           <h2 className="text-2xl">Pcap Infos</h2>
-          <PcapGeneralInfos pcapInfos={pcapInfos} />
+          <PcapGeneralInfos pcapInfosData={pcapInfos.data} />
           <PcapProtocolsScrollArea
-            pcapInfos={pcapInfos}
+            pcapInfosData={pcapInfos.data}
             rewriteValues={rewriteValues}
           />
         </div>

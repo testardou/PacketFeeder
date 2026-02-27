@@ -1,17 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PcapInfoType } from "@/types/types";
-import type { UseMutationResult } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 
 interface IPcapInfosProps {
-  pcapInfos?: UseMutationResult<PcapInfoType, Error, string, unknown>;
+  pcapInfosData?: PcapInfoType;
 }
 
-export const PcapGeneralInfos = ({ pcapInfos }: IPcapInfosProps) => {
-  const pcapInfosData = pcapInfos?.data;
+export const PcapGeneralInfos = ({ pcapInfosData }: IPcapInfosProps) => {
 
   return (
     <div className="w-full flex flex-row gap-4 items-center mb-4">

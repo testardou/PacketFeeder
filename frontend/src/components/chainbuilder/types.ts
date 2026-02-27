@@ -1,4 +1,5 @@
 import type { Technique } from "@/types/scenarios";
+import type { NewValuesPcapType, PcapInfoType } from "@/types/types";
 
 export interface ChainPcapItem {
   type: "pcap";
@@ -16,4 +17,27 @@ export interface ChainSleepItem {
 }
 
 export type ChainItem = ChainPcapItem | ChainSleepItem;
+
+export interface RewriteMapsCollection {
+  rewriteIps: NewValuesPcapType[];
+  rewriteMacs: NewValuesPcapType[];
+  rewriteIpv6s: NewValuesPcapType[];
+  rewriteArpIps: NewValuesPcapType[];
+  rewriteDnsDomains: NewValuesPcapType[];
+  rewriteTcpPorts: NewValuesPcapType[];
+  rewriteUdpPorts: NewValuesPcapType[];
+}
+
+export interface PerPcapInfoEntry {
+  index: number;
+  pcap_file: string;
+  infos: PcapInfoType;
+}
+
+export interface ChainInfosResponse {
+  per_pcap: PerPcapInfoEntry[];
+  all: PcapInfoType;
+}
+
+export type PerPcapRewrites = Record<string, RewriteMapsCollection>;
 
