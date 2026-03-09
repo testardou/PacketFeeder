@@ -6,11 +6,9 @@ import json
 import re
 from flask import current_app, jsonify
 from flask_smorest import Blueprint
-from backend.config import PROJECT_ROOT
+from backend.config import SCENARIOS_ROOT, PCAPS_ROOT, ALLOWED_EXTENSIONS
 
 get_scenarios_bp = Blueprint("get_scenarios", __name__, url_prefix="/api")
-
-SCENARIOS_ROOT = os.path.join(PROJECT_ROOT, "scenarios")
 
 
 @get_scenarios_bp.route("/get-tactics/", methods=["GET"])
@@ -175,18 +173,18 @@ def get_technique_pcaps(technique_id):
         if not pcaps_path:
             return jsonify({"files": [], "datasets": []})
         
-        # Resolve PCAP path relative to project root
+        # Resolve PCAP path relative to PCAPS_ROOT
         if pcaps_path.startswith("/"):
             full_pcaps_path = pcaps_path
         else:
-            full_pcaps_path = os.path.join(PROJECT_ROOT, pcaps_path)
+            stripped = pcaps_path[len("pcaps/"):] if pcaps_path.startswith("pcaps/") else pcaps_path
+            full_pcaps_path = os.path.join(PCAPS_ROOT, stripped)
         
         if not os.path.isdir(full_pcaps_path):
             current_app.logger.warning("PCAP directory not found: %s", full_pcaps_path)
             return jsonify({"files": [], "datasets": []})
         
         # List PCAP files
-        from backend.config import ALLOWED_EXTENSIONS
         pcap_files = [
             f for f in os.listdir(full_pcaps_path)
             if os.path.isfile(os.path.join(full_pcaps_path, f))

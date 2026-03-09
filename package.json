@@ -1,5 +1,5 @@
 {
-  "name": "packetfeeder-frontend",
+  "name": "packetfeeder",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api": "npx openapi-typescript http://localhost:5000/openapi.json --output src/types/api-types.ts --export-schemas"
+    "api": "npx openapi-typescript http://localhost:5000/openapi.json --output frontend/src/types/api-types.ts --export-schemas",
+    "server": "python3 server.py"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

@@ -4,10 +4,13 @@ import os
 # config.py is in backend/, so we go up one level to get the project root
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Use environment variable for upload folder, with fallback to project directory
-# If UPLOAD_FOLDER is set, use it; otherwise use PROJECT_ROOT/pcaps/pcap_files/
-default_upload_folder = os.path.join(PROJECT_ROOT, "pcaps", "pcap_files")
-UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", default_upload_folder)
+# Root folder for all PCAP data (uploaded files + technique datasets)
+PCAPS_ROOT = os.getenv("PCAPS_ROOT", os.path.join(PROJECT_ROOT, "pcaps"))
+
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(PCAPS_ROOT, "pcap_files"))
+
+# Root folder for scenario definitions (tactics + techniques JSON)
+SCENARIOS_ROOT = os.getenv("SCENARIOS_ROOT", os.path.join(PROJECT_ROOT, "scenarios"))
 
 TCP_FLAG_MAP = {
     "S": "SYN",

@@ -72,3 +72,4 @@ local_settings.py
 .env.local
 *.pem
 *.key
+node_modules/

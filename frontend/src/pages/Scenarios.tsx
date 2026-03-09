@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Tactic, Technique, PcapDataResponse } from "@/types/scenarios";
 import {
@@ -107,18 +107,22 @@ export default function Scenarios() {
     });
 
   // Update state when tactic data loads
-  if (loadedTactic && loadedTactic !== tacticData) {
-    setTacticData(loadedTactic);
-    setSelectedTechnique(null);
-    setTechniqueData(null);
-    setSelectFile(null);
-  }
+  useEffect(() => {
+    if (loadedTactic) {
+      setTacticData(loadedTactic);
+      setSelectedTechnique(null);
+      setTechniqueData(null);
+      setSelectFile(null);
+    }
+  }, [loadedTactic]);
 
   // Update state when technique data loads
-  if (loadedTechnique && loadedTechnique !== techniqueData) {
-    setTechniqueData(loadedTechnique);
-    setSelectFile(null);
-  }
+  useEffect(() => {
+    if (loadedTechnique) {
+      setTechniqueData(loadedTechnique);
+      setSelectFile(null);
+    }
+  }, [loadedTechnique]);
 
   const handleTacticChange = (tacticFile: string) => {
     setSelectedTactic(tacticFile);

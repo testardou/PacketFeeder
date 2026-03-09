@@ -3,7 +3,7 @@ Utility functions for secure file path validation.
 """
 import os
 from flask import jsonify
-from backend.config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS, PROJECT_ROOT
+from backend.config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS, PCAPS_ROOT
 
 
 def validate_file_path(filename):
@@ -60,16 +60,27 @@ def validate_scenario_file_path(file_path):
     if ext not in ALLOWED_EXTENSIONS:
         return None, (jsonify({"error": "Invalid file type"}), 400)
     
-    # Resolve path relative to PROJECT_ROOT if not absolute
+    # Resolve path relative to PCAPS_ROOT if not absolute
     if os.path.isabs(file_path):
         full_path = os.path.realpath(file_path)
     else:
-        full_path = os.path.realpath(os.path.join(PROJECT_ROOT, file_path))
-    
-    project_root_real = os.path.realpath(PROJECT_ROOT)
-    
-    # Ensure the file path is within the project root (prevent path traversal)
-    if not full_path.startswith(project_root_real + os.sep) and full_path != project_root_real:
+        # Paths like "pcaps/techniques/..." are relative to the parent of PCAPS_ROOT
+        # so we strip the leading "pcaps/" prefix and resolve from PCAPS_ROOT
+        stripped = file_path[len("pcaps/"):] if file_path.startswith("pcaps/") else file_path
+        full_path = os.path.realpath(os.path.join(PCAPS_ROOT, stripped))
+
+        # Linux is case-sensitive: if file not found, retry with directory components lowercased
+        if not os.path.isfile(full_path):
+            parts = stripped.split("/")
+            lower_stripped = "/".join(p.lower() for p in parts[:-1]) + "/" + parts[-1]
+            alt_path = os.path.realpath(os.path.join(PCAPS_ROOT, lower_stripped))
+            if os.path.isfile(alt_path):
+                full_path = alt_path
+
+    pcaps_root_real = os.path.realpath(PCAPS_ROOT)
+
+    # Ensure the file path is within PCAPS_ROOT (prevent path traversal)
+    if not full_path.startswith(pcaps_root_real + os.sep) and full_path != pcaps_root_real:
         return None, (jsonify({"error": "Invalid file path"}), 400)
     
     if not os.path.isfile(full_path):
