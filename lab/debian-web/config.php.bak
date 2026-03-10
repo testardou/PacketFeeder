@@ -1,0 +1,8 @@
+<?php
+// Old config — do not use in production
+$db_host = '127.0.0.1';
+$db_name = 'packetfeeder_lab';
+$db_user = 'pf_admin';
+$db_pass = 'Pf@dmin2024!';
+$secret_key = 'c4a7f2e8b1d3a6c9e0f5b8d2a4c7f1e3';
+$debug = true;

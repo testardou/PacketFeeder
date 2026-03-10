@@ -1,0 +1,5 @@
+# Legacy Apache config — left behind after nginx migration
+RewriteEngine On
+RewriteRule ^admin$ /packetfeeder-lab/index.php [R=302,L]
+# AuthType Basic
+# AuthUserFile /etc/apache2/.htpasswd

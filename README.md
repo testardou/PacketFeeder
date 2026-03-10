@@ -252,6 +252,12 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1087.002 — Account Discovery: Domain Account
     - [x] T1135 — Network Share Discovery
     - [ ] T1595.002 — Active Scanning: Vulnerability Scanning
+      - [ ] vuln_scan_web (nikto)
+      - [ ] vuln_scan_nse (nmap)
+    - [ ] T1595.003 — Active Scanning: Vulnerability Scanning
+      - [ ] dir_enum (ffuf / gobuster)
+      - [ ] vhost_enum (ffuf)
+      - [ ] param_fuzz (ffuf)
   - [ ] Credential Access (TA0006)
     - [x] T1110.001 — Brute Force: Password Guessing
     - [x] T1110.003 — Brute Force: Password Spraying
@@ -260,7 +266,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1110.003 — Brute Force: Password Spraying (HTTP)
     - [x] T1003 — OS Credential Dumping
     - [x] T1003.003 — OS Credential Dumping: NTDS
-  - [x] Lateral Movement (TA0008)
+  - [ ] Lateral Movement (TA0008)
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH

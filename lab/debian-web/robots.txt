@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /packetfeeder-lab/
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /config/
+Disallow: /.git/
+Disallow: /api/v1/
