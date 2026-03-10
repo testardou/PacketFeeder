@@ -196,8 +196,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 
 ==================================================== ids-ovs  (IDS FEED BUS) ========================================================
-                     |                             |                            |              
-                     |                             |                            |              
+                     |                             |                            |
+                     |                             |                            |
         ┌────────────▼─────────────┐  ┌────────────▼────────────┐  ┌────────────▼─────────────┐
         │       broker VM          │  │       ClearNDR VM       │  │           Snort          │
         │--------------------------│  │-------------------------│  │--------------------------│
@@ -223,7 +223,6 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [x] Snort
   - [ ] Zeek
 
-
 ### PCAP File Management
 
 - [x] PCAP upload, listing, and deletion
@@ -244,7 +243,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 ### Scenario Mode
 
 - [x] PCAP-based scenario definitions
-- [x] Frontend scenatio mode
+- [x] Frontend scenario mode
 - [ ] CLI scenario mode
 - [ ] MITRE ATT&CK–aligned attack scenarios
   - [ ] Discovery (TA0007)
@@ -252,28 +251,44 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1018 — Remote System Discovery
     - [x] T1087.002 — Account Discovery: Domain Account
     - [x] T1135 — Network Share Discovery
+    - [ ] T1595.002 — Active Scanning: Vulnerability Scanning
   - [ ] Credential Access (TA0006)
-    - [x] T1110.001 – Password Guessing
-    - [x] T1110.003 – Password Spraying
-    - [x] T1110.004 – Credential Stuffing
-    - [x] T1003 - OS Credential Dumping
-    - [x] T1003.003 - OS Credential Dumping: NTDS
-  - [ ] Lateral Movement (TA0008)
+    - [x] T1110.001 — Brute Force: Password Guessing
+    - [x] T1110.003 — Brute Force: Password Spraying
+    - [x] T1110.004 — Brute Force: Credential Stuffing
+    - [ ] T1110.001 — Brute Force: Password Guessing (HTTP)
+    - [ ] T1110.003 — Brute Force: Password Spraying (HTTP)
+    - [x] T1003 — OS Credential Dumping
+    - [x] T1003.003 — OS Credential Dumping: NTDS
+  - [x] Lateral Movement (TA0008)
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH
     - [x] T1021.006 — Remote Services: Windows Remote Management
-  - [ ]  Defense Evasion (TA0005)
-    - [ ] T1550 - Use Alternate Authentication Material
+  - [ ] Defense Evasion (TA0005)
+    - [ ] T1550 — Use Alternate Authentication Material
+  - [ ] Initial Access (TA0001)
+    - [ ] T1190 — Exploit Public-Facing Application
+      - [ ] SQL Injection (error-based)
+      - [ ] SQL Injection (blind / time-based)
+      - [ ] Command Injection
+      - [ ] XML External Entity (XXE)
+      - [ ] Local File Inclusion (LFI)
+      - [ ] Remote File Inclusion (RFI)
+      - [ ] XSS Reflected
+      - [ ] XSS Stored
+  - [ ] Persistence (TA0003)
+    - [ ] T1505.003 — Server Software: Web Shell Upload
+    - [ ] T1505.003 — Server Software: Web Shell Execution
 
 ### Attack Builder
 
-- [ ] Compose attack chains from event PCAPs
-- [ ] Reorder / duplicate / remove steps
-- [ ] Basic pacing (delays between steps)
-- [ ] Build a single PCAP (merged timeline)
+- [x] Compose attack chains from event PCAPs
+- [x] Reorder / duplicate / remove steps
+- [x] Basic pacing (delays between steps)
+- [x] Build a single PCAP (merged timeline)
 - [ ] Export chain config
-- [ ] Simple builder UI (timeline / drag-and-drop)
+- [x] Simple builder UI (timeline / drag-and-drop)
 
 ### Live Network Interaction
 
