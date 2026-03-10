@@ -4,14 +4,14 @@
 
 ## Prerequisites
 
-- Debian/Ubuntu with Apache2
-- PHP 8.x with modules: `php-sqlite3`, `php-xml`
+- Debian/Ubuntu with nginx
+- PHP 8.x with php-fpm and modules: `php-sqlite3`, `php-xml`
 - Network monitored by Snort/Suricata/ClearNDR
 
 ## Install
 
 ```bash
-apt update && apt install -y apache2 php php-sqlite3 php-xml libapache2-mod-php
+apt update && apt install -y nginx php-fpm php-sqlite3 php-xml
 ```
 
 ## Deploy
@@ -20,7 +20,7 @@ apt update && apt install -y apache2 php php-sqlite3 php-xml libapache2-mod-php
 # Copy app to web root
 cp -r lab/debian-web /var/www/html/packetfeeder-lab
 
-# Set permissions (Apache needs write access for SQLite DB)
+# Set permissions (nginx/php-fpm needs write access for SQLite DB)
 chown -R www-data:www-data /var/www/html/packetfeeder-lab
 chmod 755 /var/www/html/packetfeeder-lab
 chmod 666 /var/www/html/packetfeeder-lab/packetfeeder_lab.db 2>/dev/null || true
@@ -28,16 +28,16 @@ chmod 666 /var/www/html/packetfeeder-lab/packetfeeder_lab.db 2>/dev/null || true
 
 ## Enable RFI (optional)
 
-Edit `/etc/php/8.*/apache2/php.ini`:
+Edit `/etc/php/8.*/fpm/php.ini`:
 
 ```ini
 allow_url_include = On
 ```
 
-Then restart Apache:
+Then restart php-fpm:
 
 ```bash
-systemctl restart apache2
+systemctl restart php8.*-fpm
 ```
 
 ## Access
@@ -47,15 +47,15 @@ systemctl restart apache2
 
 ## Modules & MITRE Mapping
 
-| Module | File | Technique | CWE |
-|--------|------|-----------|-----|
-| Brute Force Login | `index.php` | T1110 | CWE-307 |
-| SQL Injection | `sqli.php` | T1190 | CWE-89 |
-| Local File Inclusion | `lfi.php` | T1005 | CWE-98 |
-| Remote File Inclusion | `rfi.php` | T1059.004 | CWE-98 |
-| Command Injection | `cmdi.php` | T1059 | CWE-78 |
-| XSS (Reflected + Stored) | `xss.php` | T1059.007 | CWE-79 |
-| XXE Injection | `xxe.php` | T1059 | CWE-611 |
+| Module                   | File        | Technique | CWE     |
+| ------------------------ | ----------- | --------- | ------- |
+| Brute Force Login        | `index.php` | T1110     | CWE-307 |
+| SQL Injection            | `sqli.php`  | T1190     | CWE-89  |
+| Local File Inclusion     | `lfi.php`   | T1005     | CWE-98  |
+| Remote File Inclusion    | `rfi.php`   | T1059.004 | CWE-98  |
+| Command Injection        | `cmdi.php`  | T1059     | CWE-78  |
+| XSS (Reflected + Stored) | `xss.php`   | T1059.007 | CWE-79  |
+| XXE Injection            | `xxe.php`   | T1059     | CWE-611 |
 
 ## Test Commands
 
@@ -79,17 +79,72 @@ curl 'http://TARGET/packetfeeder-lab/xss.php?q=<script>alert(1)</script>' -b 'PH
 curl -X POST -d '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><name>&xxe;</name></user>' -b 'PHPSESSID=xxx' http://TARGET/packetfeeder-lab/xxe.php
 ```
 
+## Vhost Scanning Setup (T1595.003)
+
+The `vhosts/` directory contains a multi-vhost nginx setup for generating vhost enumeration traffic (gobuster vhost, ffuf, wfuzz). 5 discoverable vhosts + 1 default catch-all returning 404.
+
+| Vhost                         | Response | Content                                    |
+| ----------------------------- | -------- | ------------------------------------------ |
+| `packetfeeder.lab`            | 302      | Redirects to `/packetfeeder-lab/`          |
+| `admin.packetfeeder.lab`      | 200      | Fake admin panel with info leak            |
+| `api.packetfeeder.lab`        | 200      | Fake REST API with JSON routes             |
+| `dev.packetfeeder.lab`        | 200      | Staging page with phpinfo(), .git leak     |
+| `monitoring.packetfeeder.lab` | 200      | Fake monitoring dashboard                  |
+| `intranet.packetfeeder.lab`   | 200      | Directory listing with sensitive filenames |
+| `*.packetfeeder.lab`          | 404      | Catch-all for unknown vhosts               |
+
+### Deploy vhosts
+
+```bash
+# Copy vhost pages
+sudo cp -r lab/debian-web/vhosts /var/www/html/packetfeeder-lab/vhosts
+sudo chown -R www-data:www-data /var/www/html/packetfeeder-lab/vhosts
+
+# Replace default nginx config with vhosts config
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+sudo cp lab/debian-web/vhosts/vhosts.conf /etc/nginx/sites-available/default
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### DNS setup
+
+Add entries in pfSense DNS Resolver (or attacker `/etc/hosts`):
+
+```
+10.10.10.40 packetfeeder.lab admin.packetfeeder.lab api.packetfeeder.lab dev.packetfeeder.lab monitoring.packetfeeder.lab intranet.packetfeeder.lab
+```
+
+### Test commands
+
+```bash
+# Verify discoverable vhost returns 200
+curl -s -o /dev/null -w "%{http_code}" -H "Host: admin.packetfeeder.lab" http://10.10.10.40/
+# → 200
+
+# Verify unknown vhost returns 404
+curl -s -o /dev/null -w "%{http_code}" -H "Host: fake.packetfeeder.lab" http://10.10.10.40/
+# → 404
+
+# Scan with gobuster
+gobuster vhost -u http://packetfeeder.lab -w /usr/share/wordlists/subdomains.txt --append-domain
+
+# Scan with ffuf (filter 404)
+ffuf -u http://10.10.10.40 -H "Host: FUZZ.packetfeeder.lab" -w /usr/share/wordlists/subdomains.txt -fc 404
+```
+
+---
+
 ## User Accounts (seeded)
 
-| Username | Password | Role |
-|----------|----------|------|
-| admin | admin123 | admin |
-| operator | operator1 | operator |
-| analyst | analyst2024 | analyst |
-| guest | guest | guest |
-| john | password | user |
-| jane | letmein | user |
-| bob | qwerty | user |
-| alice | 123456 | user |
-| ftpuser | ftp1234 | service |
-| smbuser | smb1234 | service |
+| Username | Password    | Role     |
+| -------- | ----------- | -------- |
+| admin    | admin123    | admin    |
+| operator | operator1   | operator |
+| analyst  | analyst2024 | analyst  |
+| guest    | guest       | guest    |
+| john     | password    | user     |
+| jane     | letmein     | user     |
+| bob      | qwerty      | user     |
+| alice    | 123456      | user     |
+| ftpuser  | ftp1234     | service  |
+| smbuser  | smb1234     | service  |
