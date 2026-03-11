@@ -275,8 +275,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1550 — Use Alternate Authentication Material
   - [ ] Initial Access (TA0001)
     - [ ] T1190 — Exploit Public-Facing Application
-      - [ ] SQL Injection (error-based)
-      - [ ] SQL Injection (blind / time-based)
+      - [x] SQL Injection (error-based)
+      - [x] SQL Injection (union-based)
       - [ ] Command Injection
       - [ ] XML External Entity (XXE)
       - [ ] Local File Inclusion (LFI)
