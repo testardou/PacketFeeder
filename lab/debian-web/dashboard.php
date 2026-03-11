@@ -25,7 +25,7 @@ require_login();
                 <h3>SQL Injection</h3>
                 <span class="tag">T1190</span>
                 <span class="tag">CWE-89</span>
-                <p>Exploit Public-Facing Application — Error-based, UNION-based, blind time-based SQLi via user ID lookup.</p>
+                <p>3 modes: Union-based, Error-based, Blind (boolean + time-based) — switch via tabs.</p>
             </a>
 
             <a href="lfi.php" class="card">

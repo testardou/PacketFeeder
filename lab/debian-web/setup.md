@@ -5,13 +5,29 @@
 ## Prerequisites
 
 - Debian/Ubuntu with nginx
-- PHP 8.x with php-fpm and modules: `php-sqlite3`, `php-xml`
+- PHP 8.x with php-fpm and modules: `php-mysql`, `php-xml`
+- MariaDB/MySQL
 - Network monitored by Snort/Suricata/ClearNDR
 
 ## Install
 
 ```bash
-apt update && apt install -y nginx php-fpm php-sqlite3 php-xml
+apt update && apt install -y nginx php-fpm php-mysql php-xml mariadb-server
+```
+
+## Database Setup
+
+```bash
+# Start MariaDB
+systemctl enable --now mariadb
+
+# Create database and user
+mysql -u root <<'SQL'
+CREATE DATABASE IF NOT EXISTS packetfeeder_lab;
+CREATE USER IF NOT EXISTS 'packetfeeder'@'127.0.0.1' IDENTIFIED BY 'packetfeeder';
+GRANT ALL PRIVILEGES ON packetfeeder_lab.* TO 'packetfeeder'@'127.0.0.1';
+FLUSH PRIVILEGES;
+SQL
 ```
 
 ## Deploy
@@ -20,10 +36,9 @@ apt update && apt install -y nginx php-fpm php-sqlite3 php-xml
 # Copy app to web root
 cp -r lab/debian-web /var/www/html/packetfeeder-lab
 
-# Set permissions (nginx/php-fpm needs write access for SQLite DB)
+# Set permissions
 chown -R www-data:www-data /var/www/html/packetfeeder-lab
 chmod 755 /var/www/html/packetfeeder-lab
-chmod 666 /var/www/html/packetfeeder-lab/packetfeeder_lab.db 2>/dev/null || true
 ```
 
 ## Enable RFI (optional)

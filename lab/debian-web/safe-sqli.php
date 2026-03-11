@@ -4,9 +4,9 @@ require_login();
 
 $result = '';
 $id = $_GET['id'] ?? '';
+$username = $_GET['username'] ?? '';
 
 if ($id !== '') {
-    // Safe: prepared statement + input validation
     if (!ctype_digit($id)) {
         $result = "Error: ID must be a numeric value.";
     } else {
@@ -20,6 +20,19 @@ if ($id !== '') {
         } else {
             $result = "No user found.";
         }
+    }
+} elseif ($username !== '') {
+    try {
+        $stmt = $db->prepare("SELECT id, username, role FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $result = "Welcome back, " . htmlspecialchars($row['username']) . "! (Role: " . htmlspecialchars($row['role']) . ")";
+        } else {
+            $result = "User not found.";
+        }
+    } catch (Exception $e) {
+        $result = "An error occurred. Please try again.";
     }
 }
 ?>
@@ -41,12 +54,14 @@ if ($id !== '') {
     <div class="container">
         <div class="module-banner" style="border-left-color:#4ecca3;">
             <h1 style="color:#4ecca3;">SQL Injection (Safe)</h1>
-            <p class="mitre">Prepared statements + input validation + no password leak</p>
+            <p class="mitre">Prepared statements + input validation + generic errors + no password leak</p>
         </div>
 
         <form method="GET">
             <label>User ID (numeric only)</label>
             <input type="text" name="id" value="<?= htmlspecialchars($id) ?>" placeholder="e.g. 1">
+            <label>Or username</label>
+            <input type="text" name="username" value="<?= htmlspecialchars($username) ?>" placeholder="e.g. admin">
             <button type="submit" style="background:#4ecca3;">Lookup</button>
         </form>
 
