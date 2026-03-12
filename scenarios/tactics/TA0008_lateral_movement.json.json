@@ -5,7 +5,7 @@
     "url": "https://attack.mitre.org/tactics/TA0008/"
   },
   "description": "The adversary is trying to move through your environment. Lateral Movement consists of techniques that adversaries use to enter and control remote systems on a network.",
-  "techniques": ["T1021.001", "T1021.002", "T1021.004", "T1021.006"],
+  "techniques": ["T1021.001", "T1021.002", "T1021.004", "T1021.006", "T1210"],
   "metadata": {
     "domain": "enterprise",
     "schema_version": "1.0"

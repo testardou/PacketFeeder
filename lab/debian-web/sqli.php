@@ -65,7 +65,7 @@ if ($username !== '') {
     <div class="container">
         <div class="module-banner">
             <h1>SQL Injection</h1>
-            <p class="mitre">T1190 — Exploit Public-Facing Application | CWE-89</p>
+            <p class="mitre">T1210 — Exploit Public-Facing Application | CWE-89</p>
         </div>
 
         <h3>Union-Based & Blind</h3>

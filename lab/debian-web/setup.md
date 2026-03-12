@@ -65,7 +65,7 @@ systemctl restart php8.*-fpm
 | Module                   | File        | Technique | CWE     |
 | ------------------------ | ----------- | --------- | ------- |
 | Brute Force Login        | `index.php` | T1110     | CWE-307 |
-| SQL Injection            | `sqli.php`  | T1190     | CWE-89  |
+| SQL Injection            | `sqli.php`  | T1210     | CWE-89  |
 | Local File Inclusion     | `lfi.php`   | T1005     | CWE-98  |
 | Remote File Inclusion    | `rfi.php`   | T1059.004 | CWE-98  |
 | Command Injection        | `cmdi.php`  | T1059     | CWE-78  |

@@ -23,7 +23,7 @@ require_login();
 
             <a href="sqli.php" class="card">
                 <h3>SQL Injection</h3>
-                <span class="tag">T1190</span>
+                <span class="tag">T1210</span>
                 <span class="tag">CWE-89</span>
                 <p>3 modes: Union-based, Error-based, Blind (boolean + time-based) — switch via tabs.</p>
             </a>

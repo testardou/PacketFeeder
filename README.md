@@ -273,8 +273,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1021.006 — Remote Services: Windows Remote Management
   - [ ] Defense Evasion (TA0005)
     - [ ] T1550 — Use Alternate Authentication Material
-  - [ ] Initial Access (TA0001)
-    - [ ] T1190 — Exploit Public-Facing Application
+  - [ ] Lateral Movement (TA0008)
+    - [ ] T1210 — Exploitation of Remote Services
       - [x] SQL Injection (error-based)
       - [x] SQL Injection (union-based)
       - [ ] Command Injection
