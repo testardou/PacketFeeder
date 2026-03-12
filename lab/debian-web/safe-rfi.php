@@ -7,6 +7,7 @@ $error = '';
 
 if ($file !== '') {
     // Safe: block any remote URL or path traversal
+    http_response_code(403);
     if (preg_match('#^(https?://|ftp://|php://|data://|expect://|phar://)#i', $file)) {
         $error = "Blocked: remote URLs are not allowed.";
     } elseif (strpos($file, '..') !== false) {

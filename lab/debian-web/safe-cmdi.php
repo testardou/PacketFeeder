@@ -9,12 +9,14 @@ $error = '';
 
 if ($cmd !== '') {
     // Safe: direct command execution is completely blocked
+    http_response_code(403);
     $error = "Blocked: direct command execution is disabled.";
 } elseif ($ip !== '') {
     // Safe: validate IP format, use escapeshellarg
     if (filter_var($ip, FILTER_VALIDATE_IP)) {
         $output = shell_exec("ping -c 2 " . escapeshellarg($ip));
     } else {
+        http_response_code(403);
         $error = "Blocked: invalid IP address format. Only valid IPs accepted (e.g. 127.0.0.1).";
     }
 }

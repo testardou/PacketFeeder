@@ -35,6 +35,7 @@ $is_allowed = in_array($file, $allowed);
             <button type="submit" style="background:#4ecca3;">Include</button>
         </form>
 
+        <?php if (!$is_allowed) http_response_code(403); ?>
         <?php if ($is_allowed): ?>
             <pre class="result"><?php include($file); ?></pre>
         <?php else: ?>

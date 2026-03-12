@@ -279,7 +279,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
       - [x] SQL Injection (union-based)
       - [ ] Command Injection
       - [ ] XML External Entity (XXE)
-      - [ ] Local File Inclusion (LFI)
+      - [x] Local File Inclusion (LFI)
       - [ ] Remote File Inclusion (RFI)
       - [ ] XSS Reflected
       - [ ] XSS Stored

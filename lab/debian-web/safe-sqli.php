@@ -8,6 +8,7 @@ $username = $_GET['username'] ?? '';
 
 if ($id !== '') {
     if (!ctype_digit($id)) {
+        http_response_code(403);
         $result = "Error: ID must be a numeric value.";
     } else {
         $stmt = $db->prepare("SELECT id, username, role FROM users WHERE id = ?");

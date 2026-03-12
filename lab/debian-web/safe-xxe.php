@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         libxml_disable_entity_loader(true);
         $xml = simplexml_load_string($raw, 'SimpleXMLElement', LIBXML_NONET);
         if ($xml === false) {
+            http_response_code(403);
             $result = "XML Parse Error:\n";
             foreach (libxml_get_errors() as $err) {
                 $result .= htmlspecialchars($err->message);
