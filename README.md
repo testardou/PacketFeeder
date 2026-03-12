@@ -277,7 +277,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1210 — Exploitation of Remote Services
       - [x] SQL Injection (error-based)
       - [x] SQL Injection (union-based)
-      - [ ] Command Injection
+      - [x] Command Injection
       - [ ] XML External Entity (XXE)
       - [x] Local File Inclusion (LFI)
       - [ ] Remote File Inclusion (RFI)
