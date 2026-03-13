@@ -271,18 +271,17 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH
     - [x] T1021.006 — Remote Services: Windows Remote Management
-  - [ ] Defense Evasion (TA0005)
-    - [ ] T1550 — Use Alternate Authentication Material
-  - [ ] Lateral Movement (TA0008)
     - [ ] T1210 — Exploitation of Remote Services
       - [x] SQL Injection (error-based)
       - [x] SQL Injection (union-based)
       - [x] Command Injection
-      - [ ] XML External Entity (XXE)
+      - [x] XML External Entity (XXE)
       - [x] Local File Inclusion (LFI)
-      - [ ] Remote File Inclusion (RFI)
+      - [x] Remote File Inclusion (RFI)
       - [ ] XSS Reflected
       - [ ] XSS Stored
+  - [ ] Defense Evasion (TA0005)
+    - [ ] T1550 — Use Alternate Authentication Material
   - [ ] Persistence (TA0003)
     - [ ] T1505.003 — Server Software: Web Shell Upload
     - [ ] T1505.003 — Server Software: Web Shell Execution

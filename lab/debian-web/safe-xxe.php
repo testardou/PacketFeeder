@@ -7,18 +7,23 @@ $result = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $raw = file_get_contents('php://input');
     if ($raw) {
-        // Safe: disable external entities entirely
-        libxml_disable_entity_loader(true);
-        $xml = simplexml_load_string($raw, 'SimpleXMLElement', LIBXML_NONET);
-        if ($xml === false) {
+        // Safe: reject any XML containing DOCTYPE (blocks all XXE attempts)
+        if (preg_match('/<!DOCTYPE/i', $raw)) {
             http_response_code(403);
-            $result = "XML Parse Error:\n";
-            foreach (libxml_get_errors() as $err) {
-                $result .= htmlspecialchars($err->message);
-            }
-            libxml_clear_errors();
+            $result = "Blocked: DOCTYPE declarations are not allowed.";
         } else {
-            $result = htmlspecialchars($xml->asXML());
+            libxml_disable_entity_loader(true);
+            $xml = simplexml_load_string($raw, 'SimpleXMLElement', LIBXML_NONET);
+            if ($xml === false) {
+                http_response_code(403);
+                $result = "XML Parse Error:\n";
+                foreach (libxml_get_errors() as $err) {
+                    $result .= htmlspecialchars($err->message);
+                }
+                libxml_clear_errors();
+            } else {
+                $result = htmlspecialchars($xml->asXML());
+            }
         }
     }
 }
