@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: dashboard.php');
         exit;
     } else {
-        http_response_code(401);
         $error = 'Invalid username or password.';
     }
 }

@@ -258,12 +258,10 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
       - [ ] dir_enum (ffuf / gobuster)
       - [ ] vhost_enum (ffuf)
       - [ ] param_fuzz (ffuf)
-  - [ ] Credential Access (TA0006)
+  - [x] Credential Access (TA0006)
     - [x] T1110.001 — Brute Force: Password Guessing
     - [x] T1110.003 — Brute Force: Password Spraying
     - [x] T1110.004 — Brute Force: Credential Stuffing
-    - [ ] T1110.001 — Brute Force: Password Guessing (HTTP)
-    - [ ] T1110.003 — Brute Force: Password Spraying (HTTP)
     - [x] T1003 — OS Credential Dumping
     - [x] T1003.003 — OS Credential Dumping: NTDS
   - [x] Lateral Movement (TA0008)
