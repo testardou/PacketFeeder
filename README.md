@@ -254,10 +254,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1595.002 — Active Scanning: Vulnerability Scanning
       - [ ] vuln_scan_web (nikto)
       - [ ] vuln_scan_nse (nmap)
-    - [ ] T1595.003 — Active Scanning: Vulnerability Scanning
-      - [ ] dir_enum (ffuf / gobuster)
-      - [ ] vhost_enum (ffuf)
-      - [ ] param_fuzz (ffuf)
+    - [x] T1595.003 — Active Scanning: Wordlist Scanning
   - [x] Credential Access (TA0006)
     - [x] T1110.001 — Brute Force: Password Guessing
     - [x] T1110.003 — Brute Force: Password Spraying
