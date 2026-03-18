@@ -268,8 +268,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Defense Evasion (TA0005)
     - [ ] T1550 — Use Alternate Authentication Material
   - [ ] Persistence (TA0003)
-    - [ ] T1505.003 — Server Software: Web Shell Upload
-    - [ ] T1505.003 — Server Software: Web Shell Execution
+    - [x] T1505.003 — Server Software: Web Shell
 
 ### Attack Builder
 
