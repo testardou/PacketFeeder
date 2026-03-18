@@ -63,6 +63,13 @@ require_login();
                 <p>XML External Entity processing — Parse untrusted XML with external entity resolution.</p>
             </a>
 
+            <a href="upload.php" class="card">
+                <h3>File Upload</h3>
+                <span class="tag">T1505.003</span>
+                <span class="tag">CWE-434</span>
+                <p>Web Shell — Upload arbitrary files with no validation. Execute uploaded PHP webshells.</p>
+            </a>
+
         </div>
     </div>
 </body>
