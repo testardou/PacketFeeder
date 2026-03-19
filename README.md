@@ -248,8 +248,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - [ ] MITRE ATT&CK–aligned attack scenarios
   - [ ] Reconnaissance (TA0043)
     - [x] T1595 — Active Scanning (parent: external IP block scanning)
-    - [x] T1595.002 — Active Scanning: Vulnerability Scanning
-    - [x] T1595.003 — Active Scanning: Wordlist Scanning
+    - [ ] T1595.002 — Active Scanning: Vulnerability Scanning
+    - [ ] T1595.003 — Active Scanning: Wordlist Scanning
   - [ ] Discovery (TA0007)
     - [x] T1018 — Remote System Discovery
     - [x] T1046 — Network Service Discovery

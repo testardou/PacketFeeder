@@ -307,6 +307,485 @@
         },
         "filter": ["internal", "udp", "161", "snmp", "nmap", "icmp", "medium"],
         "command": "nmap -sU -Pn -n -p 161 10.10.10.0/24"
+      },
+      {
+        "id": "t1046-internal-unauth-vuln-horizontal-scan-generic-nmap-nse",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vuln_horizontal_scan_generic__nmap_nse.pcap",
+        "name": "Internal horizontal vulnerability scan - generic (nmap NSE)",
+        "description": "Internal unauthenticated horizontal vulnerability scan using nmap NSE scripts, scanning multiple hosts for common vulnerabilities across the network.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80, 443, 445, 22, 21]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vulnerability",
+          "scan",
+          "horizontal",
+          "generic",
+          "nmap",
+          "nse",
+          "tcp",
+          "high"
+        ],
+        "command": "sudo nmap -sV --script vuln -p 21,22,23,25,80,110,135,139,443,445,3306,3389,8080 10.10.10.0/24"
+      },
+      {
+        "id": "t1046-internal-unauth-vuln-scan-web-nikto",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vuln_scan_web__nikto.pcap",
+        "name": "Internal web vulnerability scan (nikto)",
+        "description": "Internal unauthenticated web vulnerability scan using nikto, probing a web server for known vulnerabilities, misconfigurations, and dangerous files.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vulnerability",
+          "scan",
+          "web",
+          "http",
+          "nikto",
+          "tcp",
+          "80",
+          "high"
+        ],
+        "command": "nikto -h http://10.10.10.40"
+      },
+      {
+        "id": "t1046-internal-unauth-vuln-vertical-scan-smb-nmap-nse",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vuln_vertical_scan_smb__nmap_nse.pcap",
+        "name": "Internal vertical SMB vulnerability scan (nmap NSE)",
+        "description": "Internal unauthenticated vertical vulnerability scan targeting SMB services using nmap NSE scripts, probing for known SMB vulnerabilities like EternalBlue, SMB signing issues, etc.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vulnerability",
+          "scan",
+          "vertical",
+          "smb",
+          "nmap",
+          "nse",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "sudo nmap -sV --script \"smb-vuln-*,smb-security-mode,smb2-security-mode\" -p 445,139 10.10.10.30"
+      },
+      {
+        "id": "t1046-internal-unauth-vuln-vertical-scan-web-nmap-nse",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vuln_vertical_scan_web__nmap_nse.pcap",
+        "name": "Internal vertical web vulnerability scan (nmap NSE)",
+        "description": "Internal unauthenticated vertical vulnerability scan targeting web services using nmap NSE scripts, probing for known HTTP vulnerabilities.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vulnerability",
+          "scan",
+          "vertical",
+          "web",
+          "http",
+          "nmap",
+          "nse",
+          "tcp",
+          "80",
+          "high"
+        ],
+        "command": "sudo nmap -sV --script \"http-vuln-*,http-shellshock,http-methods,http-auth\" -p 80,443,8080,8443 10.10.10.40"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-big-succeeded-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_big_succeeded__ffuf.pcap",
+        "name": "Internal directory enumeration with big wordlist - succeeded (ffuf)",
+        "description": "Internal unauthenticated directory enumeration using ffuf with a large wordlist, successfully discovering hidden directories and files.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/big.txt -u http://10.10.10.40/FUZZ"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-big-succeeded-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_big_succeeded__gobuster.pcap",
+        "name": "Internal directory enumeration with big wordlist - succeeded (gobuster)",
+        "description": "Internal unauthenticated directory enumeration using gobuster with a large wordlist, successfully discovering hidden directories and files.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "gobuster fuzz -u http://10.10.10.40/FUZZ -w SecLists/Discovery/Web-Content/big.txt"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-common-succeeded-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_common_succeeded__ffuf.pcap",
+        "name": "Internal directory enumeration with common wordlist - succeeded (ffuf)",
+        "description": "Internal unauthenticated directory enumeration using ffuf with a common wordlist, successfully discovering hidden directories and files.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "common",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/common.txt -u http://10.10.10.40/FUZZ"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-common-succeeded-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_common_succeeded__gobuster.pcap",
+        "name": "Internal directory enumeration with common wordlist - succeeded (gobuster)",
+        "description": "Internal unauthenticated directory enumeration using gobuster with a common wordlist, successfully discovering hidden directories and files.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "common",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "gobuster fuzz -u http://10.10.10.40/FUZZ -w SecLists/Discovery/Web-Content/common.txt"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-failed-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_failed__ffuf.pcap",
+        "name": "Internal directory enumeration - failed (ffuf)",
+        "description": "Internal unauthenticated directory enumeration using ffuf where no valid directories or files were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/uri-from-top-55-most-popular-apps.txt -u http://10.10.10.40/FUZZ"
+      },
+      {
+        "id": "t1046-internal-unauth-dir-enum-failed-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_dir_enum_failed__gobuster.pcap",
+        "name": "Internal directory enumeration - failed (gobuster)",
+        "description": "Internal unauthenticated directory enumeration using gobuster where no valid directories or files were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "directory",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "gobuster fuzz -u http://10.10.10.40/FUZZ -w SecLists/Discovery/Web-Content/uri-from-top-55-most-popular-apps.txt"
+      },
+      {
+        "id": "t1046-internal-unauth-vhost-enum-succeeded-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vhost_enum__succeeded__ffuf.pcap",
+        "name": "Internal vhost enumeration - succeeded (ffuf)",
+        "description": "Internal unauthenticated virtual host enumeration using ffuf, successfully discovering hidden vhosts by fuzzing the Host header.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vhost",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "ffuf -w SecLists/Discovery/DNS/subdomains-top1million-5000.txt -u http://10.10.10.40 -H \"Host: FUZZ.packetfeeder.lab\" -fs 816"
+      },
+      {
+        "id": "t1046-internal-unauth-vhost-enum-succeeded-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vhost_enum__succeeded__gobuster.pcap",
+        "name": "Internal vhost enumeration - succeeded (gobuster)",
+        "description": "Internal unauthenticated virtual host enumeration using gobuster, successfully discovering hidden vhosts.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vhost",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "gobuster vhost -u http://10.10.10.40 -w SecLists/Discovery/DNS/subdomains-top1million-5000.txt --domain packetfeeder.lab --append-domain --exclude-length 816"
+      },
+      {
+        "id": "t1046-internal-unauth-vhost-enum-failed-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vhost_enum__failed__ffuf.pcap",
+        "name": "Internal vhost enumeration - failed (ffuf)",
+        "description": "Internal unauthenticated virtual host enumeration using ffuf where no valid vhosts were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vhost",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/quickhits.txt -u http://10.10.10.40 -H \"Host: FUZZ.packetfeeder.lab\" -fs 816"
+      },
+      {
+        "id": "t1046-internal-unauth-vhost-enum-failed-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_vhost_enum__failed__gobuster.pcap",
+        "name": "Internal vhost enumeration - failed (gobuster)",
+        "description": "Internal unauthenticated virtual host enumeration using gobuster where no valid vhosts were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "vhost",
+          "enumeration",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "gobuster vhost -u http://10.10.10.40 -w SecLists/Discovery/Web-Content/quickhits.txt --domain packetfeeder.lab --append-domain --exclude-length 150"
+      },
+      {
+        "id": "t1046-internal-unauth-param-fuzz-succeeded-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_param_fuzz_succeeded__ffuf.pcap",
+        "name": "Internal parameter fuzzing - succeeded (ffuf)",
+        "description": "Internal unauthenticated parameter fuzzing using ffuf, successfully discovering hidden GET parameters on a web application.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "parameter",
+          "fuzz",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/burp-parameter-names.txt -u http://10.10.10.40/search.php?FUZZ=test -fs 911"
+      },
+      {
+        "id": "t1046-internal-unauth-param-fuzz-succeeded-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_param_fuzz_succeeded__gobuster.pcap",
+        "name": "Internal parameter fuzzing - succeeded (gobuster)",
+        "description": "Internal unauthenticated parameter fuzzing using gobuster, successfully discovering hidden GET parameters on a web application.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "parameter",
+          "fuzz",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "succeeded",
+          "tcp",
+          "80",
+          "medium"
+        ],
+        "command": "gobuster fuzz -u http://10.10.10.40/search.php?FUZZ=test -w SecLists/Discovery/Web-Content/burp-parameter-names.txt --exclude-length 911"
+      },
+      {
+        "id": "t1046-internal-unauth-param-fuzz-failed-ffuf",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_param_fuzz_failed__ffuf.pcap",
+        "name": "Internal parameter fuzzing - failed (ffuf)",
+        "description": "Internal unauthenticated parameter fuzzing using ffuf where no hidden parameters were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "parameter",
+          "fuzz",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "ffuf",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "ffuf -w SecLists/Discovery/Web-Content/quickhits.txt -u http://10.10.10.40/search.php?FUZZ=test -fs 911"
+      },
+      {
+        "id": "t1046-internal-unauth-param-fuzz-failed-gobuster",
+        "file": "pcaps/techniques/t1046/t1046_internal_unauth_param_fuzz_failed__gobuster.pcap",
+        "name": "Internal parameter fuzzing - failed (gobuster)",
+        "description": "Internal unauthenticated parameter fuzzing using gobuster where no hidden parameters were discovered.",
+        "criticality": "low",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "parameter",
+          "fuzz",
+          "wordlist",
+          "scanning",
+          "http",
+          "web",
+          "gobuster",
+          "failed",
+          "tcp",
+          "80",
+          "low"
+        ],
+        "command": "gobuster fuzz -u http://10.10.10.40/search.php?FUZZ=test -w SecLists/Discovery/Web-Content/quickhits.txt --exclude-length 911"
       }
     ]
   },
