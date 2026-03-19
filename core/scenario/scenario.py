@@ -28,7 +28,7 @@ def list_tactics():
         return []
 
     tactics = []
-    for file_path in tactics_dir.glob("*.json*"):
+    for file_path in tactics_dir.glob("*.json"):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 tactic_data = json.load(f)
@@ -65,7 +65,7 @@ def list_techniques_for_tactic(tactic_id):
 
     # Find the tactic file
     tactic_file_data = None
-    for file_path in tactics_dir.glob("*.json*"):
+    for file_path in tactics_dir.glob("*.json"):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 tactic_data = json.load(f)
@@ -121,7 +121,7 @@ def list_events_for_technique(technique_id):
     project_root = get_project_root()
     techniques_dir = project_root / "scenarios" / "techniques"
     technique_file_data = None
-    for file_path in techniques_dir.glob("*.json*"):
+    for file_path in techniques_dir.glob("*.json"):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 technique_data = json.load(f)
