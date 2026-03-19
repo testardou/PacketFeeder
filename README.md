@@ -246,29 +246,61 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - [x] Frontend scenario mode
 - [ ] CLI scenario mode
 - [ ] MITRE ATT&CK–aligned attack scenarios
-  - [ ] Discovery (TA0007)
-    - [x] T1046 — Network Service Discovery
-    - [x] T1018 — Remote System Discovery
-    - [x] T1087.002 — Account Discovery: Domain Account
-    - [x] T1135 — Network Share Discovery
+  - [ ] Reconnaissance (TA0043)
+    - [x] T1595 — Active Scanning (parent: external IP block scanning)
     - [x] T1595.002 — Active Scanning: Vulnerability Scanning
     - [x] T1595.003 — Active Scanning: Wordlist Scanning
-  - [x] Credential Access (TA0006)
+  - [ ] Discovery (TA0007)
+    - [x] T1018 — Remote System Discovery
+    - [x] T1046 — Network Service Discovery
+    - [x] T1087.002 — Account Discovery: Domain Account
+    - [x] T1135 — Network Share Discovery
+    - [ ] T1069.002 — Permission Groups Discovery: Domain Groups
+    - [x] T1083 — File and Directory Discovery
+    - [ ] T1201 — Password Policy Discovery
+    - [ ] T1482 — Domain Trust Discovery
+  - [ ] Credential Access (TA0006)
+    - [x] T1003 — OS Credential Dumping
+    - [x] T1003.003 — OS Credential Dumping: NTDS
     - [x] T1110.001 — Brute Force: Password Guessing
     - [x] T1110.003 — Brute Force: Password Spraying
     - [x] T1110.004 — Brute Force: Credential Stuffing
-    - [x] T1003 — OS Credential Dumping
-    - [x] T1003.003 — OS Credential Dumping: NTDS
-  - [x] Lateral Movement (TA0008)
+    - [ ] T1003.001 — OS Credential Dumping: LSASS Memory
+    - [ ] T1187 — Forced Authentication
+    - [ ] T1557.001 — Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning
+    - [ ] T1557.002 — Adversary-in-the-Middle: ARP Cache Poisoning
+    - [ ] T1558.003 — Steal or Forge Kerberos Tickets: Kerberoasting
+    - [ ] T1558.004 — Steal or Forge Kerberos Tickets: AS-REP Roasting
+  - [ ] Defense Evasion (TA0005)
+    - [ ] T1550.002 — Use Alternate Authentication Material: Pass the Hash
+    - [ ] T1550.003 — Use Alternate Authentication Material: Pass the Ticket
+  - [ ] Lateral Movement (TA0008)
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH
     - [x] T1021.006 — Remote Services: Windows Remote Management
     - [x] T1210 — Exploitation of Remote Services
-  - [ ] Defense Evasion (TA0005)
-    - [ ] T1550 — Use Alternate Authentication Material
+    - [ ] T1021.003 — Remote Services: Distributed Component Object Model
+  - [ ] Collection (TA0009)
+    - [ ] T1039 — Data from Network Shared Drive
+    - [ ] T1083 — File and Directory Discovery
+  - [ ] Execution (TA0002)
+    - [ ] T1053.005 — Scheduled Task/Job: Scheduled Task
   - [ ] Persistence (TA0003)
-    - [x] T1505.003 — Server Software: Web Shell
+    - [x] T1505.003 — Server Software Component: Web Shell
+    - [ ] T1136.002 — Create Account: Domain Account
+    - [ ] T1098.001 — Account Manipulation: Additional Cloud Credentials
+  - [ ] Exfiltration (TA0010)
+    - [ ] T1048.001 — Exfiltration Over Alternative Protocol: DNS
+    - [ ] T1048.003 — Exfiltration Over Alternative Protocol: HTTP
+  - [ ] Command and Control (TA0011)
+    - [ ] T1071.001 — Application Layer Protocol: Web Protocols
+    - [ ] T1071.004 — Application Layer Protocol: DNS
+    - [ ] T1090.001 — Proxy: Internal Proxy
+    - [ ] T1095 — Non-Application Layer Protocol
+    - [ ] T1102 — Web Service
+    - [ ] T1568.002 — Dynamic Resolution: Domain Generation Algorithms
+    - [ ] T1572 — Protocol Tunneling
 
 ### Attack Builder
 

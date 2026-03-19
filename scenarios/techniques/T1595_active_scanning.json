@@ -1,0 +1,233 @@
+{
+  "mitre": {
+    "technique_id": "T1595",
+    "technique_name": "Active Scanning",
+    "url": "https://attack.mitre.org/techniques/T1595/",
+    "tactics": ["TA0043"]
+  },
+  "description": "Adversaries may execute active reconnaissance scans to gather information that can be used during targeting. Active scans are those where the adversary probes victim infrastructure via network traffic, as opposed to other forms of reconnaissance that do not involve direct interaction.",
+  "artifacts": [
+    "multiple TCP SYN packets to external targets",
+    "ICMP echo requests to external hosts",
+    "sequential or patterned port scanning behavior",
+    "DNS queries for target infrastructure",
+    "traceroute probes revealing network topology"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1595-external-horizontal-tcp-22-open-nmap-sS",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_22_open__nmap-sS.pcap",
+        "name": "External horizontal TCP/22 scan (nmap SYN)",
+        "description": "External horizontal scan of TCP/22 using nmap SYN scan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "22",
+          "nmap",
+          "syn",
+          "high",
+          "t1595"
+        ],
+        "command": "nmap -sS -Pn -n -p 22 10.10.10.0/24"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-443-open-nmap-sS",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_443_open__nmap-sS.pcap",
+        "name": "External horizontal TCP/443 scan (nmap SYN)",
+        "description": "External horizontal scan of TCP/443 using nmap SYN scan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [443]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "443",
+          "https",
+          "nmap",
+          "syn",
+          "high",
+          "t1595"
+        ],
+        "command": "nmap -sS -p 443 10.10.10.0/24"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-443-open-masscan",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_443_open__masscan.pcap",
+        "name": "External horizontal TCP/443 scan (masscan)",
+        "description": "External horizontal scan of TCP/443 using masscan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [443]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "443",
+          "https",
+          "masscan",
+          "high",
+          "t1595"
+        ],
+        "command": "masscan -p443 10.10.10.0/24 --rate=1000"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-80-open-nmap-sS",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_80_open__nmap-sS.pcap",
+        "name": "External horizontal TCP/80 scan (nmap SYN)",
+        "description": "External horizontal scan of TCP/80 using nmap SYN scan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "80",
+          "http",
+          "nmap",
+          "syn",
+          "high",
+          "t1595"
+        ],
+        "command": "nmap -sS -p 80 10.10.10.0/24"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-80-443-open-rustscan",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_80_443_open__rustscan.pcap",
+        "name": "External horizontal TCP/80-443 scan (rustscan)",
+        "description": "External horizontal scan of TCP/80 and 443 using rustscan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80, 443]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "80",
+          "443",
+          "http",
+          "https",
+          "rustscan",
+          "high",
+          "t1595"
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 80,443"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-80-open-rustscan",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_80_open__rustscan.pcap",
+        "name": "External horizontal TCP/80 scan (rustscan)",
+        "description": "External horizontal scan of TCP/80 using rustscan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "80",
+          "http",
+          "rustscan",
+          "high",
+          "t1595"
+        ],
+        "command": "rustscan -a 10.10.10.0/24 -p 80"
+      },
+      {
+        "id": "t1595-external-horizontal-tcp-80-open-naabu-syn",
+        "file": "pcaps/techniques/t1595/t1595_external_horizontal_tcp_80_open__naabu-syn.pcap",
+        "name": "External horizontal TCP/80 scan (naabu SYN)",
+        "description": "External horizontal scan of TCP/80 using naabu SYN scan showing SYN-ACK responses.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [80]
+        },
+        "filter": [
+          "external",
+          "horizontal",
+          "tcp",
+          "80",
+          "http",
+          "naabu",
+          "syn",
+          "high",
+          "t1595"
+        ],
+        "command": "naabu -Pn -s SYN -p 80 -host 10.10.10.0/24"
+      },
+      {
+        "id": "t1595-external-unauth-icmp-sweep-fping",
+        "file": "pcaps/techniques/t1595/t1595_external_unauth_icmp_sweep__fping.pcap",
+        "name": "External ICMP sweep (fping)",
+        "description": "External ICMP ping sweep using fping showing echo requests to multiple hosts.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "icmp",
+          "ports": []
+        },
+        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high", "t1595"],
+        "command": "fping -a -g 10.10.10.0/24"
+      },
+      {
+        "id": "t1595-external-unauth-traceroute",
+        "file": "pcaps/techniques/t1595/t1595_external_unauth__traceroute.pcap",
+        "name": "External traceroute (unauth)",
+        "description": "External traceroute showing network path discovery.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "icmp",
+          "ports": []
+        },
+        "filter": ["external", "unauth", "traceroute", "icmp", "medium", "t1595"],
+        "command": "traceroute -n 10.10.10.40"
+      },
+      {
+        "id": "t1595-external-unauth-dns-srv-dig",
+        "file": "pcaps/techniques/t1595/t1595_external_unauth_dns_srv__dig.pcap",
+        "name": "External DNS SRV query (dig)",
+        "description": "External DNS SRV query using dig for service discovery.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "external",
+          "unauth",
+          "dns",
+          "srv",
+          "dig",
+          "udp",
+          "53",
+          "medium",
+          "t1595"
+        ],
+        "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

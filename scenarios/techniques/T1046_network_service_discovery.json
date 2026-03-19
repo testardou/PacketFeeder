@@ -3,7 +3,7 @@
     "technique_id": "T1046",
     "technique_name": "Network Service Discovery",
     "url": "https://attack.mitre.org/techniques/T1046/",
-    "tactics": ["TA0043"]
+    "tactics": ["TA0007"]
   },
   "description": "Adversaries scan victim networks to identify open ports and available services that can be targeted for exploitation.",
   "artifacts": [
@@ -17,7 +17,7 @@
     "pcaps": [
       {
         "id": "t1046-internal-horizontal-tcp-22-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-22-open__nmap-sS.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-22-open__nmap-sS.pcap",
         "name": "Internal horizontal TCP/22 scan (nmap SYN)",
         "description": "Internal horizontal scan of TCP/22 using nmap SYN scan showing SYN-ACK responses.",
         "criticality": "high",
@@ -39,7 +39,7 @@
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-masscan",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-22-open__masscan.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-22-open__masscan.pcap",
         "name": "Internal horizontal TCP/22 scan (masscan)",
         "description": "Internal horizontal scan of TCP/22 using masscan showing SYN-ACK responses.",
         "criticality": "high",
@@ -60,7 +60,7 @@
       },
       {
         "id": "t1046-internal-horizontal-tcp-22-open-naabu-syn",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-22-open__naabu-syn.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-22-open__naabu-syn.pcap",
         "name": "Internal horizontal TCP/22 scan (naabu SYN)",
         "description": "Internal horizontal scan of TCP/22 using naabu SYN scan showing SYN-ACK responses.",
         "criticality": "high",
@@ -83,7 +83,7 @@
 
       {
         "id": "t1046-internal-horizontal-tcp-22-open-rustscan",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-22-open__rustscan.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-22-open__rustscan.pcap",
         "name": "Internal horizontal TCP/22 scan (rustscan)",
         "description": "Internal horizontal scan of TCP/22 using rustscan showing SYN-ACK responses.",
         "criticality": "high",
@@ -104,7 +104,7 @@
       },
       {
         "id": "t1046-internal-horizontal-tcp-443-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-443-open__nmap-sS.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-443-open__nmap-sS.pcap",
         "name": "Internal horizontal TCP/443 scan (nmap SYN)",
         "description": "Internal horizontal scan of TCP/443 using nmap SYN scan showing SYN-ACK responses.",
         "criticality": "high",
@@ -126,7 +126,7 @@
       },
       {
         "id": "t1046-internal-horizontal-tcp-80-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-internal-horizontal-tcp-80-open__nmap-sS.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-horizontal-tcp-80-open__nmap-sS.pcap",
         "name": "Internal horizontal TCP/80 scan (nmap SYN)",
         "description": "Internal horizontal scan of TCP/80 using nmap SYN scan showing SYN-ACK responses.",
         "criticality": "high",
@@ -148,7 +148,7 @@
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-masscan",
-        "file": "pcaps/techniques/T1046/t1046-internal-vertical-tcp-1-1024-mixed__masscan.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-vertical-tcp-1-1024-mixed__masscan.pcap",
         "name": "Internal vertical TCP/1-1024 scan (masscan)",
         "description": "Internal vertical scan of TCP ports 1-1024 using masscan showing mixed responses.",
         "criticality": "high",
@@ -161,7 +161,7 @@
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-naabu-syn",
-        "file": "pcaps/techniques/T1046/t1046-internal-vertical-tcp-1-1024-mixed__naabu-syn.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-vertical-tcp-1-1024-mixed__naabu-syn.pcap",
         "name": "Internal vertical TCP/1-1024 scan (naabu SYN)",
         "description": "Internal vertical scan of TCP ports 1-1024 using naabu SYN scan showing mixed responses.",
         "criticality": "high",
@@ -182,7 +182,7 @@
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-internal-vertical-tcp-1-1024-mixed__nmap-sS.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-vertical-tcp-1-1024-mixed__nmap-sS.pcap",
         "name": "Internal vertical TCP/1-1024 scan (nmap SYN)",
         "description": "Internal vertical scan of TCP ports 1-1024 using nmap SYN scan showing mixed responses.",
         "criticality": "high",
@@ -203,7 +203,7 @@
       },
       {
         "id": "t1046-internal-vertical-tcp-1-1024-mixed-rustscan",
-        "file": "pcaps/techniques/T1046/t1046-internal-vertical-tcp-1-1024-mixed__rustscan.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-vertical-tcp-1-1024-mixed__rustscan.pcap",
         "name": "Internal vertical TCP/1-1024 scan (rustscan)",
         "description": "Internal vertical scan of TCP ports 1-1024 using rustscan showing mixed responses.",
         "criticality": "high",
@@ -216,7 +216,7 @@
       },
       {
         "id": "t1046-internal-vertical-tcp-top1000-mixed-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-internal-vertical-tcp-top1000-mixed__nmap-sS.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-vertical-tcp-top1000-mixed__nmap-sS.pcap",
         "name": "Internal vertical TCP top 1000 ports scan (nmap SYN)",
         "description": "Internal vertical scan of TCP top 1000 ports using nmap SYN scan showing mixed responses.",
         "criticality": "high",
@@ -237,7 +237,7 @@
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-nmap-sT",
-        "file": "pcaps/techniques/T1046/t1046-internal-connect-tcp-22-open__nmap-sT.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-connect-tcp-22-open__nmap-sT.pcap",
         "name": "Internal connect TCP/22 scan (nmap connect)",
         "description": "Internal connect scan of TCP/22 using nmap connect scan showing successful connections.",
         "criticality": "high",
@@ -250,7 +250,7 @@
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-naabu-connect",
-        "file": "pcaps/techniques/T1046/t1046-internal-connect-tcp-22-open__naabu-connect.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-connect-tcp-22-open__naabu-connect.pcap",
         "name": "Internal connect TCP/22 scan (naabu connect)",
         "description": "Internal connect scan of TCP/22 using naabu connect scan showing successful connections.",
         "criticality": "high",
@@ -263,7 +263,7 @@
       },
       {
         "id": "t1046-internal-connect-tcp-22-open-rustscan",
-        "file": "pcaps/techniques/T1046/t1046-internal-connect-tcp-22-open__rustscan.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-connect-tcp-22-open__rustscan.pcap",
         "name": "Internal connect TCP/22 scan (rustscan)",
         "description": "Internal connect scan of TCP/22 using rustscan showing successful connections.",
         "criticality": "high",
@@ -284,7 +284,7 @@
       },
       {
         "id": "t1046-internal-udp-161-closed-icmp-naabu-udp",
-        "file": "pcaps/techniques/T1046/t1046-internal-udp-161-closed-icmp__naabu-udp.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-udp-161-closed-icmp__naabu-udp.pcap",
         "name": "Internal UDP/161 scan (naabu UDP)",
         "description": "Internal UDP scan of port 161 using naabu showing ICMP unreachable replies.",
         "criticality": "medium",
@@ -297,7 +297,7 @@
       },
       {
         "id": "t1046-internal-udp-161-closed-icmp-nmap-sU",
-        "file": "pcaps/techniques/T1046/t1046-internal-udp-161-closed-icmp__nmap-sU.pcap",
+        "file": "pcaps/techniques/t1046/t1046-internal-udp-161-closed-icmp__nmap-sU.pcap",
         "name": "Internal UDP/161 scan (nmap UDP)",
         "description": "Internal UDP scan of port 161 using nmap UDP scan showing ICMP unreachable replies.",
         "criticality": "medium",
@@ -307,158 +307,6 @@
         },
         "filter": ["internal", "udp", "161", "snmp", "nmap", "icmp", "medium"],
         "command": "nmap -sU -Pn -n -p 161 10.10.10.0/24"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-22-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-22-open__nmap-sS.pcap",
-        "name": "External horizontal TCP/22 scan (nmap SYN)",
-        "description": "External horizontal scan of TCP/22 using nmap SYN scan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [22]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "22",
-          "nmap",
-          "syn",
-          "high"
-        ],
-        "command": "nmap -sS -Pn -n -p 22 10.10.10.0/24"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-443-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-443-open__nmap-sS.pcap",
-        "name": "External horizontal TCP/443 scan (nmap SYN)",
-        "description": "External horizontal scan of TCP/443 using nmap SYN scan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [443]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "443",
-          "https",
-          "nmap",
-          "syn",
-          "high"
-        ],
-        "command": "nmap -sS -p 443 10.10.10.0/24"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-443-open-masscan",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-443-open__masscan.pcap",
-        "name": "External horizontal TCP/443 scan (masscan)",
-        "description": "External horizontal scan of TCP/443 using masscan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [443]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "443",
-          "https",
-          "masscan",
-          "high"
-        ],
-        "command": "masscan -p443 10.10.10.0/24 --rate=1000"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-80-open-nmap-sS",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-80-open__nmap-sS.pcap",
-        "name": "External horizontal TCP/80 scan (nmap SYN)",
-        "description": "External horizontal scan of TCP/80 using nmap SYN scan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [80]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "80",
-          "http",
-          "nmap",
-          "syn",
-          "high"
-        ],
-        "command": "nmap -sS -p 80 10.10.10.0/24"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-80-443-open-rustscan",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-80-443-open__rustscan.pcap",
-        "name": "External horizontal TCP/80-443 scan (rustscan)",
-        "description": "External horizontal scan of TCP/80 and 443 using rustscan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [80, 443]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "80",
-          "443",
-          "http",
-          "https",
-          "rustscan",
-          "high"
-        ],
-        "command": "rustscan -a 10.10.10.0/24 -p 80,443"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-80-open-rustscan",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-80-open__rustscan.pcap",
-        "name": "External horizontal TCP/80 scan (rustscan)",
-        "description": "External horizontal scan of TCP/80 using rustscan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [80]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "80",
-          "http",
-          "rustscan",
-          "high"
-        ],
-        "command": "rustscan -a 10.10.10.0/24 -p 80"
-      },
-      {
-        "id": "t1046-external-horizontal-tcp-80-open-naabu-syn",
-        "file": "pcaps/techniques/T1046/t1046-external-horizontal-tcp-80-open__naabu-syn.pcap",
-        "name": "External horizontal TCP/80 scan (naabu SYN)",
-        "description": "External horizontal scan of TCP/80 using naabu SYN scan showing SYN-ACK responses.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "tcp",
-          "ports": [80]
-        },
-        "filter": [
-          "external",
-          "horizontal",
-          "tcp",
-          "80",
-          "http",
-          "naabu",
-          "syn",
-          "high"
-        ],
-        "command": "naabu -Pn -s SYN -p 80 -host 10.10.10.0/24"
       }
     ]
   },

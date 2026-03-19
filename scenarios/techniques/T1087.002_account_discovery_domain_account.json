@@ -24,7 +24,7 @@
     "pcaps": [
       {
         "id": "t1087.002-internal-auth-domain-users-enum-net",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_enum__net.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_users_enum__net.pcap",
         "name": "Internal domain users enumeration (net user)",
         "description": "Internal authenticated domain users enumeration using net user command showing RPC calls to domain controller.",
         "criticality": "high",
@@ -50,7 +50,7 @@
       },
       {
         "id": "t1087.002-internal-auth-domain-users-group-enum-net",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_group_enum__net.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_users_group_enum__net.pcap",
         "name": "Internal domain users group enumeration (net group)",
         "description": "Internal authenticated domain users group enumeration using net group command showing RPC calls to domain controller.",
         "criticality": "high",
@@ -77,7 +77,7 @@
       },
       {
         "id": "t1087.002-internal-auth-domain-admins-group-enum-net",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_admins_group_enum__net.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_admins_group_enum__net.pcap",
         "name": "Internal domain admins group enumeration (net group)",
         "description": "Internal authenticated domain administrators group enumeration using net group command showing RPC calls to domain controller.",
         "criticality": "high",
@@ -104,7 +104,7 @@
       },
       {
         "id": "t1087.002-internal-auth-domain-users-enum-rpcclient",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_enum__rpcclient.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_users_enum__rpcclient.pcap",
         "name": "Internal domain users enumeration (rpcclient)",
         "description": "Internal authenticated domain users enumeration using rpcclient command showing RPC calls to SAMR and LSARPC protocols.",
         "criticality": "high",
@@ -131,7 +131,7 @@
       },
       {
         "id": "t1087.002-internal-auth-domain-admins-group-enum-rpcclient",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_admins_group_enum__rpcclient.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_admins_group_enum__rpcclient.pcap",
         "name": "Internal domain admins group enumeration (rpcclient)",
         "description": "Internal authenticated domain administrators group enumeration using rpcclient command showing RPC calls to SAMR and LSARPC protocols.",
         "criticality": "high",
@@ -159,7 +159,7 @@
       },
       {
         "id": "t1087.002-internal-auth-exchange-ad-objects-enum-adfind",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_exchange_ad_objects_enum__adfind.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_exchange_ad_objects_enum__adfind.pcap",
         "name": "Internal Exchange AD objects enumeration (adfind)",
         "description": "Internal authenticated Exchange Active Directory objects enumeration using adfind command showing LDAP queries to domain controller.",
         "criticality": "high",
@@ -184,7 +184,7 @@
       },
       {
         "id": "t1087.002-internal-auth-person-objects-enum-adfind",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_person_objects_enum__adfind.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_person_objects_enum__adfind.pcap",
         "name": "Internal person objects enumeration (adfind)",
         "description": "Internal authenticated person objects enumeration using adfind command showing LDAP queries for user accounts to domain controller.",
         "criticality": "high",
@@ -208,7 +208,7 @@
       },
       {
         "id": "t1087.002-internal-auth-privileged-accounts-enum-adfind",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_privileged_accounts_enum__adfind.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_privileged_accounts_enum__adfind.pcap",
         "name": "Internal privileged accounts enumeration (adfind)",
         "description": "Internal authenticated privileged accounts enumeration using adfind command showing LDAP queries for privileged groups to domain controller.",
         "criticality": "high",
@@ -232,7 +232,7 @@
       },
       {
         "id": "t1087.002-internal-auth-domain-users-ldap-enum-powershell-adsisearcher",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_domain_users_ldap_enum__powershell-adsisearcher.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_domain_users_ldap_enum__powershell-adsisearcher.pcap",
         "name": "Internal domain users LDAP enumeration (PowerShell ADSIsearcher)",
         "description": "Internal authenticated domain users enumeration using PowerShell ADSIsearcher showing LDAP queries to domain controller.",
         "criticality": "high",
@@ -257,7 +257,7 @@
       },
       {
         "id": "t1087.002-internal-auth-kerberos-username-enum-kerbrute",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_auth_kerberos_username_enum__kerbrute.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_auth_kerberos_username_enum__kerbrute.pcap",
         "name": "Internal Kerberos username enumeration (kerbrute authenticated)",
         "description": "Internal authenticated Kerberos username enumeration using kerbrute showing AS-REQ requests to domain controller.",
         "criticality": "high",
@@ -281,7 +281,7 @@
       },
       {
         "id": "t1087.002-internal-unauth-kerberos-username-enum-kerbrute",
-        "file": "pcaps/techniques/T1087.002/t1087.002_internal_unauth_kerberos_username_enum__kerbrute.pcap",
+        "file": "pcaps/techniques/t1087.002/t1087.002_internal_unauth_kerberos_username_enum__kerbrute.pcap",
         "name": "Internal Kerberos username enumeration (kerbrute unauthenticated)",
         "description": "Internal unauthenticated Kerberos username enumeration using kerbrute showing AS-REQ requests to domain controller.",
         "criticality": "high",

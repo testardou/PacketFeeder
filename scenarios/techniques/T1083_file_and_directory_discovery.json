@@ -1,0 +1,225 @@
+{
+  "mitre": {
+    "technique_id": "T1083",
+    "technique_name": "File and Directory Discovery",
+    "url": "https://attack.mitre.org/techniques/T1083/",
+    "tactics": [
+      "TA0007"
+    ]
+  },
+  "description": "Adversaries may enumerate files and directories or may search in specific locations of a host or network share for certain information within a file system.",
+  "artifacts": [
+    "SMB directory listing requests within connected shares",
+    "SMB Read/Query Directory requests on share paths",
+    "directory traversal patterns within mounted shares",
+    "UNC path directory listing commands (dir, ls)",
+    "sequential file and directory enumeration within shares"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1083-internal-domainadmin-smb-unc-browse-adminshares-cmd-dir",
+        "file": "pcaps/techniques/t1083/t1083_internal_domainadmin_smb_unc_browse_adminshares__cmd_dir.pcap",
+        "name": "Internal domain admin SMB UNC browse admin shares (cmd dir)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            445
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "cmd",
+          "dir",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "dir \\\\10.10.10.30\\C$;dir \\\\10.10.10.30\\ADMIN$"
+      },
+      {
+        "id": "t1083-internal-domainadmin-smb-unc-browse-adminshares-impacket-smbclient-ls",
+        "file": "pcaps/techniques/t1083/t1083_internal_domainadmin_smb_unc_browse_adminshares__impacket_smbclient_ls.pcap",
+        "name": "Internal domain admin SMB UNC browse admin shares (impacket-smbclient ls)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            445
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"use C$\nls\nuse ADMIN$\nls\nexit\n\" | smbclient.py 'AD/Administrator'@10.10.10.30 -port 445"
+      },
+      {
+        "id": "t1083-internal-user-smb-unc-browse-success-cmd-dir",
+        "file": "pcaps/techniques/t1083/t1083_internal_user_smb_unc_browse_success__cmd_dir.pcap",
+        "name": "Internal user SMB UNC browse public shares (cmd dir)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            445
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "unc",
+          "browse",
+          "user",
+          "cmd",
+          "dir",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "dir \\\\10.10.10.30\\Public;dir \\\\10.10.10.30\\Scans$"
+      },
+      {
+        "id": "t1083-internal-user-smb-unc-browse-denied-cmd-dir",
+        "file": "pcaps/techniques/t1083/t1083_internal_user_smb_unc_browse_denied__cmd_dir.pcap",
+        "name": "Internal user SMB UNC browse admin shares (cmd dir)",
+        "description": "Internal authenticated user SMB UNC path browsing of admin shares using cmd dir command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            445
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "unc",
+          "browse",
+          "adminshares",
+          "cmd",
+          "dir",
+          "tcp",
+          "445"
+        ],
+        "command": "dir \\\\10.10.10.30\\ADMIN$"
+      },
+      {
+        "id": "t1083-internal-user-smb-unc-browse-success-impacket-smbclient-ls",
+        "file": "pcaps/techniques/t1083/t1083_internal_user_smb_unc_browse_success__impacket_smbclient_ls.pcap",
+        "name": "Internal user SMB UNC browse public shares (impacket-smbclient ls)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            445
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "unc",
+          "browse",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "printf \"use Public\nls\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 445"
+      },
+      {
+        "id": "t1083-internal-domainadmin-smb-netbios-unc-browse-adminshares-impacket-smbclient-ls",
+        "file": "pcaps/techniques/t1083/t1083_internal_domainadmin_smb_netbios_unc_browse_adminshares__impacket_smbclient_ls.pcap",
+        "name": "Internal domain admin SMB NetBIOS UNC browse admin shares (impacket-smbclient ls)",
+        "description": "Internal authenticated domain admin SMB UNC path browsing of administrative shares over NetBIOS Session Service using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            139
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domainadmin",
+          "smb",
+          "netbios",
+          "unc",
+          "browse",
+          "adminshares",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"use C$\nls\nuse ADMIN$\nls\nexit\n\" | smbclient.py 'AD/Administrator'@10.10.10.30 -port 139"
+      },
+      {
+        "id": "t1083-internal-user-smb-netbios-unc-browse-success-impacket-smbclient-ls",
+        "file": "pcaps/techniques/t1083/t1083_internal_user_smb_netbios_unc_browse_success__impacket_smbclient_ls.pcap",
+        "name": "Internal user SMB NetBIOS UNC browse public shares (impacket-smbclient ls)",
+        "description": "Internal authenticated user SMB UNC path browsing of public shares over NetBIOS Session Service using impacket-smbclient ls command showing successful directory listing.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [
+            139
+          ]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "user",
+          "smb",
+          "netbios",
+          "unc",
+          "browse",
+          "impacket",
+          "smbclient",
+          "ls",
+          "tcp",
+          "139",
+          "high"
+        ],
+        "command": "printf \"use Public\nls\nexit\n\" | smbclient.py 'AD/bob'@10.10.10.30 -port 139"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

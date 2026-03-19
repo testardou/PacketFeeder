@@ -71,8 +71,8 @@
         "command": "evil-winrm -i 10.10.10.50 -u Administrator -p 'P@ssword123'"
       },
       {
-        "id": "t1021.006-internal-unauth-winrm-exec-failed-noprivs-evilwinrm",
-        "file": "pcaps/techniques/t1021.006/t1021.006_internal_unauth_winrm_exec_failed_noprivs__evilwinrm.pcap",
+        "id": "t1021.006-internal-auth-winrm-exec-failed-noprivs-evilwinrm",
+        "file": "pcaps/techniques/t1021.006/t1021.006_internal_auth_winrm_exec_failed_noprivs__evilwinrm.pcap",
         "name": "Internal WinRM exec - failed no privileges (evilwinrm)",
         "description": "Internal authenticated WinRM exec attempt using evilwinrm showing failed access due to insufficient privileges (user authenticated but lacks WinRM/admin rights on target).",
         "criticality": "high",

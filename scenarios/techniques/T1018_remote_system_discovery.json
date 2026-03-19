@@ -209,54 +209,6 @@
         "command": "nltest /dclist:ad.packetfeeder.lab"
       },
       {
-        "id": "t1018-external-unauth-icmp-sweep-fping",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth_icmp_sweep__fping.pcap",
-        "name": "External ICMP sweep (fping)",
-        "description": "External ICMP ping sweep using fping showing echo requests to multiple hosts.",
-        "criticality": "high",
-        "scope": {
-          "protocol": "icmp",
-          "ports": []
-        },
-        "filter": ["external", "unauth", "icmp", "sweep", "fping", "high"],
-        "command": "fping -a -g 10.10.10.0/24"
-      },
-      {
-        "id": "t1018-external-unauth-traceroute",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth__traceroute.pcap",
-        "name": "External traceroute (unauth)",
-        "description": "External traceroute showing network path discovery.",
-        "criticality": "medium",
-        "scope": {
-          "protocol": "icmp",
-          "ports": []
-        },
-        "filter": ["external", "unauth", "traceroute", "icmp", "medium"],
-        "command": "traceroute -n 10.10.10.40"
-      },
-      {
-        "id": "t1018-external-unauth-dns-srv-dig",
-        "file": "pcaps/techniques/t1018/t1018_external_unauth_dns_srv__dig.pcap",
-        "name": "External DNS SRV query (dig)",
-        "description": "External DNS SRV query using dig for service discovery.",
-        "criticality": "medium",
-        "scope": {
-          "protocol": "udp",
-          "ports": [53]
-        },
-        "filter": [
-          "external",
-          "unauth",
-          "dns",
-          "srv",
-          "dig",
-          "udp",
-          "53",
-          "medium"
-        ],
-        "command": "dig @10.10.10.30 -t SRV _ldap._tcp.dc._msdcs.ad.packetfeeder.lab; dig @10.10.10.30 -t SRV _kerberos._tcp.ad.packetfeeder.lab"
-      },
-      {
         "id": "t1018-internal-auth-win-dclist-nltest",
         "file": "pcaps/techniques/t1018/t1018_auth_win_dclist__nltest.pcap",
         "name": "Internal Windows DC list (nltest)",
