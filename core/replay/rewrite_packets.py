@@ -63,17 +63,23 @@ def rewrite_packets(packets, ip_map=None, mac_map=None, ipv6_map=None, arp_ip_ma
         # Rewrite DNS domains
         if dns_domain_map and pkt.haslayer("DNS"):
             dns = pkt["DNS"]
-            if dns.qr == 0 and hasattr(dns, "qd") and dns.qd:  # DNS query
-                for q in dns.qd:
-                    if hasattr(q, "qname") and q.qname:
+            for section in ("qd", "an", "ns", "ar"):
+                records = getattr(dns, section, None)
+                if not records:
+                    continue
+                for r in records:
+                    for attr in ("qname", "rrname", "rdata"):
+                        val = getattr(r, attr, None)
+                        if not val:
+                            continue
                         try:
-                            if isinstance(q.qname, bytes):
-                                domain = q.qname.decode("utf-8", errors="ignore").rstrip(".")
+                            if isinstance(val, bytes):
+                                decoded = val.decode("utf-8", errors="ignore").rstrip(".")
                             else:
-                                domain = str(q.qname).rstrip(".")
-                            if domain in dns_domain_map:
-                                new_domain = dns_domain_map[domain]
-                                q.qname = (new_domain + ".").encode("utf-8")
+                                decoded = str(val).rstrip(".")
+                            if decoded in dns_domain_map:
+                                new_val = (dns_domain_map[decoded] + ".").encode("utf-8")
+                                setattr(r, attr, new_val)
                         except (AttributeError, UnicodeDecodeError, UnicodeEncodeError):
                             pass
 
