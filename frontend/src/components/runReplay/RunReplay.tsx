@@ -2,9 +2,9 @@ import { ButtonsReplay } from "@/components/buttonsReplay/ButtonsReplay";
 import { ReplayProgress } from "@/components/replayProgress/ReplayProgress";
 import { ReplayStepProgress } from "@/components/replayStepProgress/ReplayStepProgress";
 import type {
-  NewValuesPcapType,
   ReplayModeType,
   ReplayProgressType,
+  RewriteValues,
   RunStatusType,
 } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
@@ -14,13 +14,7 @@ import { API_CONFIG } from "@/config/api";
 
 interface IRunReplayProps {
   selectedInterface: string | null;
-  rewriteIps: NewValuesPcapType[];
-  rewriteMacs: NewValuesPcapType[];
-  rewriteIpv6s?: NewValuesPcapType[];
-  rewriteArpIps?: NewValuesPcapType[];
-  rewriteDnsDomains?: NewValuesPcapType[];
-  rewriteTcpPorts?: NewValuesPcapType[];
-  rewriteUdpPorts?: NewValuesPcapType[];
+  rewrites: RewriteValues;
   stepIndex: number;
   setStepIndex: (index: number) => void;
   selectedMode: ReplayModeType;
@@ -31,13 +25,7 @@ interface IRunReplayProps {
 
 export const RunReplay = ({
   selectedInterface,
-  rewriteIps,
-  rewriteMacs,
-  rewriteIpv6s = [],
-  rewriteArpIps = [],
-  rewriteDnsDomains = [],
-  rewriteTcpPorts = [],
-  rewriteUdpPorts = [],
+  rewrites,
   stepIndex,
   setStepIndex,
   selectedMode,
@@ -101,13 +89,22 @@ export const RunReplay = ({
       formData.append("file", file ?? "");
       formData.append("iface", selectedInterface ?? "");
       formData.append("sid", clientSid ?? "");
-      formData.append("rewriteIps", JSON.stringify(rewriteIps));
-      formData.append("rewriteMacs", JSON.stringify(rewriteMacs));
-      formData.append("rewriteIpv6s", JSON.stringify(rewriteIpv6s));
-      formData.append("rewriteArpIps", JSON.stringify(rewriteArpIps));
-      formData.append("rewriteDnsDomains", JSON.stringify(rewriteDnsDomains));
-      formData.append("rewriteTcpPorts", JSON.stringify(rewriteTcpPorts));
-      formData.append("rewriteUdpPorts", JSON.stringify(rewriteUdpPorts));
+      formData.append("rewriteIps", JSON.stringify(rewrites.rewriteIps));
+      formData.append("rewriteMacs", JSON.stringify(rewrites.rewriteMacs));
+      formData.append("rewriteIpv6s", JSON.stringify(rewrites.rewriteIpv6s));
+      formData.append("rewriteArpIps", JSON.stringify(rewrites.rewriteArpIps));
+      formData.append(
+        "rewriteDnsDomains",
+        JSON.stringify(rewrites.rewriteDnsDomains),
+      );
+      formData.append(
+        "rewriteTcpPorts",
+        JSON.stringify(rewrites.rewriteTcpPorts),
+      );
+      formData.append(
+        "rewriteUdpPorts",
+        JSON.stringify(rewrites.rewriteUdpPorts),
+      );
 
       // For step mode, use stepIndex; otherwise use filterIndex or filterRange
       if (selectedMode === "step") {

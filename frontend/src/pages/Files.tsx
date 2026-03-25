@@ -2,59 +2,48 @@ import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type {
-  NewValuesPcapType,
-  PacketDetailsType,
-  RewriteValues,
-} from "@/types/types";
+import type { PacketDetailsType, RewriteValues } from "@/types/types";
 import { Label } from "@radix-ui/react-label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { API_CONFIG } from "@/config/api";
+import { initialRewriteState, rewriteReducer } from "@/hooks/useRewriteReducer";
 
 export const Files = () => {
   const queryClient = useQueryClient();
   const [fileName, setFileName] = useState<string | null>(null);
   const [selectFile, setSelectFile] = useState<string | null>(null);
-  const [rewriteIps, setRewriteIps] = useState<NewValuesPcapType[]>([]);
-  const [rewriteMacs, setRewriteMacs] = useState<NewValuesPcapType[]>([]);
-  const [rewriteIpv6s, setRewriteIpv6s] = useState<NewValuesPcapType[]>([]);
-  const [rewriteArpIps, setRewriteArpIps] = useState<NewValuesPcapType[]>([]);
-  const [rewriteDnsDomains, setRewriteDnsDomains] = useState<
-    NewValuesPcapType[]
-  >([]);
-  const [rewriteTcpPorts, setRewriteTcpPorts] = useState<NewValuesPcapType[]>(
-    []
-  );
-  const [rewriteUdpPorts, setRewriteUdpPorts] = useState<NewValuesPcapType[]>(
-    []
+  const [rewriteState, dispatchRewrite] = useReducer(
+    rewriteReducer,
+    initialRewriteState,
   );
 
   const rewriteValues: RewriteValues = {
-    rewriteIps,
-    setRewriteIps,
-    rewriteMacs,
-    setRewriteMacs,
-    rewriteIpv6s,
-    setRewriteIpv6s,
-    rewriteArpIps,
-    setRewriteArpIps,
-    rewriteDnsDomains,
-    setRewriteDnsDomains,
-    rewriteTcpPorts,
-    setRewriteTcpPorts,
-    rewriteUdpPorts,
-    setRewriteUdpPorts,
+    rewriteIps: rewriteState.rewriteIps,
+    setRewriteIps: (ips) =>
+      dispatchRewrite({ type: "SET_REWRITE_IPS", payload: ips }),
+    rewriteMacs: rewriteState.rewriteMacs,
+    setRewriteMacs: (macs) =>
+      dispatchRewrite({ type: "SET_REWRITE_MACS", payload: macs }),
+    rewriteIpv6s: rewriteState.rewriteIpv6s,
+    setRewriteIpv6s: (ipv6s) =>
+      dispatchRewrite({ type: "SET_REWRITE_IPV6S", payload: ipv6s }),
+    rewriteArpIps: rewriteState.rewriteArpIps,
+    setRewriteArpIps: (arpIps) =>
+      dispatchRewrite({ type: "SET_REWRITE_ARP_IPS", payload: arpIps }),
+    rewriteDnsDomains: rewriteState.rewriteDnsDomains,
+    setRewriteDnsDomains: (dnsDomains) =>
+      dispatchRewrite({ type: "SET_REWRITE_DNS_DOMAINS", payload: dnsDomains }),
+    rewriteTcpPorts: rewriteState.rewriteTcpPorts,
+    setRewriteTcpPorts: (tcpPorts) =>
+      dispatchRewrite({ type: "SET_REWRITE_TCP_PORTS", payload: tcpPorts }),
+    rewriteUdpPorts: rewriteState.rewriteUdpPorts,
+    setRewriteUdpPorts: (udpPorts) =>
+      dispatchRewrite({ type: "SET_REWRITE_UDP_PORTS", payload: udpPorts }),
   };
 
   const resetStates = () => {
-    setRewriteIps([]);
-    setRewriteMacs([]);
-    setRewriteIpv6s([]);
-    setRewriteArpIps([]);
-    setRewriteDnsDomains([]);
-    setRewriteTcpPorts([]);
-    setRewriteUdpPorts([]);
+    dispatchRewrite({ type: "RESET" });
   };
 
   const rewriteMutation = useMutation({
@@ -62,13 +51,28 @@ export const Files = () => {
       const formData = new FormData();
       formData.append("file", selectFile ?? "");
       formData.append("filename", fileName ?? "");
-      formData.append("rewriteIps", JSON.stringify(rewriteIps));
-      formData.append("rewriteMacs", JSON.stringify(rewriteMacs));
-      formData.append("rewriteIpv6s", JSON.stringify(rewriteIpv6s));
-      formData.append("rewriteArpIps", JSON.stringify(rewriteArpIps));
-      formData.append("rewriteDnsDomains", JSON.stringify(rewriteDnsDomains));
-      formData.append("rewriteTcpPorts", JSON.stringify(rewriteTcpPorts));
-      formData.append("rewriteUdpPorts", JSON.stringify(rewriteUdpPorts));
+      formData.append("rewriteIps", JSON.stringify(rewriteState.rewriteIps));
+      formData.append("rewriteMacs", JSON.stringify(rewriteState.rewriteMacs));
+      formData.append(
+        "rewriteIpv6s",
+        JSON.stringify(rewriteState.rewriteIpv6s),
+      );
+      formData.append(
+        "rewriteArpIps",
+        JSON.stringify(rewriteState.rewriteArpIps),
+      );
+      formData.append(
+        "rewriteDnsDomains",
+        JSON.stringify(rewriteState.rewriteDnsDomains),
+      );
+      formData.append(
+        "rewriteTcpPorts",
+        JSON.stringify(rewriteState.rewriteTcpPorts),
+      );
+      formData.append(
+        "rewriteUdpPorts",
+        JSON.stringify(rewriteState.rewriteUdpPorts),
+      );
 
       const res = await fetch(`${API_CONFIG.API_BASE}/rewrite-pcap-file/`, {
         method: "POST",
@@ -87,7 +91,7 @@ export const Files = () => {
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`,
       );
 
       if (!res.ok) throw new Error("Erreur API");
@@ -129,13 +133,13 @@ export const Files = () => {
           <Input
             disabled={
               !selectFile ||
-              (rewriteIps.length === 0 &&
-                rewriteMacs.length === 0 &&
-                rewriteIpv6s.length === 0 &&
-                rewriteArpIps.length === 0 &&
-                rewriteDnsDomains.length === 0 &&
-                rewriteTcpPorts.length === 0 &&
-                rewriteUdpPorts.length === 0)
+              (rewriteState.rewriteIps.length === 0 &&
+                rewriteState.rewriteMacs.length === 0 &&
+                rewriteState.rewriteIpv6s.length === 0 &&
+                rewriteState.rewriteArpIps.length === 0 &&
+                rewriteState.rewriteDnsDomains.length === 0 &&
+                rewriteState.rewriteTcpPorts.length === 0 &&
+                rewriteState.rewriteUdpPorts.length === 0)
             }
             onChange={(e) => setFileName(e.target.value)}
           />
@@ -144,13 +148,13 @@ export const Files = () => {
           onClick={() => rewriteMutation.mutate()}
           disabled={
             !selectFile ||
-            (rewriteIps.length === 0 &&
-              rewriteMacs.length === 0 &&
-              rewriteIpv6s.length === 0 &&
-              rewriteArpIps.length === 0 &&
-              rewriteDnsDomains.length === 0 &&
-              rewriteTcpPorts.length === 0 &&
-              rewriteUdpPorts.length === 0) ||
+            (rewriteState.rewriteIps.length === 0 &&
+              rewriteState.rewriteMacs.length === 0 &&
+              rewriteState.rewriteIpv6s.length === 0 &&
+              rewriteState.rewriteArpIps.length === 0 &&
+              rewriteState.rewriteDnsDomains.length === 0 &&
+              rewriteState.rewriteTcpPorts.length === 0 &&
+              rewriteState.rewriteUdpPorts.length === 0) ||
             !fileName
           }
           className="mt-auto"
