@@ -1,12 +1,10 @@
-import { useReducer, useState } from "react";
-import { initialRewriteState, rewriteReducer } from "@/hooks/useRewriteReducer";
+import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import type {
   InterfacesType,
   PacketDetailsType,
   ReplayModeType,
-  RewriteValues,
 } from "@/types/types";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
@@ -15,8 +13,11 @@ import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { API_CONFIG } from "@/config/api";
+import { useRewriteContext } from "@/context/RewriteContext";
 
 export const ReplayPage = () => {
+  const { rewriteValues, resetRewrites } = useRewriteContext();
+
   const [selectFile, setSelectFile] = useState<string | null>(null);
 
   const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
@@ -28,37 +29,8 @@ export const ReplayPage = () => {
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState<string>("");
 
-  const [rewriteState, dispatchRewrite] = useReducer(
-    rewriteReducer,
-    initialRewriteState,
-  );
-
-  const rewriteValues: RewriteValues = {
-    rewriteIps: rewriteState.rewriteIps,
-    setRewriteIps: (ips) =>
-      dispatchRewrite({ type: "SET_REWRITE_IPS", payload: ips }),
-    rewriteMacs: rewriteState.rewriteMacs,
-    setRewriteMacs: (macs) =>
-      dispatchRewrite({ type: "SET_REWRITE_MACS", payload: macs }),
-    rewriteIpv6s: rewriteState.rewriteIpv6s,
-    setRewriteIpv6s: (ipv6s) =>
-      dispatchRewrite({ type: "SET_REWRITE_IPV6S", payload: ipv6s }),
-    rewriteArpIps: rewriteState.rewriteArpIps,
-    setRewriteArpIps: (arpIps) =>
-      dispatchRewrite({ type: "SET_REWRITE_ARP_IPS", payload: arpIps }),
-    rewriteDnsDomains: rewriteState.rewriteDnsDomains,
-    setRewriteDnsDomains: (dnsDomains) =>
-      dispatchRewrite({ type: "SET_REWRITE_DNS_DOMAINS", payload: dnsDomains }),
-    rewriteTcpPorts: rewriteState.rewriteTcpPorts,
-    setRewriteTcpPorts: (tcpPorts) =>
-      dispatchRewrite({ type: "SET_REWRITE_TCP_PORTS", payload: tcpPorts }),
-    rewriteUdpPorts: rewriteState.rewriteUdpPorts,
-    setRewriteUdpPorts: (udpPorts) =>
-      dispatchRewrite({ type: "SET_REWRITE_UDP_PORTS", payload: udpPorts }),
-  };
-
   const resetStates = () => {
-    dispatchRewrite({ type: "RESET" });
+    resetRewrites();
     setStepIndex(0);
     setFilterIndex(null);
     setFilterRange("");

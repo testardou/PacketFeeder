@@ -1,11 +1,10 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   InterfacesType,
   PacketDetailsType,
   PcapInfoType,
   ReplayModeType,
-  RewriteValues,
 } from "@/types/types";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { PacketDetails } from "@/components/packetDetails/PacketDetails";
@@ -14,53 +13,26 @@ import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { API_CONFIG } from "@/config/api";
-import { initialRewriteState, rewriteReducer } from "@/hooks/useRewriteReducer";
+import { useRewriteContext } from "@/context/RewriteContext";
 
 interface ReplayConfigurationProps {
   selectFile: string;
 }
 
 export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
+  const { rewriteValues, resetRewrites } = useRewriteContext();
+
   const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
   const [selectedInterface, setSelectedInterface] = useState<string | null>(
     null,
-  );
-
-  const [rewriteState, dispatchRewrite] = useReducer(
-    rewriteReducer,
-    initialRewriteState,
   );
 
   const [stepIndex, setStepIndex] = useState<number>(0);
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState<string>("");
 
-  const rewriteValues: RewriteValues = {
-    rewriteIps: rewriteState.rewriteIps,
-    setRewriteIps: (ips) =>
-      dispatchRewrite({ type: "SET_REWRITE_IPS", payload: ips }),
-    rewriteMacs: rewriteState.rewriteMacs,
-    setRewriteMacs: (macs) =>
-      dispatchRewrite({ type: "SET_REWRITE_MACS", payload: macs }),
-    rewriteIpv6s: rewriteState.rewriteIpv6s,
-    setRewriteIpv6s: (ipv6s) =>
-      dispatchRewrite({ type: "SET_REWRITE_IPV6S", payload: ipv6s }),
-    rewriteArpIps: rewriteState.rewriteArpIps,
-    setRewriteArpIps: (arpIps) =>
-      dispatchRewrite({ type: "SET_REWRITE_ARP_IPS", payload: arpIps }),
-    rewriteDnsDomains: rewriteState.rewriteDnsDomains,
-    setRewriteDnsDomains: (dnsDomains) =>
-      dispatchRewrite({ type: "SET_REWRITE_DNS_DOMAINS", payload: dnsDomains }),
-    rewriteTcpPorts: rewriteState.rewriteTcpPorts,
-    setRewriteTcpPorts: (tcpPorts) =>
-      dispatchRewrite({ type: "SET_REWRITE_TCP_PORTS", payload: tcpPorts }),
-    rewriteUdpPorts: rewriteState.rewriteUdpPorts,
-    setRewriteUdpPorts: (udpPorts) =>
-      dispatchRewrite({ type: "SET_REWRITE_UDP_PORTS", payload: udpPorts }),
-  };
-
   const resetStates = () => {
-    dispatchRewrite({ type: "RESET" });
+    resetRewrites();
     setStepIndex(0);
     setFilterIndex(null);
     setFilterRange("");

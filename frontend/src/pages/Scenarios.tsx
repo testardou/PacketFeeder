@@ -12,11 +12,12 @@ import { TacticSelector } from "@/components/scenarios/TacticSelector";
 import { TechniqueSelector } from "@/components/scenarios/TechniqueSelector";
 import { ReplayConfiguration } from "@/components/scenarios/ReplayConfiguration";
 import { API_CONFIG } from "@/config/api";
+import { RewriteProvider } from "@/context/RewriteContext";
 
 export default function Scenarios() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(
-    null
+    null,
   );
   const [selectFile, setSelectFile] = useState<string | null>(null);
   const [tacticData, setTacticData] = useState<Tactic | null>(null);
@@ -40,7 +41,7 @@ export default function Scenarios() {
     queryFn: async () => {
       if (!selectedTactic) throw new Error("No tactic selected");
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/get-tactic/${selectedTactic}`
+        `${API_CONFIG.API_BASE}/get-tactic/${selectedTactic}`,
       );
       if (!res.ok) throw new Error("Failed to load tactic");
       return res.json();
@@ -60,7 +61,7 @@ export default function Scenarios() {
         tacticData.techniques.map(async (techId) => {
           try {
             const res = await fetch(
-              `${API_CONFIG.API_BASE}/get-technique/${techId}`
+              `${API_CONFIG.API_BASE}/get-technique/${techId}`,
             );
             if (res.ok) {
               const data = await res.json();
@@ -69,7 +70,7 @@ export default function Scenarios() {
           } catch (error) {
             console.error(`Failed to load technique ${techId}:`, error);
           }
-        })
+        }),
       );
 
       return techniques;
@@ -83,7 +84,7 @@ export default function Scenarios() {
     queryFn: async () => {
       if (!selectedTechnique) throw new Error("No technique selected");
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/get-technique/${selectedTechnique}`
+        `${API_CONFIG.API_BASE}/get-technique/${selectedTechnique}`,
       );
       if (!res.ok) throw new Error("Failed to load technique");
       return res.json();
@@ -98,7 +99,7 @@ export default function Scenarios() {
       queryFn: async () => {
         if (!selectedTechnique) throw new Error("No technique selected");
         const res = await fetch(
-          `${API_CONFIG.API_BASE}/get-technique-pcaps/${selectedTechnique}`
+          `${API_CONFIG.API_BASE}/get-technique-pcaps/${selectedTechnique}`,
         );
         if (!res.ok) throw new Error("Failed to load PCAP datasets");
         return res.json();
@@ -178,7 +179,11 @@ export default function Scenarios() {
       </Card>
 
       {/* Replay Configuration */}
-      {selectFile && <ReplayConfiguration selectFile={selectFile} />}
+      {selectFile && (
+        <RewriteProvider>
+          <ReplayConfiguration selectFile={selectFile} />
+        </RewriteProvider>
+      )}
     </div>
   );
 }
