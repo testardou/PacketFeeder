@@ -94,7 +94,7 @@ export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
     <div className="flex flex-col gap-5">
       <h2 className="text-2xl">Configuration</h2>
 
-      <PcapInfos pcapInfos={infosMutation} rewriteValues={rewriteValues} />
+      <PcapInfos pcapInfos={infosMutation} />
 
       <PacketDetails
         selectedFile={selectFile}

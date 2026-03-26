@@ -11,7 +11,7 @@ import { useRewriteContext } from "@/context/RewriteContext";
 
 export const FilePage = () => {
   const queryClient = useQueryClient();
-  const { rewriteState, rewriteValues, resetRewrites } = useRewriteContext();
+  const { rewriteState, resetRewrites } = useRewriteContext();
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [selectFile, setSelectFile] = useState<string | null>(null);
@@ -90,7 +90,6 @@ export const FilePage = () => {
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={handleSetSelectFile}
-        rewriteValues={rewriteValues}
       />
       <PacketDetails
         selectedFile={selectFile}

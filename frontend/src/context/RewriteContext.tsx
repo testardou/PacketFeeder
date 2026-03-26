@@ -11,7 +11,15 @@ type RewriteContextType = {
 
 const RewriteContext = createContext<RewriteContextType | null>(null);
 
-export function RewriteProvider({ children }: { children: React.ReactNode }) {
+interface RewriteProviderProps {
+  children: React.ReactNode;
+  externalValues?: RewriteValues;
+}
+
+export function RewriteProvider({
+  children,
+  externalValues,
+}: RewriteProviderProps) {
   const [rewriteState, dispatch] = useReducer(
     rewriteReducer,
     initialRewriteState,
@@ -39,12 +47,13 @@ export function RewriteProvider({ children }: { children: React.ReactNode }) {
     setRewriteUdpPorts: (udpPorts) =>
       dispatch({ type: "SET_REWRITE_UDP_PORTS", payload: udpPorts }),
   };
+  const resolvedValues = externalValues ?? rewriteValues;
 
   const resetRewrites = () => dispatch({ type: "RESET" });
 
   return (
     <RewriteContext.Provider
-      value={{ rewriteState, rewriteValues, resetRewrites }}
+      value={{ rewriteState, rewriteValues: resolvedValues, resetRewrites }}
     >
       {children}
     </RewriteContext.Provider>
@@ -56,9 +65,4 @@ export function useRewriteContext() {
   const ctx = useContext(RewriteContext);
   if (!ctx) throw new Error("useRewriteContext must be inside RewriteProvider");
   return ctx;
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export function useOptionalRewriteContext() {
-  return useContext(RewriteContext);
 }

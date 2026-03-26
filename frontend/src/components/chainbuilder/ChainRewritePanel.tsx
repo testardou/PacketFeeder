@@ -1,16 +1,11 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
 import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 import type { RewriteValues } from "@/types/types";
 import type { ChainInfosResponse } from "@/components/chainbuilder/types";
+import { RewriteProvider } from "@/context/RewriteContext";
 
 interface ChainRewritePanelProps {
   chainInfos: ChainInfosResponse;
@@ -23,7 +18,9 @@ export const ChainRewritePanel = ({
   globalRewriteValues,
   getPerPcapRewriteValues,
 }: ChainRewritePanelProps) => {
-  const [expandedPcaps, setExpandedPcaps] = useState<Record<number, boolean>>({});
+  const [expandedPcaps, setExpandedPcaps] = useState<Record<number, boolean>>(
+    {},
+  );
 
   const togglePcap = (index: number) => {
     setExpandedPcaps((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -38,10 +35,9 @@ export const ChainRewritePanel = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <PcapGeneralInfos pcapInfosData={chainInfos.all} />
-          <PcapProtocolsScrollArea
-            pcapInfosData={chainInfos.all}
-            rewriteValues={globalRewriteValues}
-          />
+          <RewriteProvider externalValues={globalRewriteValues}>
+            <PcapProtocolsScrollArea pcapInfosData={chainInfos.all} />
+          </RewriteProvider>
         </CardContent>
       </Card>
 
@@ -52,7 +48,8 @@ export const ChainRewritePanel = ({
           {chainInfos.per_pcap.map((entry) => {
             const isExpanded = expandedPcaps[entry.index] ?? false;
             const rewriteValues = getPerPcapRewriteValues(entry.index);
-            const fileName = entry.pcap_file.split("/").pop() ?? entry.pcap_file;
+            const fileName =
+              entry.pcap_file.split("/").pop() ?? entry.pcap_file;
 
             return (
               <Card key={entry.index}>
@@ -77,10 +74,9 @@ export const ChainRewritePanel = ({
                 {isExpanded && (
                   <CardContent className="space-y-4">
                     <PcapGeneralInfos pcapInfosData={entry.infos} />
-                    <PcapProtocolsScrollArea
-                      pcapInfosData={entry.infos}
-                      rewriteValues={rewriteValues}
-                    />
+                    <RewriteProvider externalValues={rewriteValues}>
+                      <PcapProtocolsScrollArea pcapInfosData={entry.infos} />
+                    </RewriteProvider>
                   </CardContent>
                 )}
               </Card>

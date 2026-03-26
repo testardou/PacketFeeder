@@ -1,14 +1,13 @@
-import type { PcapInfoType, RewriteValues } from "@/types/types";
+import type { PcapInfoType } from "@/types/types";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
 import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 
 interface IPcapInfosProps {
   pcapInfos?: UseMutationResult<PcapInfoType, Error, string, unknown>;
-  rewriteValues: RewriteValues;
 }
 
-export const PcapInfos = ({ pcapInfos, rewriteValues }: IPcapInfosProps) => {
+export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
   const data: PcapInfoType | undefined = pcapInfos?.data;
 
   return (
@@ -22,10 +21,7 @@ export const PcapInfos = ({ pcapInfos, rewriteValues }: IPcapInfosProps) => {
         <div>
           <h2 className="text-2xl">Pcap Infos</h2>
           <PcapGeneralInfos pcapInfosData={data} />
-          <PcapProtocolsScrollArea
-            pcapInfosData={data}
-            rewriteValues={rewriteValues}
-          />
+          <PcapProtocolsScrollArea pcapInfosData={data} />
         </div>
       )}
     </div>

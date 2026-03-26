@@ -1,15 +1,16 @@
 import { ModifiedPcapRecap } from "@/components/modifiedPcapRecap/ModifiedPcapRecap";
-import type { ProtocolType, RewriteValues } from "@/types/types";
+import { useRewriteContext } from "@/context/RewriteContext";
+import type { ProtocolType } from "@/types/types";
 
 interface ISelectedProtocolModificationsProps {
   selectedProtocol: ProtocolType;
-  rewriteValues: RewriteValues;
 }
 
 export const SelectedProtocolModifications = ({
   selectedProtocol,
-  rewriteValues,
 }: ISelectedProtocolModificationsProps) => {
+  const { rewriteValues } = useRewriteContext();
+
   if (!selectedProtocol) return null;
 
   switch (selectedProtocol) {

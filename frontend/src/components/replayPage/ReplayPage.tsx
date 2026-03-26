@@ -84,7 +84,6 @@ export const ReplayPage = () => {
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={handleSetSelectFile}
-        rewriteValues={rewriteValues}
       />
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>

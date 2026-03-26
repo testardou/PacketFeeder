@@ -1,16 +1,12 @@
 import { Separator } from "@/components/ui/separator";
 import { ScrollAreaModify } from "@/components/scrollAreaModify/ScrollAreaModify";
-import type {
-  ProtocolDataType,
-  ProtocolType,
-  RewriteValues,
-} from "@/types/types";
+import type { ProtocolDataType, ProtocolType } from "@/types/types";
 import React from "react";
+import { useRewriteContext } from "@/context/RewriteContext";
 
 interface IProtocolDataProps {
   selectedProtocol: ProtocolType;
   protocol: ProtocolDataType | undefined;
-  rewriteValues: RewriteValues;
   ipv4Regex: RegExp;
   ipv6Regex: RegExp;
   macAddrRegex: RegExp;
@@ -21,13 +17,14 @@ interface IProtocolDataProps {
 export const ProtocolData = ({
   selectedProtocol,
   protocol,
-  rewriteValues,
   ipv4Regex,
   ipv6Regex,
   macAddrRegex,
   dnsDomainRegex,
   portRegex,
 }: IProtocolDataProps) => {
+  const { rewriteValues } = useRewriteContext();
+
   if (!selectedProtocol || !protocol || !protocol.data) return null;
 
   // Modifiable protocols using ScrollAreaModify

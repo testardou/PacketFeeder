@@ -4,7 +4,6 @@ import type {
   PacketDetailsType,
   PcapFilesType,
   PcapInfoType,
-  RewriteValues,
 } from "@/types/types";
 import {
   useMutation,
@@ -23,14 +22,12 @@ interface IHandleFilesProps {
     string,
     unknown
   >;
-  rewriteValues: RewriteValues;
   resetStates: () => void;
 }
 
 export const HandleFiles = ({
   selectFile,
   setSelectFile,
-  rewriteValues,
   detailsMutation,
   resetStates,
 }: IHandleFilesProps) => {
@@ -83,7 +80,7 @@ export const HandleFiles = ({
           resetStates={resetStates}
         />
       </div>
-      <PcapInfos pcapInfos={infosMutation} rewriteValues={rewriteValues} />
+      <PcapInfos pcapInfos={infosMutation} />
     </div>
   );
 };

@@ -3,12 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtocolData } from "./ProtocolData";
 import { SelectedProtocolModifications } from "./SelectedProtocolModifications";
-import type { PcapInfoType, RewriteValues } from "@/types/types";
+import type { PcapInfoType } from "@/types/types";
 import { useState } from "react";
 
 interface IPcapProtocolsScrollAreaProps {
   pcapInfosData?: PcapInfoType;
-  rewriteValues: RewriteValues;
 }
 
 type ProtocolType =
@@ -24,7 +23,6 @@ type ProtocolType =
 
 export const PcapProtocolsScrollArea = ({
   pcapInfosData,
-  rewriteValues,
 }: IPcapProtocolsScrollAreaProps) => {
   const protocols = pcapInfosData?.protocols;
   const [selectedProtocol, setSelectedProtocol] = useState<ProtocolType>(null);
@@ -131,7 +129,7 @@ export const PcapProtocolsScrollArea = ({
                   className="w-full justify-start"
                   onClick={() =>
                     setSelectedProtocol(
-                      selectedProtocol === protocol.key ? null : protocol.key
+                      selectedProtocol === protocol.key ? null : protocol.key,
                     )
                   }
                 >
@@ -158,9 +156,8 @@ export const PcapProtocolsScrollArea = ({
             <ProtocolData
               selectedProtocol={selectedProtocol}
               protocol={availableProtocols.find(
-                (p) => p.key === selectedProtocol
+                (p) => p.key === selectedProtocol,
               )}
-              rewriteValues={rewriteValues}
               ipv4Regex={ipv4Regex}
               ipv6Regex={ipv6Regex}
               macAddrRegex={macAddrRegex}
@@ -173,10 +170,7 @@ export const PcapProtocolsScrollArea = ({
 
       {/* Modifications Recap - Only for selected protocol */}
       {selectedProtocol && (
-        <SelectedProtocolModifications
-          selectedProtocol={selectedProtocol}
-          rewriteValues={rewriteValues}
-        />
+        <SelectedProtocolModifications selectedProtocol={selectedProtocol} />
       )}
     </div>
   );
