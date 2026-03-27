@@ -6,3 +6,4 @@ flask-smorest
 marshmallow
 tqdm
 rich
+cmd2
