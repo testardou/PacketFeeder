@@ -1,3 +1,6 @@
+import glob
+import os
+
 from rich.console import Console
 from rich.table import Table
 
@@ -18,6 +21,15 @@ class BaseModule:
 
     def register_option(self, name, description, required=False, default=None):
         self.options[name] = Option(name, description, required, default)
+
+    def complete_option(self, key, text):                                                                                                                                                                            
+        if self.options.get(key) and key == "pcap":
+            if not text:                                                                                  
+                results =  glob.glob("pcaps/*")
+            else:
+                results = glob.glob(text + "*")  
+            return [r + "/" if os.path.isdir(r) else r for r in results]                                                                                                                                                                           
+        return []
 
     def set_option(self, key, value):
         if key not in self.options:

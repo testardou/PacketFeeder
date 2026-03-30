@@ -1,5 +1,6 @@
 
 import argparse
+from cli.console import PacketFeederConsole
 from core.pcap_infos import print_pcap_infos
 from core.replay import replay
 from core.rewrite import rewrite_pcap
@@ -17,6 +18,9 @@ def main():
     print_pcap_infos.add_parser(subparsers)
     rewrite_pcap.add_parser(subparsers)
     scenario.add_parser(subparsers)
+    console_parser = subparsers.add_parser("console", help="Interactive CLI")                                                                                                                                        
+    console_parser.set_defaults(func=lambda _: PacketFeederConsole().cmdloop())
+
 
     args = parser.parse_args()
     args.func(args)   # Call handler
