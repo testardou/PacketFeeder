@@ -1,6 +1,7 @@
 import cmd2
 
 from cli.modules.infos import InfosModule
+from cli.modules.rewrite import RewriteModule
 
 
 BANNER = """                                                                                                                                                                                                     
@@ -18,7 +19,7 @@ class PacketFeederConsole(cmd2.Cmd):
         super().__init__()
         self.modules = {
             # "replay": ReplayModule,
-            # "rewrite": RewriteModule,
+            "rewrite": RewriteModule,
             "infos": InfosModule,
             # "scenarios": ScenariosModule,
             # "chain": ChainModule,
