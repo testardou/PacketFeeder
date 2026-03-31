@@ -36,7 +36,7 @@ def packet_payload():
         current_app.logger.warning("Missing file or id parameter")
         return jsonify({"error": "Missing file or id"}), 400
 
-    # Validate file path securely (handles both UPLOAD_FOLDER files and scenario datasets)
+    # Validate file path securely (handles both UPLOAD_FOLDER files and mitre datasets)
     file_path, error = validate_file_path_auto(file)
     if error:
         return error

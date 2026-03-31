@@ -1,4 +1,4 @@
-import type { PcapDataset } from "@/types/scenarios";
+import type { PcapDataset } from "@/types/mitre";
 
 interface DatasetCardProps {
   dataset: PcapDataset;
@@ -14,8 +14,8 @@ export function DatasetCard({ dataset }: DatasetCardProps) {
             dataset.criticality === "high"
               ? "bg-red-500/10 text-red-600 dark:text-red-400"
               : dataset.criticality === "medium"
-              ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
-              : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
           }`}
         >
           {dataset.criticality}

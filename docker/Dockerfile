@@ -10,7 +10,7 @@ COPY backend/ ./backend/
 COPY core/ ./core/
 
 ENV PCAPS_ROOT=/app/pcaps
-ENV SCENARIOS_ROOT=/app/scenarios
+ENV MITRE_ROOT=/app/mitre
 
 EXPOSE 5000
 

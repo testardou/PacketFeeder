@@ -42,7 +42,7 @@ def setup_request(request, apply_filter=True):
     if not file:
         raise ValueError("Missing file parameter")
     
-    # Validate file path securely (handles both UPLOAD_FOLDER files and scenario datasets)
+    # Validate file path securely (handles both UPLOAD_FOLDER files and mitre datasets)
     file_path, error = validate_file_path_auto(file)
     if error:
         raise ValueError("Invalid file path")

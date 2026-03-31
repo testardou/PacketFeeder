@@ -16,7 +16,7 @@ from backend.routes.upload_pcap_file import upload_pcap_file_bp
 from backend.routes.delete_pcap_file import delete_pcap_file_bp
 from backend.routes.details_packets_pcap import details_packets_pcap_bp
 from backend.routes.packet_payload import packet_payload_bp
-from backend.routes.get_scenarios import get_scenarios_bp
+from backend.routes.get_mitre import get_mitre_bp
 from backend.routes.build_chain import build_chain_bp
 from backend.routes.chain_infos import chain_infos_bp
 from backend.routes.replay_chain import replay_chain_bp
@@ -59,7 +59,7 @@ api.register_blueprint(get_interfaces_bp)
 api.register_blueprint(infos_pcap_bp)
 api.register_blueprint(details_packets_pcap_bp)
 api.register_blueprint(packet_payload_bp)
-api.register_blueprint(get_scenarios_bp)
+api.register_blueprint(get_mitre_bp)
 
 ### POST ###
 api.register_blueprint(replay_realtime_bp)

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Tactic, Technique, PcapDataResponse } from "@/types/scenarios";
+import type { Tactic, Technique, PcapDataResponse } from "@/types/mitre";
 import { API_CONFIG } from "@/config/api";
 
 export function useChainBuilderQueries() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(
-    null
+    null,
   );
   const [tacticData, setTacticData] = useState<Tactic | null>(null);
   const [techniqueData, setTechniqueData] = useState<Technique | null>(null);
@@ -28,7 +28,7 @@ export function useChainBuilderQueries() {
     queryFn: async () => {
       if (!selectedTactic) throw new Error("No tactic selected");
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/get-tactic/${selectedTactic}`
+        `${API_CONFIG.API_BASE}/get-tactic/${selectedTactic}`,
       );
       if (!res.ok) throw new Error("Failed to load tactic");
       return res.json();
@@ -46,7 +46,7 @@ export function useChainBuilderQueries() {
         tacticData.techniques.map(async (techId) => {
           try {
             const res = await fetch(
-              `${API_CONFIG.API_BASE}/get-technique/${techId}`
+              `${API_CONFIG.API_BASE}/get-technique/${techId}`,
             );
             if (res.ok) {
               const data = await res.json();
@@ -55,7 +55,7 @@ export function useChainBuilderQueries() {
           } catch (error) {
             console.error(`Failed to load technique ${techId}:`, error);
           }
-        })
+        }),
       );
 
       return techniques;
@@ -68,7 +68,7 @@ export function useChainBuilderQueries() {
     queryFn: async () => {
       if (!selectedTechnique) throw new Error("No technique selected");
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/get-technique/${selectedTechnique}`
+        `${API_CONFIG.API_BASE}/get-technique/${selectedTechnique}`,
       );
       if (!res.ok) throw new Error("Failed to load technique");
       return res.json();
@@ -82,7 +82,7 @@ export function useChainBuilderQueries() {
       queryFn: async () => {
         if (!selectedTechnique) throw new Error("No technique selected");
         const res = await fetch(
-          `${API_CONFIG.API_BASE}/get-technique-pcaps/${selectedTechnique}`
+          `${API_CONFIG.API_BASE}/get-technique-pcaps/${selectedTechnique}`,
         );
         if (!res.ok) throw new Error("Failed to load PCAP datasets");
         return res.json();
@@ -134,4 +134,3 @@ export function useChainBuilderQueries() {
     handleFileChange,
   };
 }
-

@@ -3,8 +3,8 @@ import type {
   ChainInfosResponse,
   ChainItem,
 } from "@/components/chainbuilder/types";
-import { TacticSelector } from "@/components/scenarios/TacticSelector";
-import { TechniqueSelector } from "@/components/scenarios/TechniqueSelector";
+import { TacticSelector } from "@/components/mitre/TacticSelector";
+import { TechniqueSelector } from "@/components/mitre/TechniqueSelector";
 import { Button } from "@/components/ui/button";
 import {
   Card,

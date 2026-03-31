@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import type { PcapDataset } from "@/types/scenarios";
+import type { PcapDataset } from "@/types/mitre";
 import { X } from "lucide-react";
 import { FilterButton } from "./FilterButton";
 

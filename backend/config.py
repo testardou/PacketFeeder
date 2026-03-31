@@ -9,8 +9,8 @@ PCAPS_ROOT = os.getenv("PCAPS_ROOT", os.path.join(PROJECT_ROOT, "pcaps"))
 
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(PCAPS_ROOT, "pcap_files"))
 
-# Root folder for scenario definitions (tactics + techniques JSON)
-SCENARIOS_ROOT = os.getenv("SCENARIOS_ROOT", os.path.join(PROJECT_ROOT, "scenarios"))
+# Root folder for mitre definitions (tactics + techniques JSON)
+MITRE_ROOT = os.getenv("MITRE_ROOT", os.path.join(PROJECT_ROOT, "mitre"))
 
 TCP_FLAG_MAP = {
     "S": "SYN",

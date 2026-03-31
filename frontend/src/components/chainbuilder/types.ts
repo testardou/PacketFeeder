@@ -1,4 +1,4 @@
-import type { Technique } from "@/types/scenarios";
+import type { Technique } from "@/types/mitre";
 import type { NewValuesPcapType, PcapInfoType } from "@/types/types";
 
 export interface ChainPcapItem {
@@ -40,4 +40,3 @@ export interface ChainInfosResponse {
 }
 
 export type PerPcapRewrites = Record<string, RewriteMapsCollection>;
-

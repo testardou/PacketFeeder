@@ -32,7 +32,7 @@ def infos_pcap():
         current_app.logger.warning("No file parameter provided")
         return jsonify({"error": "No file specified"}), 400
     
-    # Validate file path securely (handles both UPLOAD_FOLDER files and scenario datasets)
+    # Validate file path securely (handles both UPLOAD_FOLDER files and mitre datasets)
     file_path, error = validate_file_path_auto(file)
     if error:
         return error

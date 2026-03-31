@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import type { Tactic } from "@/types/scenarios";
+import type { Tactic } from "@/types/mitre";
 
 interface TacticCardProps {
   tactic: Tactic;
@@ -11,7 +11,9 @@ export function TacticCard({ tactic }: TacticCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg">{tactic.mitre.tactic_id}</span>
+            <span className="font-semibold text-lg">
+              {tactic.mitre.tactic_id}
+            </span>
             <span className="text-muted-foreground">-</span>
             <span className="font-medium">{tactic.mitre.tactic_name}</span>
           </div>
@@ -39,4 +41,3 @@ export function TacticCard({ tactic }: TacticCardProps) {
     </div>
   );
 }
-

@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TacticCard } from "./TacticCard";
-import type { Tactic } from "@/types/scenarios";
+import type { Tactic } from "@/types/mitre";
 
 interface TacticSelectorProps {
   selectedTactic: string | null;

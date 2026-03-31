@@ -8,7 +8,7 @@ import {
   GripVertical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Technique, PcapDataset } from "@/types/scenarios";
+import type { Technique, PcapDataset } from "@/types/mitre";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ export function TechniqueCard({
     if (!searchQuery.trim()) return availableFilters;
     const query = searchQuery.toLowerCase().trim();
     return availableFilters.filter((filter) =>
-      filter.toLowerCase().includes(query)
+      filter.toLowerCase().includes(query),
     );
   }, [availableFilters, searchQuery]);
 
@@ -70,7 +70,7 @@ export function TechniqueCard({
         if (!Array.isArray(dataset.filter)) return false;
         // A dataset must match all selected filters
         return selectedFilters.every((filter) =>
-          dataset.filter?.includes(filter)
+          dataset.filter?.includes(filter),
         );
       });
     }
@@ -93,10 +93,7 @@ export function TechniqueCard({
     setSearchQuery("");
   };
 
-  const handleDatasetDragStart = (
-    e: React.DragEvent,
-    dataset: PcapDataset
-  ) => {
+  const handleDatasetDragStart = (e: React.DragEvent, dataset: PcapDataset) => {
     if (!draggablePcaps) {
       e.preventDefault();
       return;
@@ -244,7 +241,7 @@ export function TechniqueCard({
                 <ChevronDown
                   className={cn(
                     "h-3.5 w-3.5 transition-transform",
-                    isFilterDropdownOpen && "rotate-180"
+                    isFilterDropdownOpen && "rotate-180",
                   )}
                 />
               </Button>
@@ -321,7 +318,7 @@ export function TechniqueCard({
                               onClick={() => handleFilterToggle(filter)}
                               className={cn(
                                 "w-full flex items-center gap-2 px-2 py-1.5 rounded-sm text-xs text-left hover:bg-accent transition-colors",
-                                isSelected && "bg-accent"
+                                isSelected && "bg-accent",
                               )}
                             >
                               <div
@@ -329,7 +326,7 @@ export function TechniqueCard({
                                   "flex h-4 w-4 items-center justify-center rounded-sm border",
                                   isSelected
                                     ? "bg-primary border-primary text-primary-foreground"
-                                    : "border-input"
+                                    : "border-input",
                                 )}
                               >
                                 {isSelected && <Check className="h-3 w-3" />}
@@ -366,7 +363,7 @@ export function TechniqueCard({
                         draggablePcaps && "cursor-grab active:cursor-grabbing",
                         isSelected
                           ? "border-primary bg-primary/5 ring-1 ring-primary/20"
-                          : "hover:bg-muted/50 hover:border-muted-foreground/50"
+                          : "hover:bg-muted/50 hover:border-muted-foreground/50",
                       )}
                     >
                       <div className="flex items-start gap-2">
@@ -394,8 +391,8 @@ export function TechniqueCard({
                                     dataset.criticality === "high"
                                       ? "bg-red-500/10 text-red-600 dark:text-red-400"
                                       : dataset.criticality === "medium"
-                                      ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
-                                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                                        ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                                        : "bg-blue-500/10 text-blue-600 dark:text-blue-400",
                                   )}
                                 >
                                   {dataset.criticality}
@@ -452,7 +449,7 @@ export function TechniqueCard({
             {pcapData.files
               .filter(
                 (file: string) =>
-                  file.endsWith(".pcap") || file.endsWith(".pcapng")
+                  file.endsWith(".pcap") || file.endsWith(".pcapng"),
               )
               .map((file: string) => {
                 const isSelected = selectFile === file;
@@ -466,7 +463,7 @@ export function TechniqueCard({
                       draggablePcaps && "cursor-grab active:cursor-grabbing",
                       isSelected
                         ? "border-primary bg-primary/5 ring-2 ring-primary/20"
-                        : "hover:bg-muted/50 hover:border-muted-foreground/50"
+                        : "hover:bg-muted/50 hover:border-muted-foreground/50",
                     )}
                   >
                     <button

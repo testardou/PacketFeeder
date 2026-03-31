@@ -3,10 +3,10 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 // import Layout from "@/layouts/Layout";
 import Replay from "@/pages/Replay";
 import Live from "@/pages/Live";
-import Scenarios from "@/pages/Scenarios";
 import ChainBuilder from "@/pages/ChainBuilder";
 import Layout from "../layouts/Layout";
 import { Files } from "@/pages/Files";
+import Mitre from "@/pages/Mitre";
 
 export const router = createBrowserRouter([
   {
@@ -26,8 +26,8 @@ export const router = createBrowserRouter([
         element: <Replay />,
       },
       {
-        path: "Scenarios",
-        element: <Scenarios />,
+        path: "Mitre",
+        element: <Mitre />,
       },
       {
         path: "chain-builder",

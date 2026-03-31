@@ -7,11 +7,11 @@ services:
     # aux vraies interfaces réseau de la machine hôte
     environment:
       PCAPS_ROOT: /app/pcaps
-      SCENARIOS_ROOT: /app/scenarios
+      MITRE_ROOT: /app/mitre
     network_mode: host
     volumes:
       - ./pcaps:/app/pcaps
-      - ./scenarios:/app/scenarios
+      - ./mitre:/app/mitre
     cap_add:
       - NET_ADMIN
       - NET_RAW

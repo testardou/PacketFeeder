@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Tactic, Technique, PcapDataResponse } from "@/types/scenarios";
+import type { Tactic, Technique, PcapDataResponse } from "@/types/mitre";
 import {
   Card,
   CardContent,
@@ -8,13 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TacticSelector } from "@/components/scenarios/TacticSelector";
-import { TechniqueSelector } from "@/components/scenarios/TechniqueSelector";
-import { ReplayConfiguration } from "@/components/scenarios/ReplayConfiguration";
+import { TacticSelector } from "@/components/mitre/TacticSelector";
+import { TechniqueSelector } from "@/components/mitre/TechniqueSelector";
+import { ReplayConfiguration } from "@/components/mitre/ReplayConfiguration";
 import { API_CONFIG } from "@/config/api";
 import { RewriteProvider } from "@/context/RewriteContext";
 
-export default function Scenarios() {
+export default function Mitre() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(
     null,
@@ -146,14 +146,14 @@ export default function Scenarios() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-4xl mx-auto w-fit font-bold">Scenarios</h1>
+      <h1 className="text-4xl mx-auto w-fit font-bold">Mitre</h1>
 
       {/* Tactic and Technique Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>MITRE ATT&CK Scenario Selection</CardTitle>
+          <CardTitle>MITRE ATT&CK Selection</CardTitle>
           <CardDescription>
-            Select a tactic and technique to replay attack scenarios
+            Select a tactic and technique to replay
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

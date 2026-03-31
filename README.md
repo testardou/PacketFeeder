@@ -4,7 +4,7 @@
 
 Packet Feeder is a PCAP-based traffic replay platform designed for security research and IDS/NDR testing.
 
-It combines a CLI and a web-based GUI to inspect, rewrite, and replay network traffic, supporting multiple replay modes, scenario-based attack simulations, and realistic lab environments.
+It combines a CLI and a web-based GUI to inspect, rewrite, and replay network traffic, supporting multiple replay modes, MITRE ATT&CK-based attack simulations, and realistic lab environments.
 
 ---
 
@@ -30,11 +30,11 @@ Replay modes:
 - **Fastest** (full injection, tcpreplay-like)
 - **Step-by-step** (packet-by-packet)
 
-### 3. Scenario-Based Attack Simulation
+### 3. MITRE ATT&CK Attack Simulation
 
-- PCAP-based scenarios aligned with the MITRE ATT&CK matrix
+- PCAP-based techniques aligned with the MITRE ATT&CK matrix
 - Replay predefined attack patterns for security testing
-- Designed to simulate simple and repeatable attack scenarios
+- Designed to simulate simple and repeatable attack techniques
 
 ### 4. Live Network Interaction (Experimental)
 
@@ -49,7 +49,7 @@ Packet Feeder follows a modular client-server architecture designed to support b
   A web-based interface built with React, providing PCAP management, traffic inspection, replay control, and live status updates.
 
 - **CLI**  
-  A command-line interface for automation, scripting, and headless execution of replays and scenarios.
+  A command-line interface for automation, scripting, and headless execution of replays and MITRE techniques.
 
 - **Backend API**  
   A Python backend based on Flask, exposing REST endpoints for PCAP management and control operations.
@@ -96,7 +96,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 - Debian host: KVM/libvirt + Open vSwitch.
 - Bridges:
   - `br0`: **MGMT/Internet** (home LAN `192.168.1.0/24`, gateway `192.168.1.254`)
-  - `lab-ovs`: **LAB** network (scenario traffic `10.10.10.0/24`)
+  - `lab-ovs`: **LAB** network (attack traffic `10.10.10.0/24`)
   - `wan-ovs`: **EXTERNAL** network (simulated attacker subnet `172.16.10.0/24`)
   - `ids-ovs`: **IDS feed** network (mirrored lab traffic distribution to sensors/engines)
 
@@ -240,12 +240,12 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [x] step-by-step execution
 - [x] Replay progress tracking and status reporting
 
-### Scenario Mode
+### MITRE ATT&CK Mode
 
-- [x] PCAP-based scenario definitions
-- [x] Frontend scenario mode
-- [ ] CLI scenario mode
-- [ ] MITRE ATT&CK–aligned attack scenarios
+- [x] PCAP-based technique definitions
+- [x] Frontend MITRE mode
+- [ ] CLI MITRE mode
+- [ ] MITRE ATT&CK–aligned attack techniques
   - [ ] Reconnaissance (TA0043)
     - [x] T1595 — Active Scanning (parent: external IP block scanning)
     - [ ] T1595.002 — Active Scanning: Vulnerability Scanning

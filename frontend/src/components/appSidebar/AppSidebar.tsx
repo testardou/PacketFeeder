@@ -28,8 +28,8 @@ const items = [
     icon: Play,
   },
   {
-    title: "Scenarios",
-    url: "/scenarios",
+    title: "Mitre",
+    url: "/mitre",
     icon: Film,
   },
   {

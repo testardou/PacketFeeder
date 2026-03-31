@@ -40,9 +40,9 @@ def validate_file_path(filename):
     return file_path, None
 
 
-def validate_scenario_file_path(file_path):
+def validate_mitre_file_path(file_path):
     """
-    Validate a scenario PCAP file path (can be relative to PROJECT_ROOT).
+    Validate a mitre PCAP file path (can be relative to PROJECT_ROOT).
     Used for datasets that may be in pcaps/techniques/ directories.
     
     Args:
@@ -92,7 +92,7 @@ def validate_scenario_file_path(file_path):
 def validate_file_path_auto(file_input):
     """
     Automatically detect and validate file path.
-    If file contains '/' or starts with 'pcaps/', treat as scenario path.
+    If file contains '/' or starts with 'pcaps/', treat as mitre path.
     Otherwise, treat as simple filename in UPLOAD_FOLDER.
     
     Args:
@@ -107,8 +107,7 @@ def validate_file_path_auto(file_input):
     
     # Check if file is a dataset path (contains '/' or starts with 'pcaps/')
     if "/" in file_input or file_input.startswith("pcaps/"):
-        # This is a dataset path, use scenario validation
-        return validate_scenario_file_path(file_input)
+        return validate_mitre_file_path(file_input)
     else:
         # This is a simple filename in UPLOAD_FOLDER
         return validate_file_path(file_input)

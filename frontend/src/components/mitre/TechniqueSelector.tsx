@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TechniqueCard } from "./TechniqueCard";
-import type { Tactic, Technique, PcapDataResponse } from "@/types/scenarios";
+import type { Tactic, Technique, PcapDataResponse } from "@/types/mitre";
 
 interface TechniqueSelectorProps {
   selectedTechnique: string | null;
@@ -53,8 +53,7 @@ export function TechniqueSelector({
         <SelectContent>
           {tacticData.techniques.map((techId) => {
             const technique = techniquesData?.[techId];
-            const techniqueName =
-              technique?.mitre?.technique_name || techId;
+            const techniqueName = technique?.mitre?.technique_name || techId;
             return (
               <SelectItem key={techId} value={techId}>
                 {techId} - {techniqueName}
@@ -77,4 +76,3 @@ export function TechniqueSelector({
     </div>
   );
 }
-

@@ -1,17 +1,17 @@
 """
-Routes for managing MITRE ATT&CK scenarios.
+Routes for managing MITRE ATT&CK pcaps.
 """
 import os
 import json
 import re
 from flask import current_app, jsonify
 from flask_smorest import Blueprint
-from backend.config import SCENARIOS_ROOT, PCAPS_ROOT, ALLOWED_EXTENSIONS
+from backend.config import MITRE_ROOT, PCAPS_ROOT, ALLOWED_EXTENSIONS
 
-get_scenarios_bp = Blueprint("get_scenarios", __name__, url_prefix="/api")
+get_mitre_bp = Blueprint("get_mitre", __name__, url_prefix="/api")
 
 
-@get_scenarios_bp.route("/get-tactics/", methods=["GET"])
+@get_mitre_bp.route("/get-tactics/", methods=["GET"])
 def get_tactics():
     """
     Get list of available tactics.
@@ -22,7 +22,7 @@ def get_tactics():
     current_app.logger.info("Get tactics request received")
     
     try:
-        tactics_dir = os.path.join(SCENARIOS_ROOT, "tactics")
+        tactics_dir = os.path.join(MITRE_ROOT, "tactics")
         if not os.path.isdir(tactics_dir):
             return jsonify({"files": []})
         
@@ -37,7 +37,7 @@ def get_tactics():
         return jsonify({"error": "Error listing tactics"}), 500
 
 
-@get_scenarios_bp.route("/get-tactic/<tactic_file>", methods=["GET"])
+@get_mitre_bp.route("/get-tactic/<tactic_file>", methods=["GET"])
 def get_tactic(tactic_file):
     """
     Get tactic data by filename.
@@ -56,13 +56,13 @@ def get_tactic(tactic_file):
         if not tactic_file.endswith(".json"):
             return jsonify({"error": "Invalid file format"}), 400
         
-        tactic_path = os.path.join(SCENARIOS_ROOT, "tactics", tactic_file)
+        tactic_path = os.path.join(MITRE_ROOT, "tactics", tactic_file)
         
         if not os.path.isfile(tactic_path):
             return jsonify({"error": "Tactic not found"}), 404
         
         # Ensure file is within tactics directory (prevent path traversal)
-        tactics_dir = os.path.realpath(os.path.join(SCENARIOS_ROOT, "tactics"))
+        tactics_dir = os.path.realpath(os.path.join(MITRE_ROOT, "tactics"))
         if not os.path.realpath(tactic_path).startswith(tactics_dir + os.sep):
             return jsonify({"error": "Invalid file path"}), 400
         
@@ -78,7 +78,7 @@ def get_tactic(tactic_file):
         return jsonify({"error": "Error reading tactic"}), 500
 
 
-@get_scenarios_bp.route("/get-technique/<technique_id>", methods=["GET"])
+@get_mitre_bp.route("/get-technique/<technique_id>", methods=["GET"])
 def get_technique(technique_id):
     """
     Get technique data by ID.
@@ -98,7 +98,7 @@ def get_technique(technique_id):
         if not re.match(r'^T\d+(\.\d+)?$', technique_id):
             return jsonify({"error": "Invalid technique ID format"}), 400
         
-        techniques_dir = os.path.join(SCENARIOS_ROOT, "techniques")
+        techniques_dir = os.path.join(MITRE_ROOT, "techniques")
         if not os.path.isdir(techniques_dir):
             return jsonify({"error": "Techniques directory not found"}), 404
         
@@ -132,7 +132,7 @@ def get_technique(technique_id):
         return jsonify({"error": "Error reading technique"}), 500
 
 
-@get_scenarios_bp.route("/get-technique-pcaps/<technique_id>", methods=["GET"])
+@get_mitre_bp.route("/get-technique-pcaps/<technique_id>", methods=["GET"])
 def get_technique_pcaps(technique_id):
     """
     Get PCAP datasets for a specific technique.
@@ -148,7 +148,7 @@ def get_technique_pcaps(technique_id):
     try:
         # Get technique data first
         technique_id = technique_id.upper().strip()
-        techniques_dir = os.path.join(SCENARIOS_ROOT, "techniques")
+        techniques_dir = os.path.join(MITRE_ROOT, "techniques")
         
         technique_files = [
             f for f in os.listdir(techniques_dir)
