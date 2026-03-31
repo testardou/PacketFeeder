@@ -1,13 +1,17 @@
 import cmd2
 
+from backend.routes.get_interfaces import get_interfaces
 from cli.modules.infos import InfosModule
+from cli.modules.replay import ReplayModule
 from cli.modules.rewrite import RewriteModule
+from core.utils.get_ifaces import get_ifaces
 
 
 BANNER = """                                                                                                                                                                                                     
   ╔═══════════════════════════════════╗
   ║           PacketFeeder            ║                                                                                                                                                                            
   ╚═══════════════════════════════════╝
+  
   Type 'help' for available commands.
   """
 
@@ -18,7 +22,7 @@ class PacketFeederConsole(cmd2.Cmd):
     def __init__(self):
         super().__init__()
         self.modules = {
-            # "replay": ReplayModule,
+            "replay": ReplayModule,
             "rewrite": RewriteModule,
             "infos": InfosModule,
             # "scenarios": ScenariosModule,
@@ -62,6 +66,11 @@ class PacketFeederConsole(cmd2.Cmd):
         if len(setter) < 2:
             print('Usage: <key> <value>')
         self.active_module.set_option(setter[0], setter[1])
+    def do_ifaces(self):
+        ifaces = get_ifaces()
+        for iface, i in ifaces:
+            print(f'{iface}{" *" if i == 0 else ""}')
+        print('* = default')
 
     def complete_set(self, text, line, begidx, endidx):                                                   
         parts = line.split(" ")                                                                           

@@ -4,6 +4,8 @@ import os
 from rich.console import Console
 from rich.table import Table
 
+from backend.routes.get_interfaces import get_interfaces
+
 
 class Option:
     def __init__(self, name, description, required=False, default=None):

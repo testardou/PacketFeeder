@@ -1,7 +1,7 @@
 from flask import current_app, jsonify
-from scapy.all import get_if_list, conf
 from flask_smorest import Blueprint
 from backend.schemas.get_interfaces import GetInterfacesSchema
+from core.utils.get_ifaces import get_ifaces
 
 get_interfaces_bp = Blueprint("get_interfaces", __name__, url_prefix="/api")
 
@@ -20,9 +20,7 @@ def get_interfaces():
     current_app.logger.info("Get interfaces request received")
     
     try:
-        default_iface = conf.iface.name
-        all_ifaces = get_if_list()
-        interfaces = [default_iface] + [iface for iface in all_ifaces if iface != default_iface]
+        interfaces = get_ifaces()
         current_app.logger.info("Found %d network interfaces", len(interfaces))
         return jsonify({"interfaces": interfaces})
     except Exception as e:
