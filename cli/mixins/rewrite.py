@@ -10,10 +10,10 @@ class RewriteMixin:
         self.rewrites = {}
 
     def do_rewrite(self, args):
-        """Manage rewrites: rewrite <type> <old=new> | rewrite show | rewrite clear [type]"""
+        """Manage rewrites: rewrite <type> <old=new> | rewrite show | rewrite clear [type] | rewrite remove <type> <old_value>"""
         parts = args.strip().split()                                                                                                                                                                             
         if not parts:
-            print("Usage: rewrite <type> <old=new> | rewrite show | rewrite clear [type]")                                                                                                                       
+            print("Usage: rewrite <type> <old=new> | rewrite show | rewrite clear [type] | rewrite remove <type> <old_value>")                                                                                                                       
             print(f"Types: {', '.join(REWRITE_TYPES)}")                                                                                                                                                          
             return
         cmd = parts[0]                                                                                                                                                                                           

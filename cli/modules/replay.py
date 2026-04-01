@@ -1,5 +1,6 @@
 import os
 
+from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import RewriteMixin
 from cli.modules.base import BaseModule
 
@@ -10,7 +11,7 @@ from core.utils.read_pcap import read_pcap
 from core.utils.replay_with_speed import replay_with_speed
 
 
-class ReplayModule(RewriteMixin, BaseModule):
+class ReplayModule(RewriteMixin, InfosMixin, BaseModule):
     name = 'replay'
     description = 'Replay a PCAP file'
 

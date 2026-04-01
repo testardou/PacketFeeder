@@ -143,11 +143,12 @@ class PacketFeederConsole(cmd2.Cmd):
         if len(setter) < 2:
             print('Usage: <key> <value>')
         self.active_module.set_option(setter[0], setter[1])
-    def do_ifaces(self):
-        ifaces = get_ifaces()
-        for iface, i in ifaces:
-            print(f'{iface}{" *" if i == 0 else ""}')
-        print('* = default')
+
+    def do_ifaces(self, _args):
+      ifaces = get_ifaces()                                                                             
+      for i, iface in enumerate(ifaces):
+          print(f'{iface}{"*" if i == 0 else ""}')                                                     
+      print('*=default')
 
     def complete_set(self, text, line, begidx, endidx):                                                   
         parts = line.split(" ")                                                                           
