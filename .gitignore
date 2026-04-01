@@ -73,3 +73,5 @@ local_settings.py
 *.pem
 *.key
 node_modules/
+
+.packetfeeder_history

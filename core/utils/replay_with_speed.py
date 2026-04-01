@@ -17,14 +17,14 @@ def replay_with_speed(packets, iface, speed=0):
             s = int(ts % 60)
             ms = int((ts % 1) * 1000)
             print(f"[Replay] Total replay time: {d}d {h:02d}h {m:02d}m {s:02d}s {ms:03d}ms")
-            packets_sent = 0
+        packets_sent = 0
         for i, pkt in enumerate(tqdm(packets, desc="Replaying PCAP")):
             try:
                 timestamp = float(pkt.time)
                 if speed == 0 and timestamp > prev_timestamp:
                     time.sleep(timestamp - prev_timestamp)
-                    packets_sent += 1
                     prev_timestamp = timestamp
+                packets_sent += 1
                 send_pcap(pkt, iface=iface)
             except (OSError, ValueError) as e:
                 print(f"\n[Replay] Error sending packet {i} on interface {iface}: {e}")

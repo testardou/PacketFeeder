@@ -6,6 +6,9 @@ from rich.console import Console
 from core.utils.list_pcaps_for_technique import list_pcaps_for_technique
 from core.utils.list_tactics import list_tactics
 from core.utils.list_techniques_for_tactic import list_techniques_for_tactic
+from core.utils.print_pcaps_from_technique_table import print_pcaps_from_technique_table
+from core.utils.print_tactics_table import print_tactics_table
+from core.utils.print_techniques_from_tactic_table import print_techniques_from_tactic_table
 
 
 
@@ -50,63 +53,6 @@ def add_parser(subparsers):
     list_pcaps_parser.set_defaults(func=run_list_technique_pcaps)
 
 
-def _print_tactics_table(tactics):
-    console = Console()
-    table = Table(title="MITRE Tactics")
-
-    table.add_column("ID", style="cyan", no_wrap=True)
-    table.add_column("Name", style="magenta")
-    table.add_column("Description", style="green")
-    table.add_column("Path", style="yellow")
-
-    for t in tactics:
-        table.add_row(
-            t.get("id", "") or "",
-            t.get("name", "") or "",
-            t.get("description", "") or "",
-            t.get("path", "") or "",
-        )
-
-    console.print(table)
-
-def _print_techniques_table(techniques, tactic_id):
-    console = Console()
-    title = f"Techniques for tactic {tactic_id}"
-    table = Table(title=title)
-
-    table.add_column("Name", style="magenta")
-    table.add_column("Description", style="green")
-    table.add_column("Path", style="yellow")
-
-    for tech in techniques:
-        table.add_row(
-            tech.get("id", "") or "",
-            tech.get("name", "") or "",
-            tech.get("description", "") or "",
-            tech.get("path", "") or "",
-        )
-
-    console.print(table)
-
-def _print_pcaps_table(pcaps, technique_id):
-    console = Console()
-    title = f"Pcaps for technique {technique_id}"
-    table = Table(title=title)
-
-    table.add_column("Name", style="magenta")
-    table.add_column("Description", style="green")
-    table.add_column("Path", style="yellow")
-
-    for pcap in pcaps:
-        table.add_row(
-            pcap.get("name", "") or "",
-            pcap.get("description", "") or "",
-            pcap.get("path", "") or "",
-        )
-
-    console.print(table)
-
-
 def run_list_tactics(args):
     """Run list-tactics command."""
     tactics = list_tactics()
@@ -115,7 +61,7 @@ def run_list_tactics(args):
         print("[Mitre] No tactic found in 'mitre/tactics' directory.")
         return
 
-    _print_tactics_table(tactics)
+    print_tactics_table(tactics)
 
 
 def run_list_techniques(args):
@@ -130,7 +76,7 @@ def run_list_techniques(args):
         print(f"[Mitre] No technique found for tactic '{args.tactic}'.")
         return
 
-    _print_techniques_table(techniques, args.tactic)
+    print_techniques_from_tactic_table(techniques, args.tactic)
 
 
 def run_list_technique_pcaps(args):
@@ -145,7 +91,7 @@ def run_list_technique_pcaps(args):
         print(f"[Mitre] No pcap found for technique '{args.technique}'.")
         return
 
-    _print_pcaps_table(pcaps, args.technique)
+    print_pcaps_from_technique_table(pcaps, args.technique)
 
 def run(args):
     """Main run function that dispatches to the appropriate handler."""

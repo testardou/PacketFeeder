@@ -25,13 +25,12 @@ def list_pcaps_for_technique(technique_id):
         return None
 
     pcaps = []
-    pcaps = technique_file_data.get("datasets", {}).get("pcaps", [])
-    for pcap in pcaps:
-        pcap = {
+    raw_pcaps = technique_file_data.get("datasets", {}).get("pcaps", [])
+    for pcap in raw_pcaps:
+        pcaps.append({
             "name": pcap.get("name", ""),
             "description": pcap.get("description", ""),
             "path": pcap.get("file", ""),
-        }
-        pcaps.append(pcap)
+        })
 
     return pcaps

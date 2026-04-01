@@ -1,3 +1,6 @@
+import os
+import readline
+
 import cmd2
 
 from backend.routes.get_interfaces import get_interfaces
@@ -6,6 +9,7 @@ from cli.modules.mitre import MitreModule
 from cli.modules.replay import ReplayModule
 from cli.modules.rewrite import RewriteModule
 from core.utils.get_ifaces import get_ifaces
+from core.utils.get_project_root import get_project_root
 
 
 BANNER = """                                                                                                                                                                                                     
@@ -65,7 +69,8 @@ class PacketFeederConsole(cmd2.Cmd):
     intro = BANNER
 
     def __init__(self):
-        super().__init__()
+        root_dir = get_project_root()
+        super().__init__(allow_cli_args=False, persistent_history_file=os.path.expanduser(f"{root_dir}/.packetfeeder_history"))
         self.modules = {
             "replay": ReplayModule,
             "rewrite": RewriteModule,
@@ -77,6 +82,24 @@ class PacketFeederConsole(cmd2.Cmd):
         for cmd in ['alias', 'edit', 'macro', 'run_pyscript', 'run_script', 'shell', 'shortcuts']:            
             self.disable_command(cmd, "Not available")  
         self.allow_appended_space = False                                                                      
+
+    def default(self, statement):
+        if self.active_module and hasattr(self.active_module, f"do_{statement.command}"):
+            self.history.append(statement)
+            getattr(self.active_module, f"do_{statement.command}")(statement.args)
+        else:
+            print(f"Unknown command: {statement.command}")
+    
+    def do_help(self, args):
+      if not args and self.active_module:
+        super().do_help(args)
+        cmds = [(m[3:], getattr(self.active_module, m).__doc__ or "") for m in dir(self.active_module) if m.startswith("do_")]                                                       
+        if cmds:                                                                                    
+            print(f"\nModule commands:")                                                            
+            for name, desc in cmds:
+                print(f"  {name:20s} {desc}")
+      else:
+          super().do_help(args)
 
 
     def _complete_option(self, text):
@@ -97,6 +120,14 @@ class PacketFeederConsole(cmd2.Cmd):
 
     def complete_use(self, text, line, begidx, endidx):
         return [m for m in self.modules if m.startswith(text)]
+    
+    def completedefault(self, text, line, begidx, endidx):                                                
+      if self.active_module:                                                                            
+          cmd = line.split()[0]
+          complete_method = f"complete_{cmd}"                                                           
+          if hasattr(self.active_module, complete_method):                                              
+              return getattr(self.active_module, complete_method)(text, line, begidx, endidx)
+      return []
 
     def do_back(self, _args):
         """Return to main prompt"""
