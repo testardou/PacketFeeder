@@ -8,6 +8,7 @@ from cli.modules.infos import InfosModule
 from cli.modules.mitre import MitreModule
 from cli.modules.replay import ReplayModule
 from cli.modules.rewrite import RewriteModule
+from cli.modules.scenario import ScenarioModule
 from core.utils.get_ifaces import get_ifaces
 from core.utils.get_project_root import get_project_root
 
@@ -76,7 +77,7 @@ class PacketFeederConsole(cmd2.Cmd):
             "rewrite": RewriteModule,
             "infos": InfosModule,
             "mitre": MitreModule,
-            # "chain": ChainModule,
+            "scenario": ScenarioModule,
         }
         self.active_module = None
         for cmd in ['alias', 'edit', 'macro', 'run_pyscript', 'run_script', 'shell', 'shortcuts']:            
