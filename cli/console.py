@@ -4,7 +4,6 @@ import readline
 import cmd2
 
 from backend.routes.get_interfaces import get_interfaces
-from cli.modules.infos import InfosModule
 from cli.modules.mitre import MitreModule
 from cli.modules.replay import ReplayModule
 from cli.modules.rewrite import RewriteModule
@@ -75,7 +74,6 @@ class PacketFeederConsole(cmd2.Cmd):
         self.modules = {
             "replay": ReplayModule,
             "rewrite": RewriteModule,
-            "infos": InfosModule,
             "mitre": MitreModule,
             "scenario": ScenarioModule,
         }

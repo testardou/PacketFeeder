@@ -107,6 +107,43 @@ class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
         self.per_pcap_rewrites = new_rewrites
         print(f"[Scenario] Removed: {removed['type']} at index {index}")
 
+    def do_move(self, args):
+        """Move an item: move <from_index> <to_index>"""
+        parts = args.strip().split()                                                                      
+        if len(parts) != 2:                                                                               
+            print("Usage: move <from_index> <to_index>")                                                  
+            return                                                                                        
+        if not parts[0].isdigit() or not parts[1].isdigit():
+            print("Usage: move <from_index> <to_index>")                                                  
+            return
+        src = int(parts[0])                                                                               
+        dst = int(parts[1])
+        if src < 0 or src >= len(self.scenario) or dst < 0 or dst >= len(self.scenario):                  
+            print(f"Invalid index. Range: 0-{len(self.scenario) - 1}")
+            return                                                                                        
+        item = self.scenario.pop(src)
+        self.scenario.insert(dst, item)                                                                   
+        # Reindex per_pcap_rewrites
+        src_rw = self.per_pcap_rewrites.pop(str(src), None)                                               
+        new_rewrites = {}
+        for key, value in self.per_pcap_rewrites.items():                                                 
+            k = int(key)
+            if src < dst:                                                                                 
+                if src < k <= dst:                                                                        
+                    new_rewrites[str(k - 1)] = value
+                else:                                                                                     
+                    new_rewrites[key] = value
+            else:                                                                                         
+                if dst <= k < src:
+                    new_rewrites[str(k + 1)] = value                                                      
+                else:
+                    new_rewrites[key] = value
+        if src_rw:                                                                                        
+            new_rewrites[str(dst)] = src_rw
+        self.per_pcap_rewrites = new_rewrites                                                             
+        print(f"[Scenario] Moved index {src} -> {dst}")
+
+
     def do_rewrite(self, args):
         """Rewrites: rewrite <type> <old=new> (global) | rewrite <index> <type> <old=new> (per-pcap) | rewrite show | rewrite clear"""
         parts = args.strip().split()

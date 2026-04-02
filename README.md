@@ -244,7 +244,6 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 - [x] PCAP-based technique definitions
 - [x] Frontend MITRE mode
-- [ ] CLI MITRE mode
 - [ ] MITRE ATT&CK–aligned attack techniques
   - [ ] Reconnaissance (TA0043)
     - [x] T1595 — Active Scanning (parent: external IP block scanning)
