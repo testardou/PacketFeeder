@@ -5,6 +5,7 @@ from cli.mixins.rewrite import RewriteMixin
 from cli.modules.base import BaseModule
 
 from core.replay.rewrite_packets import rewrite_packets
+from core.rewrite.rewrite_params import build_rewrite_kwargs
 from core.utils.filter_packets import filter_packets
 from core.utils.get_ifaces import get_ifaces
 from core.utils.list_pcaps_for_technique import list_pcaps_for_technique
@@ -85,13 +86,7 @@ class MitreModule(RewriteMixin, InfosMixin, BaseModule):
         if self.rewrites:                                                                                                                                                                                            
           packets = rewrite_packets(                                                                                                                                                                               
               packets,
-              ip_map=self.rewrites.get("ip"),                                                                                                                                                                      
-              mac_map=self.rewrites.get("mac"),
-              ipv6_map=self.rewrites.get("ipv6"),                                                                                                                                                                  
-              arp_ip_map=self.rewrites.get("arp-ip"),                                                                                                                                                              
-              dns_domain_map=self.rewrites.get("dns"),
-              tcp_port_map=self.rewrites.get("tcp"),                                                                                                                                                                    
-              udp_port_map=self.rewrites.get("udp"),
+              **build_rewrite_kwargs(self.rewrites)
           )
         replay_with_speed(packets=packets, iface=iface, speed=int(speed))
                                                                           

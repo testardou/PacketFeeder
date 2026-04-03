@@ -4,21 +4,11 @@ import os
 from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import REWRITE_TYPES, RewriteMixin
 from cli.modules.base import BaseModule
+from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM
 from core.utils.get_ifaces import get_ifaces
 from core.utils.merge_pcaps import merge_pcaps
 from core.utils.parse_mapping import parse_mapping
 from core.utils.replay_with_speed import replay_with_speed
-
-REWRITE_KEY_TO_PARAM = {
-    "ip": "ip_map",
-    "mac": "mac_map",
-    "ipv6": "ipv6_map",
-    "arp-ip": "arp_ip_map",
-    "dns": "dns_domain_map",
-    "tcp": "tcp_port_map",
-    "udp": "udp_port_map",
-}
-
 
 class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
     name = "scenario"

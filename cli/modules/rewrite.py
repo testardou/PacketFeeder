@@ -6,6 +6,7 @@ from cli.modules.base import BaseModule
 import os
 
 from core.replay.rewrite_packets import rewrite_packets
+from core.rewrite.rewrite_params import build_rewrite_kwargs
 from core.utils.read_pcap import read_pcap
 
 class RewriteModule(RewriteMixin, InfosMixin, BaseModule):
@@ -37,13 +38,7 @@ class RewriteModule(RewriteMixin, InfosMixin, BaseModule):
         if self.rewrites:                                                                                                                                                                                            
           packets = rewrite_packets(                                                                                                                                                                               
               packets,
-              ip_map=self.rewrites.get("ip"),                                                                                                                                                                      
-              mac_map=self.rewrites.get("mac"),
-              ipv6_map=self.rewrites.get("ipv6"),                                                                                                                                                                  
-              arp_ip_map=self.rewrites.get("arp-ip"),                                                                                                                                                              
-              dns_domain_map=self.rewrites.get("dns"),
-              tcp_port_map=self.rewrites.get("tcp"),                                                                                                                                                                    
-              udp_port_map=self.rewrites.get("udp"),
+              **build_rewrite_kwargs(self.rewrites)
           )
         writer = PcapWriter(
             output_path,
