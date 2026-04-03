@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useChainBuilderQueries } from "@/hooks/useChainBuilderQueries";
-import { useChainItems } from "@/hooks/useChainItems";
-import { useChainInfos } from "@/hooks/useChainInfos";
-import { useChainRewrites } from "@/hooks/useChainRewrites";
-import { ChainRewritePanel } from "@/components/chainbuilder/ChainRewritePanel";
+import { useScenarioBuilderQueries } from "@/hooks/useScenarioBuilderQueries";
+import { useScenarioItems } from "@/hooks/useScenarioItems";
+import { useScenarioInfos } from "@/hooks/useScenarioInfos";
+import { useScenarioRewrites } from "@/hooks/useScenarioRewrites";
+import { ChainRewritePanel } from "@/components/scenariobuilder/ScenarioRewritePanel";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { RunChainReplay } from "@/components/runReplay/RunChainReplay";
 import { API_CONFIG } from "@/config/api";
 import type { InterfacesType, ReplayModeType } from "@/types/types";
-import { ChainBuildPhase } from "@/components/chainBuildPhase/ChainBuildPhase";
+import { ChainBuildPhase } from "@/components/scenarioBuildPhase/ScenarioBuildPhase";
 
-export default function ChainBuilder() {
-  const queries = useChainBuilderQueries();
+export default function ScenarioBuilder() {
+  const queries = useScenarioBuilderQueries();
 
-  const chain = useChainItems();
+  const chain = useScenarioItems();
 
   // --- Chain infos ---
-  const chainInfosMutation = useChainInfos();
+  const chainInfosMutation = useScenarioInfos();
 
   // --- Rewrites ---
   const {
@@ -28,7 +28,7 @@ export default function ChainBuilder() {
     globalRewriteValues,
     getPerPcapRewriteValues,
     resetAll: resetRewrites,
-  } = useChainRewrites();
+  } = useScenarioRewrites();
 
   // --- Replay state ---
   const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
@@ -70,7 +70,7 @@ export default function ChainBuilder() {
           getPerPcapRewriteValues={getPerPcapRewriteValues}
         />
       )}
-      {chain.chainItems.some((item) => item.type === "pcap") && (
+      {chain.scenarioItems.some((item) => item.type === "pcap") && (
         <div className="flex flex-col gap-5">
           <h2 className="text-2xl font-bold">Replay</h2>
 
@@ -94,7 +94,7 @@ export default function ChainBuilder() {
           />
 
           <RunChainReplay
-            chainItems={chain.chainItems}
+            chainItems={chain.scenarioItems}
             globalRewrites={globalRewrites}
             perPcapRewrites={perPcapRewrites}
             selectedMode={selectedMode}

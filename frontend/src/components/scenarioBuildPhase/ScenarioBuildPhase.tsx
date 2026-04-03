@@ -1,8 +1,8 @@
-import { TechniqueChainList } from "@/components/chainbuilder/TechniqueChainList";
+import { TechniqueScenarioList } from "@/components/scenariobuilder/TechniqueScenarioList";
 import type {
-  ChainInfosResponse,
-  ChainItem,
-} from "@/components/chainbuilder/types";
+  ScenarioInfosResponse,
+  ScenarioItem,
+} from "@/components/scenariobuilder/types";
 import { TacticSelector } from "@/components/mitre/TacticSelector";
 import { TechniqueSelector } from "@/components/mitre/TechniqueSelector";
 import { Button } from "@/components/ui/button";
@@ -13,15 +13,19 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { useChainBuilderQueries } from "@/hooks/useChainBuilderQueries";
-import { useChainItems } from "@/hooks/useChainItems";
+import { useScenarioBuilderQueries } from "@/hooks/useScenarioBuilderQueries";
+import { useScenarioItems } from "@/hooks/useScenarioItems";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Plus, Loader2, Search, AlertCircle } from "lucide-react";
 
 interface IChainBuildPhaseProps {
-  queries: ReturnType<typeof useChainBuilderQueries>;
-  chain: ReturnType<typeof useChainItems>;
-  chainInfosMutation: UseMutationResult<ChainInfosResponse, Error, ChainItem[]>;
+  queries: ReturnType<typeof useScenarioBuilderQueries>;
+  chain: ReturnType<typeof useScenarioItems>;
+  chainInfosMutation: UseMutationResult<
+    ScenarioInfosResponse,
+    Error,
+    ScenarioItem[]
+  >;
   resetRewrites: () => void;
 }
 
@@ -38,7 +42,7 @@ export const ChainBuildPhase = ({
     reorderItems,
     addSleep,
     updateSleepDuration,
-    chainItems,
+    scenarioItems,
   } = chain;
 
   const {
@@ -68,7 +72,7 @@ export const ChainBuildPhase = ({
 
   const handleFetchInfos = () => {
     resetRewrites();
-    chainInfosMutation.mutate(chainItems, {});
+    chainInfosMutation.mutate(scenarioItems, {});
   };
 
   return (
@@ -131,8 +135,8 @@ export const ChainBuildPhase = ({
             <CardContent
               className={`flex-1 min-h-0 flex flex-col ${selectedTactic ? "overflow-auto" : "overflow-hidden"}`}
             >
-              <TechniqueChainList
-                items={chainItems}
+              <TechniqueScenarioList
+                items={scenarioItems}
                 onRemove={removeItem}
                 onReorder={reorderItems}
                 onDropFromOutside={addPcapFromDrop}
@@ -149,7 +153,7 @@ export const ChainBuildPhase = ({
         <Button
           className="w-full"
           size="lg"
-          disabled={chainItems.length === 0 || chainInfosMutation.isPending}
+          disabled={scenarioItems.length === 0 || chainInfosMutation.isPending}
           onClick={handleFetchInfos}
         >
           {chainInfosMutation.isPending ? (

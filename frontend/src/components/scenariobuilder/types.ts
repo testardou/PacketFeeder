@@ -1,7 +1,7 @@
 import type { Technique } from "@/types/mitre";
 import type { NewValuesPcapType, PcapInfoType } from "@/types/types";
 
-export interface ChainPcapItem {
+export interface ScenarioPcapItem {
   type: "pcap";
   id: string;
   techniqueId: string;
@@ -10,13 +10,13 @@ export interface ChainPcapItem {
   pcapFile: string;
 }
 
-export interface ChainSleepItem {
+export interface ScenarioSleepItem {
   type: "sleep";
   id: string;
   duration: number;
 }
 
-export type ChainItem = ChainPcapItem | ChainSleepItem;
+export type ScenarioItem = ScenarioPcapItem | ScenarioSleepItem;
 
 export interface RewriteMapsCollection {
   rewriteIps: NewValuesPcapType[];
@@ -34,7 +34,7 @@ export interface PerPcapInfoEntry {
   infos: PcapInfoType;
 }
 
-export interface ChainInfosResponse {
+export interface ScenarioInfosResponse {
   per_pcap: PerPcapInfoEntry[];
   all: PcapInfoType;
 }

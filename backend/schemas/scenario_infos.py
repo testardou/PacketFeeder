@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 from backend.schemas.infos_pcap import PcapInfoSchema
 
 
-class ChainItemSchema(Schema):
+class ScenarioItemSchema(Schema):
     type = fields.String(required=True)
     pcap_file = fields.String()
     technique_id = fields.String()
@@ -10,8 +10,8 @@ class ChainItemSchema(Schema):
     duration = fields.Float()
 
 
-class ChainInfosRequestSchema(Schema):
-    items = fields.List(fields.Nested(ChainItemSchema), required=True)
+class ScenarioInfosRequestSchema(Schema):
+    items = fields.List(fields.Nested(ScenarioItemSchema), required=True)
 
 
 class PerPcapInfoEntrySchema(Schema):
@@ -20,6 +20,6 @@ class PerPcapInfoEntrySchema(Schema):
     infos = fields.Nested(PcapInfoSchema, required=True)
 
 
-class ChainInfosResponseSchema(Schema):
+class ScenarioInfosResponseSchema(Schema):
     per_pcap = fields.List(fields.Nested(PerPcapInfoEntrySchema), required=True)
     all = fields.Nested(PcapInfoSchema, required=True)

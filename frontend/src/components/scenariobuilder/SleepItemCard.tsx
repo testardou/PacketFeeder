@@ -1,10 +1,10 @@
 import { GripVertical, X, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ChainSleepItem } from "./types";
+import type { ScenarioSleepItem } from "./types";
 
 interface SleepItemCardProps {
-  item: ChainSleepItem;
+  item: ScenarioSleepItem;
   index: number;
   onRemove: (id: string) => void;
   onUpdateDuration: (id: string, duration: number) => void;
@@ -61,4 +61,3 @@ export function SleepItemCard({
     </div>
   );
 }
-

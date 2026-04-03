@@ -1,9 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-// import Layout from "@/layouts/Layout";
 import Replay from "@/pages/Replay";
 import Live from "@/pages/Live";
-import ChainBuilder from "@/pages/ChainBuilder";
+import ScenarioBuilder from "@/pages/ScenarioBuilder";
 import Layout from "../layouts/Layout";
 import { Files } from "@/pages/Files";
 import Mitre from "@/pages/Mitre";
@@ -30,8 +29,8 @@ export const router = createBrowserRouter([
         element: <Mitre />,
       },
       {
-        path: "chain-builder",
-        element: <ChainBuilder />,
+        path: "scenario",
+        element: <ScenarioBuilder />,
       },
       {
         path: "live",

@@ -1,5 +1,5 @@
 """
-Route for replaying a chain of PCAPs with per-pcap and global rewrites.
+Route for replaying a scenario of PCAPs with per-pcap and global rewrites.
 Merges, rewrites, and replays in memory — no file written.
 """
 from flask import request, jsonify, current_app
@@ -12,13 +12,13 @@ from backend.sockets.realtime import should_run, running_status
 from backend.extension import socketio
 from core.replay.rewrite_packets import rewrite_packets
 
-replay_chain_bp = Blueprint("replay_chain", __name__, url_prefix="/api")
+replay_scenario_bp = Blueprint("replay_scenario", __name__, url_prefix="/api")
 
 
-@replay_chain_bp.route("/replay-chain/", methods=["POST"])
-def replay_chain():
+@replay_scenario_bp.route("/replay-scenario/", methods=["POST"])
+def replay_scenario():
     """
-    Replay a chain of PCAPs with per-pcap and global rewrites.
+    Replay a scenario of PCAPs with per-pcap and global rewrites.
 
     Expects JSON body:
     {
@@ -32,7 +32,7 @@ def replay_chain():
         "range": null
     }
     """
-    current_app.logger.info("Replay chain request received")
+    current_app.logger.info("Replay scenario request received")
 
     data = request.get_json(silent=True)
     if not data:
@@ -169,16 +169,16 @@ def replay_chain():
     try:
         socketio.start_background_task(do_replay)
         current_app.logger.info(
-            "Chain replay started: %d packets on %s (mode=%s)",
+            "scenario replay started: %d packets on %s (mode=%s)",
             len(merged_packets), iface, replay_mode,
         )
         return jsonify({
-            "message": "Chain replay started",
+            "message": "scenario replay started",
             "packet_count": len(merged_packets),
             "mode": replay_mode,
         }), 200
     except Exception as e:
-        current_app.logger.error("Error starting chain replay: %s", str(e))
+        current_app.logger.error("Error starting scenario replay: %s", str(e))
         running_status[sid] = False
         socketio.emit("run_status", {"sid": sid, "running": False}, room=sid, namespace="/realtime")
-        return jsonify({"error": "Error starting chain replay"}), 500
+        return jsonify({"error": "Error starting scenario replay"}), 500

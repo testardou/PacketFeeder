@@ -4,11 +4,11 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
 import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 import type { RewriteValues } from "@/types/types";
-import type { ChainInfosResponse } from "@/components/chainbuilder/types";
+import type { ScenarioInfosResponse } from "@/components/scenariobuilder/types";
 import { RewriteProvider } from "@/context/RewriteContext";
 
 interface ChainRewritePanelProps {
-  chainInfos: ChainInfosResponse;
+  chainInfos: ScenarioInfosResponse;
   globalRewriteValues: RewriteValues;
   getPerPcapRewriteValues: (index: number) => RewriteValues;
 }

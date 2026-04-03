@@ -1,9 +1,9 @@
 import { GripVertical, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { ChainPcapItem } from "./types";
+import type { ScenarioPcapItem } from "./types";
 
 interface PcapItemCardProps {
-  item: ChainPcapItem;
+  item: ScenarioPcapItem;
   index: number;
   onRemove: (id: string) => void;
 }
@@ -67,4 +67,3 @@ export function PcapItemCard({ item, index, onRemove }: PcapItemCardProps) {
     </div>
   );
 }
-

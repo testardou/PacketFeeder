@@ -1,6 +1,9 @@
 import { useState, useCallback } from "react";
 import type { NewValuesPcapType, RewriteValues } from "@/types/types";
-import type { RewriteMapsCollection, PerPcapRewrites } from "@/components/chainbuilder/types";
+import type {
+  RewriteMapsCollection,
+  PerPcapRewrites,
+} from "@/components/scenariobuilder/types";
 
 const emptyCollection = (): RewriteMapsCollection => ({
   rewriteIps: [],
@@ -12,8 +15,9 @@ const emptyCollection = (): RewriteMapsCollection => ({
   rewriteUdpPorts: [],
 });
 
-export function useChainRewrites() {
-  const [globalRewrites, setGlobalRewrites] = useState<RewriteMapsCollection>(emptyCollection);
+export function useScenarioRewrites() {
+  const [globalRewrites, setGlobalRewrites] =
+    useState<RewriteMapsCollection>(emptyCollection);
   const [perPcapRewrites, setPerPcapRewrites] = useState<PerPcapRewrites>({});
 
   // --- Global rewrite setters (compatible with RewriteValues) ---
@@ -21,7 +25,7 @@ export function useChainRewrites() {
     (field: keyof RewriteMapsCollection) => (values: NewValuesPcapType[]) => {
       setGlobalRewrites((prev) => ({ ...prev, [field]: values }));
     },
-    []
+    [],
   );
 
   const globalRewriteValues: RewriteValues = {
@@ -48,7 +52,8 @@ export function useChainRewrites() {
       const current = perPcapRewrites[key] || emptyCollection();
 
       const setField =
-        (field: keyof RewriteMapsCollection) => (values: NewValuesPcapType[]) => {
+        (field: keyof RewriteMapsCollection) =>
+        (values: NewValuesPcapType[]) => {
           setPerPcapRewrites((prev) => ({
             ...prev,
             [key]: { ...(prev[key] || emptyCollection()), [field]: values },
@@ -72,7 +77,7 @@ export function useChainRewrites() {
         setRewriteUdpPorts: setField("rewriteUdpPorts"),
       };
     },
-    [perPcapRewrites]
+    [perPcapRewrites],
   );
 
   const resetAll = useCallback(() => {

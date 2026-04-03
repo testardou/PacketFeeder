@@ -1,8 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { API_CONFIG } from "@/config/api";
-import type { ChainItem, ChainInfosResponse } from "@/components/chainbuilder/types";
+import type {
+  ScenarioItem,
+  ScenarioInfosResponse,
+} from "@/components/scenariobuilder/types";
 
-function toApiItems(items: ChainItem[]) {
+function toApiItems(items: ScenarioItem[]) {
   return items.map((item) => {
     if (item.type === "pcap") {
       return {
@@ -19,8 +22,10 @@ function toApiItems(items: ChainItem[]) {
   });
 }
 
-async function postChainInfos(items: ChainItem[]): Promise<ChainInfosResponse> {
-  const res = await fetch(`${API_CONFIG.API_BASE}/chain-infos/`, {
+async function postScenarioInfos(
+  items: ScenarioItem[],
+): Promise<ScenarioInfosResponse> {
+  const res = await fetch(`${API_CONFIG.API_BASE}/scenario-infos/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ items: toApiItems(items) }),
@@ -28,13 +33,13 @@ async function postChainInfos(items: ChainItem[]): Promise<ChainInfosResponse> {
 
   const data = await res.json();
   if (!res.ok) {
-    throw new Error(data.error ?? "Failed to fetch chain infos");
+    throw new Error(data.error ?? "Failed to fetch scenario infos");
   }
   return data;
 }
 
-export function useChainInfos() {
-  return useMutation<ChainInfosResponse, Error, ChainItem[]>({
-    mutationFn: postChainInfos,
+export function useScenarioInfos() {
+  return useMutation<ScenarioInfosResponse, Error, ScenarioItem[]>({
+    mutationFn: postScenarioInfos,
   });
 }

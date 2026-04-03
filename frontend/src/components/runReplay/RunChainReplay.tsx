@@ -10,7 +10,7 @@ import type {
   ChainItem,
   RewriteMapsCollection,
   PerPcapRewrites,
-} from "@/components/chainbuilder/types";
+} from "@/components/scenariobuilder/types";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
@@ -174,7 +174,10 @@ export const RunChainReplay = ({
         />
       </div>
       {selectedMode === "step" ? (
-        <ReplayStepProgress mutation={wrappedMutation as never} selectFile="chain" />
+        <ReplayStepProgress
+          mutation={wrappedMutation as never}
+          selectFile="chain"
+        />
       ) : (
         <ReplayProgress
           socketData={socketData}

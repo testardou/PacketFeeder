@@ -2,29 +2,29 @@ import { useState } from "react";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { ChainItem, ChainPcapItem } from "./types";
+import type { ScenarioItem, ScenarioPcapItem } from "./types";
 import { PcapItemCard } from "./PcapItemCard";
 import { SleepItemCard } from "./SleepItemCard";
 
-export type { ChainItem, ChainPcapItem } from "./types";
+export type { ScenarioItem, ScenarioPcapItem } from "./types";
 
-interface TechniqueChainListProps {
-  items: ChainItem[];
+interface TechniqueScenarioListProps {
+  items: ScenarioItem[];
   onRemove: (id: string) => void;
-  onReorder: (reorderedItems: ChainItem[]) => void;
-  onDropFromOutside?: (data: Omit<ChainPcapItem, "id">) => void;
+  onReorder: (reorderedItems: ScenarioItem[]) => void;
+  onDropFromOutside?: (data: Omit<ScenarioPcapItem, "id">) => void;
   onAddSleep: () => void;
   onUpdateSleepDuration: (id: string, duration: number) => void;
 }
 
-export function TechniqueChainList({
+export function TechniqueScenarioList({
   items,
   onRemove,
   onReorder,
   onDropFromOutside,
   onAddSleep,
   onUpdateSleepDuration,
-}: TechniqueChainListProps) {
+}: TechniqueScenarioListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragOverContainer, setIsDragOverContainer] = useState(false);
@@ -42,7 +42,9 @@ export function TechniqueChainList({
     setDragOverIndex(null);
   };
 
-  const parseDropData = (e: React.DragEvent): Omit<ChainPcapItem, "id"> | null => {
+  const parseDropData = (
+    e: React.DragEvent,
+  ): Omit<ScenarioPcapItem, "id"> | null => {
     const raw = e.dataTransfer.getData("application/json");
     if (!raw) return null;
     try {
@@ -170,11 +172,7 @@ export function TechniqueChainList({
             >
               <CardContent className="p-4">
                 {item.type === "pcap" ? (
-                  <PcapItemCard
-                    item={item}
-                    index={index}
-                    onRemove={onRemove}
-                  />
+                  <PcapItemCard item={item} index={index} onRemove={onRemove} />
                 ) : (
                   <SleepItemCard
                     item={item}

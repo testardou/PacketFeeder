@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Tactic, Technique, PcapDataResponse } from "@/types/mitre";
 import { API_CONFIG } from "@/config/api";
 
-export function useChainBuilderQueries() {
+export function useScenarioBuilderQueries() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(
     null,
