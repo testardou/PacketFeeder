@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { API_CONFIG } from "@/config/api";
+import { REWRITE_KEYS } from "@/constants/rewriteKeys";
 
 interface IRunReplayProps {
   selectedInterface: string | null;
@@ -89,22 +90,9 @@ export const RunReplay = ({
       formData.append("file", file ?? "");
       formData.append("iface", selectedInterface ?? "");
       formData.append("sid", clientSid ?? "");
-      formData.append("rewriteIps", JSON.stringify(rewrites.rewriteIps));
-      formData.append("rewriteMacs", JSON.stringify(rewrites.rewriteMacs));
-      formData.append("rewriteIpv6s", JSON.stringify(rewrites.rewriteIpv6s));
-      formData.append("rewriteArpIps", JSON.stringify(rewrites.rewriteArpIps));
-      formData.append(
-        "rewriteDnsDomains",
-        JSON.stringify(rewrites.rewriteDnsDomains),
-      );
-      formData.append(
-        "rewriteTcpPorts",
-        JSON.stringify(rewrites.rewriteTcpPorts),
-      );
-      formData.append(
-        "rewriteUdpPorts",
-        JSON.stringify(rewrites.rewriteUdpPorts),
-      );
+      for (const key of REWRITE_KEYS) {
+        formData.append(key, JSON.stringify(rewrites.rewrites[key]));
+      }
 
       // For step mode, use stepIndex; otherwise use filterIndex or filterRange
       if (selectedMode === "step") {

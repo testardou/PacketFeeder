@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
-import { rewriteReducer, initialRewriteState } from "@/hooks/useRewriteReducer";
-import type { RewriteState } from "@/hooks/useRewriteReducer";
-import type { RewriteValues } from "@/types/types";
+import { rewriteReducer } from "@/hooks/useRewriteReducer";
+import type { RewriteState, RewriteValues } from "@/types/types";
+import { initialRewriteState } from "@/constants/rewriteKeys";
 
 type RewriteContextType = {
   rewriteState: RewriteState;
@@ -26,27 +26,11 @@ export function RewriteProvider({
   );
 
   const rewriteValues: RewriteValues = {
-    rewriteIps: rewriteState.rewriteIps,
-    setRewriteIps: (ips) => dispatch({ type: "SET_REWRITE_IPS", payload: ips }),
-    rewriteMacs: rewriteState.rewriteMacs,
-    setRewriteMacs: (macs) =>
-      dispatch({ type: "SET_REWRITE_MACS", payload: macs }),
-    rewriteIpv6s: rewriteState.rewriteIpv6s,
-    setRewriteIpv6s: (ipv6s) =>
-      dispatch({ type: "SET_REWRITE_IPV6S", payload: ipv6s }),
-    rewriteArpIps: rewriteState.rewriteArpIps,
-    setRewriteArpIps: (arpIps) =>
-      dispatch({ type: "SET_REWRITE_ARP_IPS", payload: arpIps }),
-    rewriteDnsDomains: rewriteState.rewriteDnsDomains,
-    setRewriteDnsDomains: (dnsDomains) =>
-      dispatch({ type: "SET_REWRITE_DNS_DOMAINS", payload: dnsDomains }),
-    rewriteTcpPorts: rewriteState.rewriteTcpPorts,
-    setRewriteTcpPorts: (tcpPorts) =>
-      dispatch({ type: "SET_REWRITE_TCP_PORTS", payload: tcpPorts }),
-    rewriteUdpPorts: rewriteState.rewriteUdpPorts,
-    setRewriteUdpPorts: (udpPorts) =>
-      dispatch({ type: "SET_REWRITE_UDP_PORTS", payload: udpPorts }),
+    rewrites: rewriteState,
+    setRewrite: (key, values) =>
+      dispatch({ type: "SET", key, payload: values }),
   };
+
   const resolvedValues = externalValues ?? rewriteValues;
 
   const resetRewrites = () => dispatch({ type: "RESET" });

@@ -4,11 +4,11 @@ import { ReplayStepProgress } from "@/components/replayStepProgress/ReplayStepPr
 import type {
   ReplayModeType,
   ReplayProgressType,
+  RewriteState,
   RunStatusType,
 } from "@/types/types";
 import type {
   ScenarioItem,
-  RewriteMapsCollection,
   PerPcapRewrites,
 } from "@/components/scenariobuilder/types";
 import { useMutation } from "@tanstack/react-query";
@@ -35,7 +35,7 @@ function toApiItems(items: ScenarioItem[]) {
 
 interface IRunScenarioReplayProps {
   scenarioItems: ScenarioItem[];
-  globalRewrites: RewriteMapsCollection;
+  globalRewrites: RewriteState;
   perPcapRewrites: PerPcapRewrites;
   selectedMode: ReplayModeType;
   selectedInterface: string | null;
@@ -147,8 +147,6 @@ export const RunScenarioReplay = ({
     },
   });
 
-  // ButtonsReplay expects selectFile and a mutation that takes a file string.
-  // We wrap our mutation so that ButtonsReplay can trigger it with any string.
   const wrappedMutation = {
     ...runMutation,
     mutate: (_file: string | undefined, options?: unknown) => {

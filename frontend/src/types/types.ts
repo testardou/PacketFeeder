@@ -1,3 +1,4 @@
+import type { REWRITE_KEYS } from "@/constants/rewriteKeys";
 import type { components } from "./api-types";
 
 export type PcapInfoType = components["schemas"]["PcapInfo"];
@@ -26,23 +27,6 @@ export type NewValuesPcapType = { old: string; new: string };
 
 export type ReplayModeType = "realTime" | "fast" | "fastest" | "step";
 
-export type RewriteValues = {
-  rewriteIps: NewValuesPcapType[];
-  setRewriteIps: (values: NewValuesPcapType[]) => void;
-  rewriteMacs: NewValuesPcapType[];
-  setRewriteMacs: (values: NewValuesPcapType[]) => void;
-  rewriteIpv6s: NewValuesPcapType[];
-  setRewriteIpv6s: (values: NewValuesPcapType[]) => void;
-  rewriteArpIps: NewValuesPcapType[];
-  setRewriteArpIps: (values: NewValuesPcapType[]) => void;
-  rewriteDnsDomains: NewValuesPcapType[];
-  setRewriteDnsDomains: (values: NewValuesPcapType[]) => void;
-  rewriteTcpPorts: NewValuesPcapType[];
-  setRewriteTcpPorts: (values: NewValuesPcapType[]) => void;
-  rewriteUdpPorts: NewValuesPcapType[];
-  setRewriteUdpPorts: (values: NewValuesPcapType[]) => void;
-};
-
 export type ProtocolType =
   | "ip"
   | "ipv6"
@@ -60,4 +44,13 @@ export type ProtocolDataType = {
   count: number;
   data: (string | number)[];
   isPort?: boolean;
+};
+
+export type RewriteKey = (typeof REWRITE_KEYS)[number];
+
+export type RewriteState = Record<RewriteKey, NewValuesPcapType[]>;
+
+export type RewriteValues = {
+  rewrites: RewriteState;
+  setRewrite: (key: RewriteKey, values: NewValuesPcapType[]) => void;
 };

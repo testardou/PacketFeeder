@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { API_CONFIG } from "@/config/api";
 import { useRewriteContext } from "@/context/RewriteContext";
+import { REWRITE_KEYS } from "@/constants/rewriteKeys";
 
 export const FilePage = () => {
   const queryClient = useQueryClient();
@@ -19,30 +20,9 @@ export const FilePage = () => {
   const rewriteMutation = useMutation({
     mutationFn: async () => {
       const formData = new FormData();
-      formData.append("file", selectFile ?? "");
-      formData.append("filename", fileName ?? "");
-      formData.append("rewriteIps", JSON.stringify(rewriteState.rewriteIps));
-      formData.append("rewriteMacs", JSON.stringify(rewriteState.rewriteMacs));
-      formData.append(
-        "rewriteIpv6s",
-        JSON.stringify(rewriteState.rewriteIpv6s),
-      );
-      formData.append(
-        "rewriteArpIps",
-        JSON.stringify(rewriteState.rewriteArpIps),
-      );
-      formData.append(
-        "rewriteDnsDomains",
-        JSON.stringify(rewriteState.rewriteDnsDomains),
-      );
-      formData.append(
-        "rewriteTcpPorts",
-        JSON.stringify(rewriteState.rewriteTcpPorts),
-      );
-      formData.append(
-        "rewriteUdpPorts",
-        JSON.stringify(rewriteState.rewriteUdpPorts),
-      );
+      for (const key of REWRITE_KEYS) {
+        formData.append(key, JSON.stringify(rewriteState[key]));
+      }
 
       const res = await fetch(`${API_CONFIG.API_BASE}/rewrite-pcap-file/`, {
         method: "POST",
@@ -102,13 +82,7 @@ export const FilePage = () => {
           <Input
             disabled={
               !selectFile ||
-              (rewriteState.rewriteIps.length === 0 &&
-                rewriteState.rewriteMacs.length === 0 &&
-                rewriteState.rewriteIpv6s.length === 0 &&
-                rewriteState.rewriteArpIps.length === 0 &&
-                rewriteState.rewriteDnsDomains.length === 0 &&
-                rewriteState.rewriteTcpPorts.length === 0 &&
-                rewriteState.rewriteUdpPorts.length === 0)
+              REWRITE_KEYS.every((key) => rewriteState[key].length === 0)
             }
             onChange={(e) => setFileName(e.target.value)}
           />
@@ -117,13 +91,7 @@ export const FilePage = () => {
           onClick={() => rewriteMutation.mutate()}
           disabled={
             !selectFile ||
-            (rewriteState.rewriteIps.length === 0 &&
-              rewriteState.rewriteMacs.length === 0 &&
-              rewriteState.rewriteIpv6s.length === 0 &&
-              rewriteState.rewriteArpIps.length === 0 &&
-              rewriteState.rewriteDnsDomains.length === 0 &&
-              rewriteState.rewriteTcpPorts.length === 0 &&
-              rewriteState.rewriteUdpPorts.length === 0) ||
+            REWRITE_KEYS.every((key) => rewriteState[key].length === 0) ||
             !fileName
           }
           className="mt-auto"

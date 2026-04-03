@@ -27,13 +27,12 @@ export const ProtocolData = ({
 
   if (!selectedProtocol || !protocol || !protocol.data) return null;
 
-  // Modifiable protocols using ScrollAreaModify
-  if (selectedProtocol === "ip" && rewriteValues.setRewriteIps) {
+  if (selectedProtocol === "ip") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data as string[]}
-        setNewValues={rewriteValues.setRewriteIps}
-        newValues={rewriteValues.rewriteIps}
+        setNewValues={(v) => rewriteValues.setRewrite("ip", v)}
+        newValues={rewriteValues.rewrites.ip}
         validator={ipv4Regex}
         modalLabel="New IP"
         modalTitle="Edit IP"
@@ -42,13 +41,12 @@ export const ProtocolData = ({
       />
     );
   }
-
-  if (selectedProtocol === "mac" && rewriteValues.setRewriteMacs) {
+  if (selectedProtocol === "mac") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data as string[]}
-        setNewValues={rewriteValues.setRewriteMacs}
-        newValues={rewriteValues.rewriteMacs}
+        setNewValues={(v) => rewriteValues.setRewrite("mac", v)}
+        newValues={rewriteValues.rewrites.mac}
         validator={macAddrRegex}
         modalLabel="New MAC address"
         modalTitle="Edit MAC address"
@@ -58,12 +56,12 @@ export const ProtocolData = ({
     );
   }
 
-  if (selectedProtocol === "ipv6" && rewriteValues.setRewriteIpv6s) {
+  if (selectedProtocol === "ipv6") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data as string[]}
-        setNewValues={rewriteValues.setRewriteIpv6s}
-        newValues={rewriteValues.rewriteIpv6s}
+        setNewValues={(v) => rewriteValues.setRewrite("ipv6", v)}
+        newValues={rewriteValues.rewrites.ipv6}
         validator={ipv6Regex}
         modalLabel="New IPv6"
         modalTitle="Edit IPv6"
@@ -73,12 +71,12 @@ export const ProtocolData = ({
     );
   }
 
-  if (selectedProtocol === "arp" && rewriteValues.setRewriteArpIps) {
+  if (selectedProtocol === "arp") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data as string[]}
-        setNewValues={rewriteValues.setRewriteArpIps}
-        newValues={rewriteValues.rewriteArpIps}
+        setNewValues={(v) => rewriteValues.setRewrite("arp-ip", v)}
+        newValues={rewriteValues.rewrites["arp-ip"]}
         validator={ipv4Regex}
         modalLabel="New ARP IP"
         modalTitle="Edit ARP IP"
@@ -88,12 +86,12 @@ export const ProtocolData = ({
     );
   }
 
-  if (selectedProtocol === "dns" && rewriteValues.setRewriteDnsDomains) {
+  if (selectedProtocol === "dns") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data as string[]}
-        setNewValues={rewriteValues.setRewriteDnsDomains}
-        newValues={rewriteValues.rewriteDnsDomains}
+        setNewValues={(v) => rewriteValues.setRewrite("dns", v)}
+        newValues={rewriteValues.rewrites.dns}
         validator={dnsDomainRegex}
         modalLabel="New DNS Domain"
         modalTitle="Edit DNS Domain"
@@ -103,12 +101,12 @@ export const ProtocolData = ({
     );
   }
 
-  if (selectedProtocol === "tcp" && rewriteValues.setRewriteTcpPorts) {
+  if (selectedProtocol === "tcp") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data.map(String)}
-        setNewValues={rewriteValues.setRewriteTcpPorts}
-        newValues={rewriteValues.rewriteTcpPorts}
+        setNewValues={(v) => rewriteValues.setRewrite("tcp", v)}
+        newValues={rewriteValues.rewrites.tcp}
         validator={portRegex}
         modalLabel="New TCP Port"
         modalTitle="Edit TCP Port"
@@ -120,12 +118,12 @@ export const ProtocolData = ({
     );
   }
 
-  if (selectedProtocol === "udp" && rewriteValues.setRewriteUdpPorts) {
+  if (selectedProtocol === "udp") {
     return (
       <ScrollAreaModify
         valuesArray={protocol.data.map(String)}
-        setNewValues={rewriteValues.setRewriteUdpPorts}
-        newValues={rewriteValues.rewriteUdpPorts}
+        setNewValues={(v) => rewriteValues.setRewrite("udp", v)}
+        newValues={rewriteValues.rewrites.udp}
         validator={portRegex}
         modalLabel="New UDP Port"
         modalTitle="Edit UDP Port"

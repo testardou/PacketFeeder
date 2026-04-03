@@ -26,8 +26,8 @@ def replay_scenario():
         "iface": "eth0",
         "sid": "...",
         "mode": "realtime",
-        "global_rewrites": { "rewriteIps": [{old, new}], ... },
-        "per_pcap_rewrites": { "0": { "rewriteIps": [...], ... } },
+        "global_rewrites": { "ip": [{old, new}], ... },
+        "per_pcap_rewrites": { "0": { "ip": [...], ... } },
         "index": null,
         "range": null
     }

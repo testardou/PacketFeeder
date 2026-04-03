@@ -4,6 +4,10 @@ Global rewrites take priority over per-pcap rewrites on conflict.
 """
 
 
+
+from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM
+
+
 def _parse_rewrite_list(rewrite_list):
     """Convert a list of {old, new} dicts to a mapping dict."""
     if not rewrite_list:
@@ -17,15 +21,6 @@ def _parse_rewrite_list(rewrite_list):
     return mapping
 
 
-REWRITE_KEYS = [
-    "rewriteIps",
-    "rewriteMacs",
-    "rewriteIpv6s",
-    "rewriteArpIps",
-    "rewriteDnsDomains",
-    "rewriteTcpPorts",
-    "rewriteUdpPorts",
-]
 
 
 def merge_rewrite_maps(per_pcap_raw, global_raw):
@@ -33,7 +28,7 @@ def merge_rewrite_maps(per_pcap_raw, global_raw):
     Merge per-pcap and global rewrite maps.
 
     Both per_pcap_raw and global_raw are dicts with keys like
-    "rewriteIps", "rewriteMacs", etc., each containing a list of {old, new}.
+   "ip", "mac", etc., each containing a list of {old, new}.
 
     Global wins on conflict: {**per_pcap, **global}
 
@@ -43,17 +38,13 @@ def merge_rewrite_maps(per_pcap_raw, global_raw):
     per_pcap_raw = per_pcap_raw or {}
     global_raw = global_raw or {}
 
-    result_keys = [
-        "ip_map", "mac_map", "ipv6_map", "arp_ip_map",
-        "dns_domain_map", "tcp_port_map", "udp_port_map",
-    ]
-
     result = {}
-    for rewrite_key, result_key in zip(REWRITE_KEYS, result_keys):
-        per_pcap_map = _parse_rewrite_list(per_pcap_raw.get(rewrite_key, []))
-        global_map = _parse_rewrite_list(global_raw.get(rewrite_key, []))
-        # Global wins on conflict
+    for key, param in REWRITE_KEY_TO_PARAM.items():
+        per_pcap_map = _parse_rewrite_list(per_pcap_raw.get(key, []))
+        global_map = _parse_rewrite_list(global_raw.get(key, []))
         merged = {**per_pcap_map, **global_map}
-        result[result_key] = merged
+        if merged:
+            result[param] = merged
 
     return result
+
