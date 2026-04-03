@@ -7,7 +7,7 @@ import type {
   RunStatusType,
 } from "@/types/types";
 import type {
-  ChainItem,
+  ScenarioItem,
   RewriteMapsCollection,
   PerPcapRewrites,
 } from "@/components/scenariobuilder/types";
@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { API_CONFIG } from "@/config/api";
 
-function toApiItems(items: ChainItem[]) {
+function toApiItems(items: ScenarioItem[]) {
   return items.map((item) => {
     if (item.type === "pcap") {
       return {
@@ -33,8 +33,8 @@ function toApiItems(items: ChainItem[]) {
   });
 }
 
-interface IRunChainReplayProps {
-  chainItems: ChainItem[];
+interface IRunScenarioReplayProps {
+  scenarioItems: ScenarioItem[];
   globalRewrites: RewriteMapsCollection;
   perPcapRewrites: PerPcapRewrites;
   selectedMode: ReplayModeType;
@@ -45,8 +45,8 @@ interface IRunChainReplayProps {
   filterRange: string;
 }
 
-export const RunChainReplay = ({
-  chainItems,
+export const RunScenarioReplay = ({
+  scenarioItems,
   globalRewrites,
   perPcapRewrites,
   selectedMode,
@@ -55,7 +55,7 @@ export const RunChainReplay = ({
   setStepIndex,
   filterIndex,
   filterRange,
-}: IRunChainReplayProps) => {
+}: IRunScenarioReplayProps) => {
   const [clientSid, setClientSid] = useState<string | null>(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
   const [running, setRunning] = useState(false);
@@ -122,7 +122,7 @@ export const RunChainReplay = ({
       }
 
       const body = {
-        items: toApiItems(chainItems),
+        items: toApiItems(scenarioItems),
         iface: selectedInterface ?? "",
         sid: clientSid ?? "",
         mode: modeMap[selectedMode] ?? "realTime",
@@ -132,7 +132,7 @@ export const RunChainReplay = ({
         range: rangeVal,
       };
 
-      const res = await fetch(`${API_CONFIG.API_BASE}/replay-chain/`, {
+      const res = await fetch(`${API_CONFIG.API_BASE}/replay-scenario/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -166,7 +166,7 @@ export const RunChainReplay = ({
           selectedMode={selectedMode}
           running={running}
           runMutation={wrappedMutation as never}
-          selectFile="chain"
+          selectFile="scenario"
           selectedInterface={selectedInterface}
           socket={socket}
           setStepIndex={setStepIndex}
@@ -176,7 +176,7 @@ export const RunChainReplay = ({
       {selectedMode === "step" ? (
         <ReplayStepProgress
           mutation={wrappedMutation as never}
-          selectFile="chain"
+          selectFile="scenario"
         />
       ) : (
         <ReplayProgress

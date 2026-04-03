@@ -125,7 +125,7 @@ export function TechniqueScenarioList({
           onDragLeave={handleContainerDragLeave}
           onDrop={handleContainerDrop}
         >
-          <p>No technique in the chain</p>
+          <p>No technique in the scenario</p>
           <p className="text-sm mt-2">
             {isDragOverContainer
               ? "Release to add the technique"

@@ -22,7 +22,7 @@ REWRITE_KEY_TO_PARAM = {
 
 class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
     name = "scenario"
-    description = "Build and replay attack scenarios by chaining MITRE technique PCAPs"
+    description = "Build and replay attack scenarios from MITRE technique PCAPs"
 
     def __init__(self):
         super().__init__()

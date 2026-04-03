@@ -7,17 +7,17 @@ import type { RewriteValues } from "@/types/types";
 import type { ScenarioInfosResponse } from "@/components/scenariobuilder/types";
 import { RewriteProvider } from "@/context/RewriteContext";
 
-interface ChainRewritePanelProps {
-  chainInfos: ScenarioInfosResponse;
+interface ScenarioRewritePanelProps {
+  scenarioInfos: ScenarioInfosResponse;
   globalRewriteValues: RewriteValues;
   getPerPcapRewriteValues: (index: number) => RewriteValues;
 }
 
-export const ChainRewritePanel = ({
-  chainInfos,
+export const ScenarioRewritePanel = ({
+  scenarioInfos,
   globalRewriteValues,
   getPerPcapRewriteValues,
-}: ChainRewritePanelProps) => {
+}: ScenarioRewritePanelProps) => {
   const [expandedPcaps, setExpandedPcaps] = useState<Record<number, boolean>>(
     {},
   );
@@ -34,18 +34,18 @@ export const ChainRewritePanel = ({
           <CardTitle>All PCAPs (Global Rewrites)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <PcapGeneralInfos pcapInfosData={chainInfos.all} />
+          <PcapGeneralInfos pcapInfosData={scenarioInfos.all} />
           <RewriteProvider externalValues={globalRewriteValues}>
-            <PcapProtocolsScrollArea pcapInfosData={chainInfos.all} />
+            <PcapProtocolsScrollArea pcapInfosData={scenarioInfos.all} />
           </RewriteProvider>
         </CardContent>
       </Card>
 
       {/* Per-pcap sections */}
-      {chainInfos.per_pcap.length > 1 && (
+      {scenarioInfos.per_pcap.length > 1 && (
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">Per-PCAP Rewrites</h3>
-          {chainInfos.per_pcap.map((entry) => {
+          {scenarioInfos.per_pcap.map((entry) => {
             const isExpanded = expandedPcaps[entry.index] ?? false;
             const rewriteValues = getPerPcapRewriteValues(entry.index);
             const fileName =

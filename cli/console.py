@@ -3,7 +3,6 @@ import readline
 
 import cmd2
 
-from backend.routes.get_interfaces import get_interfaces
 from cli.modules.mitre import MitreModule
 from cli.modules.replay import ReplayModule
 from cli.modules.rewrite import RewriteModule

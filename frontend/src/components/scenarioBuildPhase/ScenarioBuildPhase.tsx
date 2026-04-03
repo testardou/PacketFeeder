@@ -18,10 +18,10 @@ import { useScenarioItems } from "@/hooks/useScenarioItems";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Plus, Loader2, Search, AlertCircle } from "lucide-react";
 
-interface IChainBuildPhaseProps {
+interface IScenarioBuildPhaseProps {
   queries: ReturnType<typeof useScenarioBuilderQueries>;
-  chain: ReturnType<typeof useScenarioItems>;
-  chainInfosMutation: UseMutationResult<
+  scenario: ReturnType<typeof useScenarioItems>;
+  scenarioInfosMutation: UseMutationResult<
     ScenarioInfosResponse,
     Error,
     ScenarioItem[]
@@ -29,12 +29,12 @@ interface IChainBuildPhaseProps {
   resetRewrites: () => void;
 }
 
-export const ChainBuildPhase = ({
+export const ScenarioBuildPhase = ({
   queries,
-  chain,
-  chainInfosMutation,
+  scenario,
+  scenarioInfosMutation,
   resetRewrites,
-}: IChainBuildPhaseProps) => {
+}: IScenarioBuildPhaseProps) => {
   const {
     addPcap,
     addPcapFromDrop,
@@ -43,7 +43,7 @@ export const ChainBuildPhase = ({
     addSleep,
     updateSleepDuration,
     scenarioItems,
-  } = chain;
+  } = scenario;
 
   const {
     selectFile,
@@ -72,7 +72,7 @@ export const ChainBuildPhase = ({
 
   const handleFetchInfos = () => {
     resetRewrites();
-    chainInfosMutation.mutate(scenarioItems, {});
+    scenarioInfosMutation.mutate(scenarioItems, {});
   };
 
   return (
@@ -84,7 +84,7 @@ export const ChainBuildPhase = ({
             <CardHeader>
               <CardTitle>MITRE ATT&CK Technique Selection</CardTitle>
               <CardDescription>
-                Select a tactic, technique and PCAP to add to your chain
+                Select a tactic, technique and PCAP to add to your scenario
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -116,20 +116,20 @@ export const ChainBuildPhase = ({
                   disabled={!selectedTechnique || !selectFile}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Ajouter le PCAP à la chaîne
+                  Ajouter le PCAP au scénario
                 </Button>
               )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Right side: Technique Chain */}
+        {/* Right side: Technique Scenario */}
         <div className="lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-[calc(50%-12px)]">
           <Card className="h-full flex flex-col">
             <CardHeader className="shrink-0">
-              <CardTitle>PCAP Chain</CardTitle>
+              <CardTitle>PCAP Scenario</CardTitle>
               <CardDescription>
-                Build your attack chain by adding and reordering technique PCAPs
+                Build your attack scenario by adding and reordering technique PCAPs
               </CardDescription>
             </CardHeader>
             <CardContent
@@ -153,21 +153,21 @@ export const ChainBuildPhase = ({
         <Button
           className="w-full"
           size="lg"
-          disabled={scenarioItems.length === 0 || chainInfosMutation.isPending}
+          disabled={scenarioItems.length === 0 || scenarioInfosMutation.isPending}
           onClick={handleFetchInfos}
         >
-          {chainInfosMutation.isPending ? (
+          {scenarioInfosMutation.isPending ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
             <Search className="h-4 w-4 mr-2" />
           )}
-          {chainInfosMutation.isPending ? "Fetching infos..." : "Fetch Infos"}
+          {scenarioInfosMutation.isPending ? "Fetching infos..." : "Fetch Infos"}
         </Button>
 
-        {chainInfosMutation.isError && (
+        {scenarioInfosMutation.isError && (
           <p className="flex items-center gap-2 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 shrink-0" />
-            {chainInfosMutation.error.message}
+            {scenarioInfosMutation.error.message}
           </p>
         )}
       </div>

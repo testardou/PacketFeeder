@@ -4,22 +4,22 @@ import { useScenarioBuilderQueries } from "@/hooks/useScenarioBuilderQueries";
 import { useScenarioItems } from "@/hooks/useScenarioItems";
 import { useScenarioInfos } from "@/hooks/useScenarioInfos";
 import { useScenarioRewrites } from "@/hooks/useScenarioRewrites";
-import { ChainRewritePanel } from "@/components/scenariobuilder/ScenarioRewritePanel";
+import { ScenarioRewritePanel } from "@/components/scenariobuilder/ScenarioRewritePanel";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
-import { RunChainReplay } from "@/components/runReplay/RunChainReplay";
+import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
 import { API_CONFIG } from "@/config/api";
 import type { InterfacesType, ReplayModeType } from "@/types/types";
-import { ChainBuildPhase } from "@/components/scenarioBuildPhase/ScenarioBuildPhase";
+import { ScenarioBuildPhase } from "@/components/scenarioBuildPhase/ScenarioBuildPhase";
 
 export default function ScenarioBuilder() {
   const queries = useScenarioBuilderQueries();
 
-  const chain = useScenarioItems();
+  const scenario = useScenarioItems();
 
-  // --- Chain infos ---
-  const chainInfosMutation = useScenarioInfos();
+  // --- Scenario infos ---
+  const scenarioInfosMutation = useScenarioInfos();
 
   // --- Rewrites ---
   const {
@@ -54,23 +54,23 @@ export default function ScenarioBuilder() {
 
   return (
     <div className="p-6 space-y-4">
-      <h1 className="text-4xl mx-auto w-fit font-bold">Chain Builder</h1>
+      <h1 className="text-4xl mx-auto w-fit font-bold">Scenario Builder</h1>
 
-      <ChainBuildPhase
-        chain={chain}
+      <ScenarioBuildPhase
+        scenario={scenario}
         queries={queries}
-        chainInfosMutation={chainInfosMutation}
+        scenarioInfosMutation={scenarioInfosMutation}
         resetRewrites={resetRewrites}
       />
 
-      {chainInfosMutation.data && (
-        <ChainRewritePanel
-          chainInfos={chainInfosMutation.data}
+      {scenarioInfosMutation.data && (
+        <ScenarioRewritePanel
+          scenarioInfos={scenarioInfosMutation.data}
           globalRewriteValues={globalRewriteValues}
           getPerPcapRewriteValues={getPerPcapRewriteValues}
         />
       )}
-      {chain.scenarioItems.some((item) => item.type === "pcap") && (
+      {scenario.scenarioItems.some((item) => item.type === "pcap") && (
         <div className="flex flex-col gap-5">
           <h2 className="text-2xl font-bold">Replay</h2>
 
@@ -93,8 +93,8 @@ export default function ScenarioBuilder() {
             setFilterRange={setFilterRange}
           />
 
-          <RunChainReplay
-            chainItems={chain.scenarioItems}
+          <RunScenarioReplay
+            scenarioItems={scenario.scenarioItems}
             globalRewrites={globalRewrites}
             perPcapRewrites={perPcapRewrites}
             selectedMode={selectedMode}

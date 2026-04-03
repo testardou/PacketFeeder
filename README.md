@@ -303,11 +303,11 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
 
 ### Attack Builder
 
-- [x] Compose attack chains from event PCAPs
+- [x] Compose attack scenarios from event PCAPs
 - [x] Reorder / duplicate / remove steps
 - [x] Basic pacing (delays between steps)
 - [x] Build a single PCAP (merged timeline)
-- [ ] Export chain config
+- [ ] Export scenario config
 - [x] Simple builder UI (timeline / drag-and-drop)
 
 ### Live Network Interaction

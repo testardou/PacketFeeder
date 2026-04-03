@@ -33,8 +33,8 @@ const items = [
     icon: Film,
   },
   {
-    title: "Chain Builder",
-    url: "/chain-builder",
+    title: "Scenario Builder",
+    url: "/scenario",
     icon: LinkIcon,
   },
   {
