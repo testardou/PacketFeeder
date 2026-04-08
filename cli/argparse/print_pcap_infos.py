@@ -5,7 +5,7 @@ from core.pcap.read_pcap import read_pcap
 
 def add_parser(subparsers):
     parser = subparsers.add_parser(
-        "infos_pcap",
+        "infos",
         help="Get pcap file infos"
     )
     parser.add_argument("--pcap", required=True)
