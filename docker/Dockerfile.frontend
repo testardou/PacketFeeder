@@ -5,11 +5,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY index.html .
-COPY vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.json ./
-COPY tailwind.config.ts components.json eslint.config.js ./
-COPY public/ ./public/
+COPY vite.config.ts ./
 COPY frontend/ ./frontend/
+COPY public/ ./public/
 
 EXPOSE 3000
 
