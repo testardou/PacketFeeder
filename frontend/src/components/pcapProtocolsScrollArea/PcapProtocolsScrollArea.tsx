@@ -39,15 +39,12 @@ export const PcapProtocolsScrollArea = ({
 
   if (!protocols) {
     return (
-      <ScrollArea className="h-96 rounded-md border">
-        <div className="p-4 text-sm text-muted-foreground">
-          No protocol data available
-        </div>
-      </ScrollArea>
+      <div className="p-4 text-sm text-muted-foreground">
+        No protocols available
+      </div>
     );
   }
 
-  // Build list of available protocols (only those with data)
   const availableProtocols = [
     {
       key: "ip" as const,
@@ -103,22 +100,20 @@ export const PcapProtocolsScrollArea = ({
 
   if (availableProtocols.length === 0) {
     return (
-      <ScrollArea className="h-96 rounded-md border">
-        <div className="p-4 text-sm text-muted-foreground">
-          No protocols found in this PCAP file
-        </div>
-      </ScrollArea>
+      <div className="p-4 text-sm text-muted-foreground">
+        No protocols found in this PCAP file
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-row gap-4 w-fit">
-      <Card className="h-96 border-2 bg-muted/50">
+    <div className="flex flex-row gap-4 w-full">
+      <Card className="h-96 border-2 bg-muted/50 flex-1">
         <CardHeader>
           <CardTitle className="text-base font-semibold">Protocols</CardTitle>
         </CardHeader>
         <div className="px-6 pb-6">
-          <ScrollArea className="h-72 w-48 rounded-md border p-4">
+          <ScrollArea className="h-72 rounded-md border p-4">
             <div className="space-y-2">
               {availableProtocols.map((protocol) => (
                 <Button
@@ -140,38 +135,38 @@ export const PcapProtocolsScrollArea = ({
           </ScrollArea>
         </div>
       </Card>
-
-      {/* Protocol Data */}
-      {selectedProtocol && (
-        <Card className="h-96 border-2 bg-muted/50">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold">
-              {
-                availableProtocols.find((p) => p.key === selectedProtocol)
-                  ?.label
-              }
-            </CardTitle>
-          </CardHeader>
-          <div className="px-6 pb-6">
-            <ProtocolData
-              selectedProtocol={selectedProtocol}
-              protocol={availableProtocols.find(
-                (p) => p.key === selectedProtocol,
-              )}
-              ipv4Regex={ipv4Regex}
-              ipv6Regex={ipv6Regex}
-              macAddrRegex={macAddrRegex}
-              dnsDomainRegex={dnsDomainRegex}
-              portRegex={portRegex}
-            />
-          </div>
-        </Card>
-      )}
-
-      {/* Modifications Recap - Only for selected protocol */}
-      {selectedProtocol && (
-        <SelectedProtocolModifications selectedProtocol={selectedProtocol} />
-      )}
+      <div className="flex-1">
+        {selectedProtocol && (
+          <Card className="h-96 border-2 bg-muted/50 ">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">
+                {
+                  availableProtocols.find((p) => p.key === selectedProtocol)
+                    ?.label
+                }
+              </CardTitle>
+            </CardHeader>
+            <div className="px-6 pb-6">
+              <ProtocolData
+                selectedProtocol={selectedProtocol}
+                protocol={availableProtocols.find(
+                  (p) => p.key === selectedProtocol,
+                )}
+                ipv4Regex={ipv4Regex}
+                ipv6Regex={ipv6Regex}
+                macAddrRegex={macAddrRegex}
+                dnsDomainRegex={dnsDomainRegex}
+                portRegex={portRegex}
+              />
+            </div>
+          </Card>
+        )}
+      </div>
+      <div className="flex-1">
+        {selectedProtocol && (
+          <SelectedProtocolModifications selectedProtocol={selectedProtocol} />
+        )}
+      </div>
     </div>
   );
 };

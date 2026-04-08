@@ -5,11 +5,7 @@ import type {
   PcapFilesType,
   PcapInfoType,
 } from "@/types/types";
-import {
-  useMutation,
-  useQuery,
-  type UseMutationResult,
-} from "@tanstack/react-query";
+import { useQuery, type UseMutationResult } from "@tanstack/react-query";
 import { API_CONFIG } from "@/config/api";
 
 interface IHandleFilesProps {
@@ -23,6 +19,7 @@ interface IHandleFilesProps {
     unknown
   >;
   resetStates: () => void;
+  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
 }
 
 export const HandleFiles = ({
@@ -30,6 +27,7 @@ export const HandleFiles = ({
   setSelectFile,
   detailsMutation,
   resetStates,
+  infosMutation,
 }: IHandleFilesProps) => {
   const pcapFilesMutation = useQuery<PcapFilesType>({
     queryKey: ["pcap_files"], // identifiant unique du cache
@@ -44,32 +42,13 @@ export const HandleFiles = ({
     },
   });
 
-  const infosMutation = useMutation<PcapInfoType, Error, string>({
-    mutationFn: async (file: string) => {
-      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
-
-      if (!res.ok) throw new Error("API Error");
-
-      return res.json();
-    },
-    onSuccess: () => {
-      resetStates();
-    },
-  });
-
   const handleSetSelectFile = (fileName: string | null) => {
-    // Reset infos mutation when file selection changes
-    if (fileName !== selectFile) {
-      infosMutation.reset();
-    }
     setSelectFile(fileName);
   };
-
   return (
-    <div className="flex flex-row gap-10">
+    <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-6">
         <h2 className="text-2xl">Pcap Files</h2>
-
         <PcapFileList
           detailsMutation={detailsMutation}
           pcapFiles={pcapFilesMutation.data?.files}
@@ -80,7 +59,7 @@ export const HandleFiles = ({
           resetStates={resetStates}
         />
       </div>
-      <PcapInfos pcapInfos={infosMutation} />
+      {selectFile && <PcapInfos pcapInfos={infosMutation} />}
     </div>
   );
 };

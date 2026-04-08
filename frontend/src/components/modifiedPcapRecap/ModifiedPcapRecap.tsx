@@ -36,8 +36,8 @@ export const ModifiedPcapRecap = ({
                     onClick={() =>
                       setRewriteValues(
                         rewriteValues.filter(
-                          (rewriteValue) => element.old !== rewriteValue.old
-                        )
+                          (rewriteValue) => element.old !== rewriteValue.old,
+                        ),
                       )
                     }
                   >

@@ -39,9 +39,7 @@ export const PcapFileList = ({
   pcapFiles,
   selectFile,
   setSelectFile,
-  infosMutation,
   pcaFilesloading,
-  detailsMutation,
   resetStates,
 }: PcapFileListProps) => {
   const queryClient = useQueryClient();
@@ -76,37 +74,19 @@ export const PcapFileList = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-row gap-3 w-full">
       <FileScrollArea
         selectFile={selectFile}
         setSelectFile={setSelectFile}
         pcaFilesloading={pcaFilesloading}
         pcapFiles={pcapFiles}
       />
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-col justify-end gap-3">
         <UploadPcapFile
           files={pcapFiles}
           pcaFilesloading={pcaFilesloading}
           resetStates={resetStates}
         />
-        <Button
-          type="submit"
-          variant="outline"
-          disabled={!selectFile}
-          color="blue"
-          onClick={() => selectFile && infosMutation.mutate(selectFile)}
-        >
-          Get infos
-        </Button>
-        <Button
-          type="submit"
-          variant="outline"
-          disabled={!selectFile}
-          color="blue"
-          onClick={() => selectFile && detailsMutation.mutate(selectFile)}
-        >
-          Packet Details
-        </Button>
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogTrigger asChild>
             <Button type="submit" variant="destructive" disabled={!selectFile}>

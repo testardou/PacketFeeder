@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource/fira-code";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,5 +120,7 @@ button {
   }
   body {
     @apply bg-background text-foreground;
+    @apply bg-background text-foreground;
+    font-family: "Fira Code", monospace;
   }
 }

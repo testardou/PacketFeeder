@@ -15,106 +15,88 @@ export const SelectedProtocolModifications = ({
 
   switch (selectedProtocol) {
     case "ip":
-      if (
-        rewriteValues.rewriteIps &&
-        rewriteValues.rewriteIps.length > 0 &&
-        rewriteValues.setRewriteIps
-      ) {
+      if (rewriteValues.rewrites.ip && rewriteValues.rewrites.ip.length > 0) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified IPs"
-            rewriteValues={rewriteValues.rewriteIps}
-            setRewriteValues={rewriteValues.setRewriteIps}
+            rewriteValues={rewriteValues.rewrites.ip}
+            setRewriteValues={(value) => rewriteValues.setRewrite("ip", value)}
           />
         );
       }
       return null;
     case "mac":
-      if (
-        rewriteValues.rewriteMacs &&
-        rewriteValues.rewriteMacs.length > 0 &&
-        rewriteValues.setRewriteMacs
-      ) {
+      if (rewriteValues.rewrites.mac && rewriteValues.rewrites.mac.length > 0) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified MACs"
-            rewriteValues={rewriteValues.rewriteMacs}
-            setRewriteValues={rewriteValues.setRewriteMacs}
+            rewriteValues={rewriteValues.rewrites.mac}
+            setRewriteValues={(value) => rewriteValues.setRewrite("mac", value)}
           />
         );
       }
       return null;
     case "ipv6":
       if (
-        rewriteValues.rewriteIpv6s &&
-        rewriteValues.rewriteIpv6s.length > 0 &&
-        rewriteValues.setRewriteIpv6s
+        rewriteValues.rewrites.ipv6 &&
+        rewriteValues.rewrites.ipv6.length > 0
       ) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified IPv6s"
-            rewriteValues={rewriteValues.rewriteIpv6s}
-            setRewriteValues={rewriteValues.setRewriteIpv6s}
+            rewriteValues={rewriteValues.rewrites.ipv6}
+            setRewriteValues={(value) =>
+              rewriteValues.setRewrite("ipv6", value)
+            }
           />
         );
       }
       return null;
     case "arp":
       if (
-        rewriteValues.rewriteArpIps &&
-        rewriteValues.rewriteArpIps.length > 0 &&
-        rewriteValues.setRewriteArpIps
+        rewriteValues.rewrites["arp-ip"] &&
+        rewriteValues.rewrites["arp-ip"].length > 0
       ) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified ARP IPs"
-            rewriteValues={rewriteValues.rewriteArpIps}
-            setRewriteValues={rewriteValues.setRewriteArpIps}
+            rewriteValues={rewriteValues.rewrites["arp-ip"]}
+            setRewriteValues={(value) =>
+              rewriteValues.setRewrite("arp-ip", value)
+            }
           />
         );
       }
       return null;
     case "dns":
-      if (
-        rewriteValues.rewriteDnsDomains &&
-        rewriteValues.rewriteDnsDomains.length > 0 &&
-        rewriteValues.setRewriteDnsDomains
-      ) {
+      if (rewriteValues.rewrites.dns && rewriteValues.rewrites.dns.length > 0) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified DNS Domains"
-            rewriteValues={rewriteValues.rewriteDnsDomains}
-            setRewriteValues={rewriteValues.setRewriteDnsDomains}
+            rewriteValues={rewriteValues.rewrites.dns}
+            setRewriteValues={(value) => rewriteValues.setRewrite("dns", value)}
           />
         );
       }
       return null;
     case "tcp":
-      if (
-        rewriteValues.rewriteTcpPorts &&
-        rewriteValues.rewriteTcpPorts.length > 0 &&
-        rewriteValues.setRewriteTcpPorts
-      ) {
+      if (rewriteValues.rewrites.tcp && rewriteValues.rewrites.tcp.length > 0) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified TCP Ports"
-            rewriteValues={rewriteValues.rewriteTcpPorts}
-            setRewriteValues={rewriteValues.setRewriteTcpPorts}
+            rewriteValues={rewriteValues.rewrites.tcp}
+            setRewriteValues={(value) => rewriteValues.setRewrite("tcp", value)}
           />
         );
       }
       return null;
     case "udp":
-      if (
-        rewriteValues.rewriteUdpPorts &&
-        rewriteValues.rewriteUdpPorts.length > 0 &&
-        rewriteValues.setRewriteUdpPorts
-      ) {
+      if (rewriteValues.rewrites.udp && rewriteValues.rewrites.udp.length > 0) {
         return (
           <ModifiedPcapRecap
             cardTitle="Modified UDP Ports"
-            rewriteValues={rewriteValues.rewriteUdpPorts}
-            setRewriteValues={rewriteValues.setRewriteUdpPorts}
+            rewriteValues={rewriteValues.rewrites.udp}
+            setRewriteValues={(value) => rewriteValues.setRewrite("udp", value)}
           />
         );
       }

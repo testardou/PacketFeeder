@@ -15,7 +15,7 @@ export const FileScrollArea = ({
   pcaFilesloading,
 }: FileScrollAreaProps) => {
   return (
-    <ScrollArea className="h-72  rounded-md border">
+    <ScrollArea className="h-72 w-full rounded-md border">
       {pcaFilesloading ? (
         <div className="p-4 text-sm">Loading pcap files ...</div>
       ) : !pcapFiles || pcapFiles.length === 0 ? (
