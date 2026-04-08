@@ -5,9 +5,9 @@ from cli.mixins.rewrite import RewriteMixin
 from cli.modules.base import BaseModule
 import os
 
-from core.replay.rewrite_packets import rewrite_packets
-from core.rewrite.rewrite_params import build_rewrite_kwargs
-from core.utils.read_pcap import read_pcap
+from core.pcap.rewrite_packets import rewrite_packets
+from core.utils.rewrite_params import build_rewrite_kwargs
+from core.pcap.read_pcap import read_pcap
 
 class RewriteModule(RewriteMixin, InfosMixin, BaseModule):
     name = "rewrite"

@@ -1,8 +1,8 @@
 import os
 
-from core.pcap_infos.pcap_infos_table import pcap_infos_table
-from core.utils.pcap_infos import pcap_infos
-from core.utils.read_pcap import read_pcap
+from core.pcap.pcap_infos_table import pcap_infos_table
+from core.pcap.pcap_infos import pcap_infos
+from core.pcap.read_pcap import read_pcap
 
 
 class InfosMixin:

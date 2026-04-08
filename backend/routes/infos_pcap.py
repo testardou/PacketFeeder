@@ -1,10 +1,9 @@
 from backend.utils.validate_file_path import validate_file_path_auto
-from core.utils.pcap_infos import pcap_infos
+from core.pcap.pcap_infos import pcap_infos
 from flask_smorest import Blueprint
 from flask import current_app, request, jsonify
-from core.utils.read_pcap import read_pcap
+from core.pcap.read_pcap import read_pcap
 from backend.schemas.infos_pcap import PcapInfoSchema
-import os
 
 infos_pcap_bp = Blueprint("infos_pcap", __name__, url_prefix="/api")
 

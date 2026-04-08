@@ -1,8 +1,8 @@
 import os
 from scapy.utils import PcapWriter
 from core.utils.parse_mapping import parse_mapping
-from core.replay.rewrite_packets import rewrite_packets
-from core.utils.read_pcap import read_pcap
+from core.pcap.rewrite_packets import rewrite_packets
+from core.pcap.read_pcap import read_pcap
 
 
 def add_parser(subparsers):

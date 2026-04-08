@@ -1,9 +1,9 @@
 from backend.schemas.packet_payload import PacketPayloadSchema
 from backend.utils.validate_file_path import validate_file_path_auto
-from core.pcap_infos.payload_packet import payload_packet
+from core.pcap.payload_packet import payload_packet
 from flask_smorest import Blueprint
 from flask import current_app, request, jsonify
-from core.utils.read_pcap import read_pcap
+from core.pcap.read_pcap import read_pcap
 import os
 
 

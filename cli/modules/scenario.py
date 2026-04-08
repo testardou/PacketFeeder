@@ -4,11 +4,11 @@ import os
 from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import REWRITE_TYPES, RewriteMixin
 from cli.modules.base import BaseModule
-from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM
+from core.utils.rewrite_params import REWRITE_KEY_TO_PARAM
 from core.utils.get_ifaces import get_ifaces
-from core.utils.merge_pcaps import merge_pcaps
+from core.pcap.merge_pcaps import merge_pcaps
 from core.utils.parse_mapping import parse_mapping
-from core.utils.replay_with_speed import replay_with_speed
+from core.replay.replay_with_speed import replay_with_speed
 
 class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
     name = "scenario"

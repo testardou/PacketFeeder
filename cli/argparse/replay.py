@@ -1,13 +1,12 @@
 import logging
 import sys
-from core.utils.filter_packets import filter_packets
+from core.pcap.filter_packets import filter_packets
 from core.utils.parse_mapping import  parse_mapping
-from core.replay.rewrite_packets import rewrite_packets
+from core.pcap.rewrite_packets import rewrite_packets
 from scapy.all import conf
-from tqdm import tqdm
 
-from core.utils.read_pcap import read_pcap
-from core.utils.replay_with_speed import replay_with_speed
+from core.pcap.read_pcap import read_pcap
+from core.replay.replay_with_speed import replay_with_speed
 
 logger = logging.getLogger(__name__)
 

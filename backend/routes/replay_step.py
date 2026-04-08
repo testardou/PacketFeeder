@@ -2,9 +2,9 @@ import logging
 from backend.replay.setup_request import setup_request
 from backend.schemas.replay_step import ReplayStepSchema
 from backend.schemas.replay_response import ErrorSchema
-from core.pcap_infos.parse_packet import parse_packet
-from core.pcap_infos.payload_packet import payload_packet
-from core.utils.send_pcap import send_pcap
+from core.pcap.parse_packet import parse_packet
+from core.pcap.payload_packet import payload_packet
+from core.replay.send_pcap import send_pcap
 from flask import request, jsonify, current_app
 from flask_smorest import Blueprint
 

@@ -4,7 +4,7 @@ Route for fetching infos of all PCAPs in a scenario, plus aggregated "all" infos
 from flask import request, jsonify, current_app
 from flask_smorest import Blueprint
 from backend.utils.validate_file_path import validate_file_path_auto
-from core.utils.scenario_infos import scenario_infos
+from core.pcap.scenario_infos import scenario_infos
 
 scenario_infos_bp = Blueprint("scenario_infos", __name__, url_prefix="/api")
 

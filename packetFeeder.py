@@ -1,10 +1,10 @@
 
 import argparse
 from cli.console import PacketFeederConsole
-from core.pcap_infos import print_pcap_infos
-from core.replay import replay
-from core.rewrite import rewrite_pcap
-from core.mitre import mitre
+from cli.argparse import print_pcap_infos
+from cli.argparse import replay
+from cli.argparse import rewrite_pcap
+from cli.argparse import mitre
 
 def main():
     parser = argparse.ArgumentParser(

@@ -10,7 +10,7 @@ from backend.replay.merge_rewrites import merge_rewrite_maps
 from backend.replay.replay_loop import replay_loop_common
 from backend.sockets.realtime import should_run, running_status
 from backend.extension import socketio
-from core.replay.rewrite_packets import rewrite_packets
+from core.pcap.rewrite_packets import rewrite_packets
 
 replay_scenario_bp = Blueprint("replay_scenario", __name__, url_prefix="/api")
 

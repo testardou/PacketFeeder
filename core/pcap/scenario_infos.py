@@ -1,5 +1,5 @@
-from core.utils.pcap_infos import pcap_infos
-from core.utils.read_pcap import read_pcap
+from core.pcap.pcap_infos import pcap_infos
+from core.pcap.read_pcap import read_pcap
 
 
 def scenario_infos(items):

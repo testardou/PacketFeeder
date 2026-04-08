@@ -6,9 +6,9 @@ from werkzeug.utils import secure_filename
 from backend.config import UPLOAD_FOLDER
 from backend.utils.validate_file_path import validate_file_path, ensure_upload_folder_exists
 from backend.utils.parse_rewrite_json import parse_rewrite_json
-from core.replay.rewrite_packets import rewrite_packets
-from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM, build_rewrite_kwargs
-from core.utils.read_pcap import read_pcap
+from core.pcap.rewrite_packets import rewrite_packets
+from core.utils.rewrite_params import REWRITE_KEY_TO_PARAM, build_rewrite_kwargs
+from core.pcap.read_pcap import read_pcap
 
 
 rewrite_pcap_file_bp = Blueprint("rewrite_pcap_file", __name__, url_prefix="/api")

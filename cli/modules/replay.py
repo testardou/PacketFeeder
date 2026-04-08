@@ -4,12 +4,12 @@ from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import RewriteMixin
 from cli.modules.base import BaseModule
 
-from core.replay.rewrite_packets import rewrite_packets
-from core.rewrite.rewrite_params import build_rewrite_kwargs
-from core.utils.filter_packets import filter_packets
+from core.pcap.rewrite_packets import rewrite_packets
+from core.utils.rewrite_params import build_rewrite_kwargs
+from core.pcap.filter_packets import filter_packets
 from core.utils.get_ifaces import get_ifaces
-from core.utils.read_pcap import read_pcap
-from core.utils.replay_with_speed import replay_with_speed
+from core.pcap.read_pcap import read_pcap
+from core.replay.replay_with_speed import replay_with_speed
 
 
 class ReplayModule(RewriteMixin, InfosMixin, BaseModule):

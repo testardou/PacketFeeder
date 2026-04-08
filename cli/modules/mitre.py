@@ -4,18 +4,18 @@ from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import RewriteMixin
 from cli.modules.base import BaseModule
 
-from core.replay.rewrite_packets import rewrite_packets
-from core.rewrite.rewrite_params import build_rewrite_kwargs
-from core.utils.filter_packets import filter_packets
+from core.pcap.rewrite_packets import rewrite_packets
+from core.utils.rewrite_params import build_rewrite_kwargs
+from core.pcap.filter_packets import filter_packets
 from core.utils.get_ifaces import get_ifaces
-from core.utils.list_pcaps_for_technique import list_pcaps_for_technique
-from core.utils.list_tactics import list_tactics
-from core.utils.list_techniques_for_tactic import list_techniques_for_tactic
-from core.utils.print_pcaps_from_technique_table import print_pcaps_from_technique_table
-from core.utils.print_tactics_table import print_tactics_table
-from core.utils.print_techniques_from_tactic_table import print_techniques_from_tactic_table
-from core.utils.read_pcap import read_pcap
-from core.utils.replay_with_speed import replay_with_speed
+from core.mitre.list_pcaps_for_technique import list_pcaps_for_technique
+from core.mitre.list_tactics import list_tactics
+from core.mitre.list_techniques_for_tactic import list_techniques_for_tactic
+from core.display.print_pcaps_from_technique_table import print_pcaps_from_technique_table
+from core.display.print_tactics_table import print_tactics_table
+from core.display.print_techniques_from_tactic_table import print_techniques_from_tactic_table
+from core.pcap.read_pcap import read_pcap
+from core.replay.replay_with_speed import replay_with_speed
 
 
 class MitreModule(RewriteMixin, InfosMixin, BaseModule):

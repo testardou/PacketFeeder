@@ -5,7 +5,7 @@ Global rewrites take priority over per-pcap rewrites on conflict.
 
 
 
-from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM
+from core.utils.rewrite_params import REWRITE_KEY_TO_PARAM
 
 
 def _parse_rewrite_list(rewrite_list):

@@ -4,7 +4,7 @@ Common replay loop logic shared across different replay modes.
 import logging
 from backend.extension import socketio
 from backend.sockets.realtime import should_run, running_status
-from core.utils.send_pcap import send_pcap
+from core.replay.send_pcap import send_pcap
 import time
 
 logger = logging.getLogger(__name__)

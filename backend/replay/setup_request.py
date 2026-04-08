@@ -1,12 +1,11 @@
 from flask import current_app
 from backend.utils.validate_file_path import validate_file_path_auto
 from backend.utils.parse_rewrite_json import parse_rewrite_json
-from core.replay.rewrite_packets import rewrite_packets
-from core.rewrite.rewrite_params import REWRITE_KEY_TO_PARAM, build_rewrite_kwargs
-from core.utils.read_pcap import read_pcap
+from core.pcap.rewrite_packets import rewrite_packets
+from core.utils.rewrite_params import REWRITE_KEY_TO_PARAM, build_rewrite_kwargs
+from core.pcap.read_pcap import read_pcap
 from backend.sockets.realtime import should_run, running_status
 from backend.extension import socketio
-import os
 
 
 def setup_request(request, apply_filter=True):

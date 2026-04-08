@@ -1,6 +1,6 @@
 from scapy.utils import rdpcap
 
-from core.replay.rewrite_packets import rewrite_packets
+from core.pcap.rewrite_packets import rewrite_packets
 
 
 def merge_pcaps(scenario, global_rewrite=None, specifics_rewrite=None):

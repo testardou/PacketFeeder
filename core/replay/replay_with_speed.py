@@ -2,7 +2,7 @@ import time
 
 from tqdm import tqdm
 
-from core.utils.send_pcap import send_pcap
+from core.replay.send_pcap import send_pcap
 
 
 def replay_with_speed(packets, iface, speed=0):

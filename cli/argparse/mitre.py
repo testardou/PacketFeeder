@@ -1,14 +1,11 @@
 import sys
 
-from rich.table import Table
-from rich.console import Console
-
-from core.utils.list_pcaps_for_technique import list_pcaps_for_technique
-from core.utils.list_tactics import list_tactics
-from core.utils.list_techniques_for_tactic import list_techniques_for_tactic
-from core.utils.print_pcaps_from_technique_table import print_pcaps_from_technique_table
-from core.utils.print_tactics_table import print_tactics_table
-from core.utils.print_techniques_from_tactic_table import print_techniques_from_tactic_table
+from core.mitre.list_pcaps_for_technique import list_pcaps_for_technique
+from core.mitre.list_tactics import list_tactics
+from core.mitre.list_techniques_for_tactic import list_techniques_for_tactic
+from core.display.print_pcaps_from_technique_table import print_pcaps_from_technique_table
+from core.display.print_tactics_table import print_tactics_table
+from core.display.print_techniques_from_tactic_table import print_techniques_from_tactic_table
 
 
 
