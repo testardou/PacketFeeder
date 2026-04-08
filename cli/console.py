@@ -130,7 +130,7 @@ class PacketFeederConsole(cmd2.Cmd):
     def do_back(self, _args):
         """Return to main prompt"""
         self.active_module = None
-        self.prompt = "PacketFeeder > "
+        self.prompt = "\033[1;32mPacketFeeder\033[0m > "
 
     def do_set(self, args):
         if not self.active_module:

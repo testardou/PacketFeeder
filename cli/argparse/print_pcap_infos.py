@@ -1,4 +1,4 @@
-from core.pcap.pcap_infos import pcap_infos_table
+from core.pcap.pcap_infos_table import pcap_infos_table
 from core.pcap.pcap_infos import pcap_infos
 from core.pcap.read_pcap import read_pcap
 
