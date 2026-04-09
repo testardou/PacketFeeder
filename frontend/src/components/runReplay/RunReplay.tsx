@@ -117,19 +117,17 @@ export const RunReplay = ({
   });
 
   return (
-    <div className="flex flex-row gap-10 w-full items-center">
-      <div className="mb-auto">
-        <ButtonsReplay
-          selectedMode={selectedMode}
-          running={running}
-          runMutation={runMutation}
-          selectFile={selectFile}
-          selectedInterface={selectedInterface}
-          socket={socket}
-          setStepIndex={setStepIndex}
-          stepIndex={stepIndex}
-        />
-      </div>
+    <div className="flex flex-col gap-10 w-full">
+      <ButtonsReplay
+        selectedMode={selectedMode}
+        running={running}
+        runMutation={runMutation}
+        selectFile={selectFile}
+        selectedInterface={selectedInterface}
+        socket={socket}
+        setStepIndex={setStepIndex}
+        stepIndex={stepIndex}
+      />
       {selectedMode === "step" ? (
         <ReplayStepProgress mutation={runMutation} selectFile={selectFile} />
       ) : (

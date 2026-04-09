@@ -11,12 +11,14 @@ interface ISelectInterfaceProps {
   ifaces?: string[];
   selectedInterface: string | null;
   setSelectedInterface: (iface: string) => void;
+  disabled: boolean;
 }
 
 export const SelectInterface = ({
   ifaces,
   selectedInterface,
   setSelectedInterface,
+  disabled,
 }: ISelectInterfaceProps) => {
   // Auto-select first interface when interfaces are loaded and none is selected
   useEffect(() => {
@@ -29,6 +31,7 @@ export const SelectInterface = ({
     <div className="flex flex-col gap-2 text-sm font-medium">
       <span>Interface</span>
       <Select
+        disabled={disabled}
         onValueChange={(value: string) => setSelectedInterface(value)}
         value={selectedInterface ?? ""}
       >

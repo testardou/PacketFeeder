@@ -49,7 +49,7 @@ export const PacketPayload = ({ payload }: IPacketPayloadProps) => {
     <>
       {payload?.isPending && <h2>Packet payload is loading....</h2>}
       {payload?.data?.payload && (
-        <Card className="w-fit">
+        <Card className="w-fit mx-auto">
           <CardContent>
             <pre className="text-sm font-mono overflow-x-auto">
               {formatWireshark(payload?.data?.payload)?.map((row) => (

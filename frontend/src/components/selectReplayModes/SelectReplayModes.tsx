@@ -10,6 +10,7 @@ import type { ReplayModeType } from "@/types/types";
 interface ISelectReplayModesProps {
   selected: ReplayModeType;
   setSelected: (mode: ReplayModeType) => void;
+  disabled: boolean;
 }
 type SelectReplayModeType = { value: ReplayModeType; label: string };
 
@@ -35,11 +36,13 @@ const replayModes: SelectReplayModeType[] = [
 export const SelectReplayModes = ({
   selected,
   setSelected,
+  disabled,
 }: ISelectReplayModesProps) => {
   return (
     <div className="flex flex-col gap-2 text-sm font-medium">
       <span>Replay Mode</span>
       <Select
+        disabled={disabled}
         onValueChange={(value: ReplayModeType) => setSelected(value)}
         value={selected ?? ""}
       >

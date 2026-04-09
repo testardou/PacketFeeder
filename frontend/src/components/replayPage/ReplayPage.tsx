@@ -17,6 +17,7 @@ import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
 import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
 import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
+import { Spinner } from "@/components/ui/spinner";
 
 export const ReplayPage = () => {
   const { rewriteValues, resetRewrites } = useRewriteContext();
@@ -80,16 +81,27 @@ export const ReplayPage = () => {
   });
 
   const handleSetSelectFile = (fileName: string | null) => {
-    // Reset all states when file selection changes
     if (fileName !== selectFile) {
       resetStates();
       detailsMutation.reset();
+      infosMutation.reset();
     }
     setSelectFile(fileName);
+    if (fileName) {
+      infosMutation.mutate(fileName);
+      detailsMutation.mutate(fileName);
+    }
   };
 
   if (isLoading) {
-    return <p>Loading interfaces...</p>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-row gap-2 items-center ">
+          <Spinner className="size-8" />
+          <p className="text-5xl w-auto ">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -103,6 +115,7 @@ export const ReplayPage = () => {
       />
       {selectFile && (
         <>
+          <h2 className="text-2xl">Informations</h2>
           <PcapInfos pcapInfos={infosMutation} />
           <PcapRewrite pcapInfos={infosMutation} />
           <PcapDetails
@@ -112,18 +125,22 @@ export const ReplayPage = () => {
         </>
       )}
       <div className="flex flex-col gap-5">
-        <h2 className="text-2xl">Configuration</h2>
-        <div className="flex flex-row gap-10">
+        <h2 className="text-2xl">Configurations</h2>
+        <div className="flex flex-row gap-8">
           <SelectInterface
+            disabled={!selectFile}
             selectedInterface={selectedInterface}
             setSelectedInterface={setSelectedInterface}
             ifaces={ifaces_list?.interfaces}
           />
           <SelectReplayModes
+            disabled={!selectFile}
             selected={selectedMode}
             setSelected={setSelectedMode}
           />
           <ReplayFilter
+            totalPackets={infosMutation?.data?.packet_count ?? 0}
+            disabled={!selectFile || infosMutation.isPending}
             filterIndex={filterIndex}
             setFilterIndex={setFilterIndex}
             filterRange={filterRange}

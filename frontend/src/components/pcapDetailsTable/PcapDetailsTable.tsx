@@ -330,168 +330,181 @@ export const PcapDetailsTable = ({
       )}
 
       {data && (
-        <div className="w-fit flex flex-row gap-6">
-          <div className="flex-1 min-w-0 space-y-3">
-            {/* Search Bar */}
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search by IP address or port (e.g., 192.168.1.1, 80, 443)"
-                  value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
-                  className="pl-9 pr-9"
-                />
+        <div className="w-full flex  gap-6">
+          {shownPayloadId ? (
+            <div className="flex flex-col gap-2 w-full">
+              <Button
+                className="w-fit"
+                variant="ghost"
+                onClick={() => setShownPayloadId(null)}
+              >
+                ← Back
+              </Button>
+              <PacketPayload payload={packetPayloadMutation} />
+            </div>
+          ) : (
+            <div className="w-full space-y-3">
+              {/* Search Bar */}
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search by IP address or port (e.g., 192.168.1.1, 80, 443)"
+                    value={searchFilter}
+                    onChange={(e) => setSearchFilter(e.target.value)}
+                    className="pl-9 pr-9"
+                  />
+                  {searchFilter && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                      onClick={() => setSearchFilter("")}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
                 {searchFilter && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                    onClick={() => setSearchFilter("")}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {table.getFilteredRowModel().rows.length} result
+                    {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""}
+                  </span>
                 )}
               </div>
-              {searchFilter && (
-                <span className="text-sm text-muted-foreground">
-                  {table.getFilteredRowModel().rows.length} result
-                  {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""}
-                </span>
+
+              <div className="w-full overflow-x-auto rounded-lg border bg-card">
+                <Table className="w-full">
+                  <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow
+                        key={headerGroup.id}
+                        className="bg-muted/50 hover:bg-muted/50"
+                      >
+                        {headerGroup.headers.map((header) => {
+                          return (
+                            <TableHead
+                              key={header.id}
+                              className="font-semibold text-sm h-9 px-3 whitespace-nowrap"
+                            >
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                  )}
+                            </TableHead>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableHeader>
+                  <TableBody>
+                    {table.getRowModel().rows?.length ? (
+                      table.getRowModel().rows.map((row, index) => {
+                        const rowData = row.original as PacketDetailsType;
+                        const rowIndex = rowData?.id ?? index;
+                        const isHighlighted =
+                          highlightedIndex != null &&
+                          rowIndex === highlightedIndex;
+
+                        return (
+                          <TableRow
+                            key={row.id}
+                            className={`h-8 hover:bg-muted/50 ${
+                              isHighlighted
+                                ? "bg-yellow-200 dark:bg-yellow-900/30 border-l-4 border-yellow-500"
+                                : index % 2 === 0
+                                  ? "bg-background"
+                                  : "bg-muted/20"
+                            }`}
+                          >
+                            {row.getVisibleCells().map((cell) => (
+                              <TableCell
+                                key={cell.id}
+                                className="px-3 py-1.5 text-sm"
+                              >
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        );
+                      })
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={columns.length}
+                          className="h-24 text-center"
+                        >
+                          No results.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+              {!hidePagination && (
+                <div className="flex items-center justify-between space-x-2 py-3 px-1">
+                  <div className="text-muted-foreground text-sm">
+                    Showing {table.getState().pagination.pageIndex * 25 + 1} to{" "}
+                    {Math.min(
+                      (table.getState().pagination.pageIndex + 1) * 25,
+                      table.getFilteredRowModel().rows.length,
+                    )}{" "}
+                    of {table.getFilteredRowModel().rows.length} packets
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => table.setPageIndex(0)}
+                      disabled={!table.getCanPreviousPage()}
+                      className="h-7 text-sm"
+                    >
+                      First
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => table.previousPage()}
+                      disabled={!table.getCanPreviousPage()}
+                      className="h-7 text-sm"
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-sm text-muted-foreground px-2">
+                      Page {table.getState().pagination.pageIndex + 1} of{" "}
+                      {table.getPageCount()}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => table.nextPage()}
+                      disabled={!table.getCanNextPage()}
+                      className="h-7 text-sm"
+                    >
+                      Next
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        table.setPageIndex(table.getPageCount() - 1)
+                      }
+                      disabled={!table.getCanNextPage()}
+                      className="h-7 text-sm"
+                    >
+                      Last
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
-
-            <div className="overflow-x-auto rounded-lg border bg-card">
-              <Table className="w-full">
-                <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow
-                      key={headerGroup.id}
-                      className="bg-muted/50 hover:bg-muted/50"
-                    >
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead
-                            key={header.id}
-                            className="font-semibold text-sm h-9 px-3 whitespace-nowrap"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
-                          </TableHead>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row, index) => {
-                      const rowData = row.original as PacketDetailsType;
-                      const rowIndex = rowData?.id ?? index;
-                      const isHighlighted =
-                        highlightedIndex != null &&
-                        rowIndex === highlightedIndex;
-
-                      return (
-                        <TableRow
-                          key={row.id}
-                          className={`h-8 hover:bg-muted/50 ${
-                            isHighlighted
-                              ? "bg-yellow-200 dark:bg-yellow-900/30 border-l-4 border-yellow-500"
-                              : index % 2 === 0
-                                ? "bg-background"
-                                : "bg-muted/20"
-                          }`}
-                        >
-                          {row.getVisibleCells().map((cell) => (
-                            <TableCell
-                              key={cell.id}
-                              className="px-3 py-1.5 text-sm"
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      );
-                    })
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={columns.length}
-                        className="h-24 text-center"
-                      >
-                        No results.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-            {!hidePagination && (
-              <div className="flex items-center justify-between space-x-2 py-3 px-1">
-                <div className="text-muted-foreground text-sm">
-                  Showing {table.getState().pagination.pageIndex * 25 + 1} to{" "}
-                  {Math.min(
-                    (table.getState().pagination.pageIndex + 1) * 25,
-                    table.getFilteredRowModel().rows.length,
-                  )}{" "}
-                  of {table.getFilteredRowModel().rows.length} packets
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                    className="h-7 text-sm"
-                  >
-                    First
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="h-7 text-sm"
-                  >
-                    Previous
-                  </Button>
-                  <span className="text-sm text-muted-foreground px-2">
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount()}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="h-7 text-sm"
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                    className="h-7 text-sm"
-                  >
-                    Last
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {shownPayloadId && <PacketPayload payload={packetPayloadMutation} />}
+          )}
         </div>
       )}
     </>

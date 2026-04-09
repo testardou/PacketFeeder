@@ -8,7 +8,7 @@ import type {
 } from "@/types/types";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { ReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
+import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { API_CONFIG } from "@/config/api";
@@ -106,7 +106,10 @@ export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
           setSelectedInterface={setSelectedInterface}
           ifaces={ifaces_list?.interfaces}
         />
-        <ReplayModes selected={selectedMode} setSelected={setSelectedMode} />
+        <SelectReplayModes
+          selected={selectedMode}
+          setSelected={setSelectedMode}
+        />
       </div>
       <ReplayFilter
         filterIndex={filterIndex}

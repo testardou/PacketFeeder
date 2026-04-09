@@ -13,24 +13,18 @@ type FilterMode = "all" | "index" | "range";
 type SelectFilterModeType = { value: FilterMode; label: string };
 
 const replayModes: SelectFilterModeType[] = [
-  {
-    value: "all",
-    label: "All Pcakets",
-  },
-  {
-    value: "index",
-    label: "Single Packet",
-  },
-  {
-    value: "range",
-    label: "Packet Range",
-  },
+  { value: "all", label: "All Packets" },
+  { value: "index", label: "Single Packet" },
+  { value: "range", label: "Packet Range" },
 ];
+
 interface IReplayFilterProps {
   filterIndex: number | null;
   setFilterIndex: (index: number | null) => void;
   filterRange: string;
   setFilterRange: (range: string) => void;
+  totalPackets?: number;
+  disabled: boolean;
 }
 
 export const ReplayFilter = ({
@@ -38,6 +32,8 @@ export const ReplayFilter = ({
   setFilterIndex,
   filterRange,
   setFilterRange,
+  totalPackets,
+  disabled,
 }: IReplayFilterProps) => {
   const getCurrentMode = (): FilterMode => {
     if (filterIndex !== null) return "index";
@@ -47,6 +43,7 @@ export const ReplayFilter = ({
   const [filterMode, setFilterMode] = useState<FilterMode>(() =>
     getCurrentMode(),
   );
+
   const handleModeChange = (mode: FilterMode) => {
     setFilterMode(mode);
     if (mode === "all") {
@@ -58,7 +55,7 @@ export const ReplayFilter = ({
       setFilterIndex(null);
     }
   };
-  const displayedMode = filterMode;
+
   const handleIndexChange = (value: string) => {
     if (value === "") {
       setFilterIndex(null);
@@ -69,59 +66,100 @@ export const ReplayFilter = ({
       }
     }
   };
-  const handleRangeChange = (value: string) => {
-    setFilterRange(value);
-  };
-  return (
-    <>
-      <div className="flex flex-col gap-2 text-sm font-medium">
-        <span>Packet Selection</span>
-        <div className="flex flex-row gap-4">
-          <Select
-            onValueChange={(value: FilterMode) => handleModeChange(value)}
-            value={filterMode ?? ""}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a replay mode" />
-            </SelectTrigger>
-            <SelectContent>
-              {replayModes?.map((mode: SelectFilterModeType) => (
-                <SelectItem value={mode.value} key={mode.value}>
-                  {mode.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex flex-row items-center gap-4 flex-wrap">
-            {displayedMode === "index" && (
-              <div className="flex flex-col items-center gap-2">
-                <Input
-                  id="filter-index"
-                  type="number"
-                  min="0"
-                  placeholder="Index"
-                  value={filterIndex !== null ? filterIndex.toString() : ""}
-                  onChange={(e) => handleIndexChange(e.target.value)}
-                  className="w-24 h-8"
-                />
-              </div>
-            )}
 
-            {displayedMode === "range" && (
-              <div className="flex flex-col items-center gap-2">
-                <Input
-                  id="filter-range"
-                  type="text"
-                  placeholder="e.g., 5-10"
-                  value={filterRange}
-                  onChange={(e) => handleRangeChange(e.target.value)}
-                  className="w-32 h-8"
-                />
-              </div>
+  const rangeStart = filterRange ? filterRange.split("-")[0] : "";
+  const rangeEnd = filterRange ? filterRange.split("-")[1] || "" : "";
+  const startNum = rangeStart ? parseInt(rangeStart) : null;
+  const endNum = rangeEnd ? parseInt(rangeEnd) : null;
+
+  const rangeError =
+    startNum !== null && endNum !== null && startNum > endNum
+      ? "Start must be ≤ End"
+      : totalPackets && endNum !== null && endNum >= totalPackets
+        ? `Max index: ${totalPackets - 1}`
+        : null;
+
+  const indexError =
+    totalPackets && filterIndex !== null && filterIndex >= totalPackets
+      ? `Max index: ${totalPackets - 1}`
+      : null;
+
+  return (
+    <div className="flex flex-col gap-2 text-sm font-medium">
+      <span>
+        Packet Selection{totalPackets ? ` (${totalPackets} packets)` : ""}
+      </span>
+      <div className="flex flex-row gap-4 items-center">
+        <Select
+          disabled={disabled}
+          onValueChange={(value: FilterMode) => handleModeChange(value)}
+          value={filterMode ?? ""}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a replay mode" />
+          </SelectTrigger>
+          <SelectContent>
+            {replayModes.map((mode) => (
+              <SelectItem value={mode.value} key={mode.value}>
+                {mode.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {filterMode === "index" && (
+          <div className="flex items-center gap-2">
+            <Input
+              disabled={disabled}
+              type="number"
+              min="0"
+              max={totalPackets ? totalPackets - 1 : undefined}
+              placeholder="Index"
+              value={filterIndex !== null ? filterIndex.toString() : ""}
+              onChange={(e) => handleIndexChange(e.target.value)}
+              className="w-24 h-8"
+            />
+            {indexError && (
+              <span className="text-destructive text-xs">{indexError}</span>
             )}
           </div>
-        </div>
+        )}
+
+        {filterMode === "range" && (
+          <div className="flex items-center gap-2">
+            <Input
+              disabled={disabled}
+              type="number"
+              min="0"
+              max={totalPackets ? totalPackets - 1 : undefined}
+              placeholder="From"
+              value={rangeStart}
+              onChange={(e) => {
+                const val = e.target.value;
+                setFilterRange(rangeEnd ? `${val}-${rangeEnd}` : val);
+              }}
+              className="w-20 h-8"
+            />
+            <span>-</span>
+            <Input
+              disabled={disabled}
+              type="number"
+              min="0"
+              max={totalPackets ? totalPackets - 1 : undefined}
+              placeholder="To"
+              value={rangeEnd}
+              onChange={(e) => {
+                const val = e.target.value;
+                setFilterRange(rangeStart ? `${rangeStart}-${val}` : `-${val}`);
+              }}
+              className="w-20 h-8"
+            />
+            {rangeError && (
+              <span className="text-destructive text-xs">{rangeError}</span>
+            )}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };

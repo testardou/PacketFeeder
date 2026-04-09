@@ -6,9 +6,9 @@ import { useScenarioInfos } from "@/hooks/useScenarioInfos";
 import { useScenarioRewrites } from "@/hooks/useScenarioRewrites";
 import { ScenarioRewritePanel } from "@/components/scenariobuilder/ScenarioRewritePanel";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { ReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
+import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
-import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
+// import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
 import { API_CONFIG } from "@/config/api";
 import type { InterfacesType, ReplayModeType } from "@/types/types";
 import { ScenarioBuildPhase } from "@/components/scenarioBuildPhase/ScenarioBuildPhase";
@@ -23,8 +23,8 @@ export default function ScenarioBuilder() {
 
   // --- Rewrites ---
   const {
-    globalRewrites,
-    perPcapRewrites,
+    // globalRewrites,
+    // perPcapRewrites,
     globalRewriteValues,
     getPerPcapRewriteValues,
     resetAll: resetRewrites,
@@ -35,7 +35,7 @@ export default function ScenarioBuilder() {
   const [selectedInterface, setSelectedInterface] = useState<string | null>(
     null,
   );
-  const [stepIndex, setStepIndex] = useState(0);
+  // const [stepIndex, setStepIndex] = useState(0);
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState("");
 
@@ -80,7 +80,7 @@ export default function ScenarioBuilder() {
               setSelectedInterface={setSelectedInterface}
               ifaces={ifacesList?.interfaces}
             />
-            <ReplayModes
+            <SelectReplayModes
               selected={selectedMode}
               setSelected={setSelectedMode}
             />
@@ -93,7 +93,7 @@ export default function ScenarioBuilder() {
             setFilterRange={setFilterRange}
           />
 
-          <RunScenarioReplay
+          {/* <RunScenarioReplay
             scenarioItems={scenario.scenarioItems}
             globalRewrites={globalRewrites}
             perPcapRewrites={perPcapRewrites}
@@ -103,7 +103,7 @@ export default function ScenarioBuilder() {
             setStepIndex={setStepIndex}
             filterIndex={filterIndex}
             filterRange={filterRange}
-          />
+          /> */}
         </div>
       )}
     </div>
