@@ -5,10 +5,8 @@ import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
 import { API_CONFIG } from "@/config/api";
 import { useRewriteContext } from "@/context/RewriteContext";
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
-import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
 import { ReplayConfiguration } from "@/components/mitre/ReplayConfiguration";
+import { PcapInformations } from "@/components/pcapInformations/PcapInformations";
 
 export const ReplayPage = () => {
   const { resetRewrites } = useRewriteContext();
@@ -57,15 +55,11 @@ export const ReplayPage = () => {
         setSelectFile={setSelectFile}
       />
       {selectFile && (
-        <>
-          <h2 className="text-2xl">Informations</h2>
-          <PcapInfos pcapInfos={infosMutation} />
-          <PcapRewrite pcapInfos={infosMutation} />
-          <PcapDetails
-            selectedFile={selectFile}
-            detailsMutation={detailsMutation}
-          />
-        </>
+        <PcapInformations
+          selectedFile={selectFile}
+          detailsMutation={detailsMutation}
+          infosMutation={infosMutation}
+        />
       )}
       <ReplayConfiguration
         infosMutation={infosMutation}

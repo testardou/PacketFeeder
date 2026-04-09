@@ -11,13 +11,12 @@ import {
 import { TacticSelector } from "@/components/mitre/TacticSelector";
 import { TechniqueSelector } from "@/components/mitre/TechniqueSelector";
 import { API_CONFIG } from "@/config/api";
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
-import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
 import { ReplayConfiguration } from "@/components/mitre/ReplayConfiguration";
 import { RewriteProvider } from "@/context/RewriteContext";
 import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { TechniqueCard } from "@/components/mitre/TechniqueCard";
+import { PcapInformations } from "@/components/pcapInformations/PcapInformations";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Mitre() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
@@ -171,7 +170,14 @@ export default function Mitre() {
   };
 
   if (tacticsLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-row gap-2 items-center ">
+          <Spinner className="size-8" />
+          <p className="text-5xl w-auto ">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -212,15 +218,11 @@ export default function Mitre() {
 
       <RewriteProvider>
         {selectFile && (
-          <>
-            <h2 className="text-2xl">Informations</h2>
-            <PcapInfos pcapInfos={infosMutation} />
-            <PcapRewrite pcapInfos={infosMutation} />
-            <PcapDetails
-              selectedFile={selectFile}
-              detailsMutation={detailsMutation}
-            />
-          </>
+          <PcapInformations
+            selectedFile={selectFile}
+            detailsMutation={detailsMutation}
+            infosMutation={infosMutation}
+          />
         )}
         <ReplayConfiguration
           infosMutation={infosMutation}

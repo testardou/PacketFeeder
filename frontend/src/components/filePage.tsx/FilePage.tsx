@@ -4,9 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { API_CONFIG } from "@/config/api";
 import { useRewriteContext } from "@/context/RewriteContext";
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
-import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
+import { PcapInformations } from "@/components/pcapInformations/PcapInformations";
 
 export const FilePage = () => {
   const { resetRewrites } = useRewriteContext();
@@ -63,14 +61,11 @@ export const FilePage = () => {
         setSelectFile={handleSetSelectFile}
       />
       {selectFile && (
-        <>
-          <PcapInfos pcapInfos={infosMutation} />
-          <PcapRewrite pcapInfos={infosMutation} />
-          <PcapDetails
-            selectedFile={selectFile}
-            detailsMutation={detailsMutation}
-          />
-        </>
+        <PcapInformations
+          selectedFile={selectFile}
+          detailsMutation={detailsMutation}
+          infosMutation={infosMutation}
+        />
       )}
     </div>
   );
