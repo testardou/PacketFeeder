@@ -18,13 +18,11 @@ import { API_CONFIG } from "@/config/api";
 interface UuploadPcapFileProps {
   files?: string[];
   pcaFilesloading?: boolean;
-  resetStates: () => void;
 }
 
 export const UploadPcapFile = ({
   files,
   pcaFilesloading,
-  resetStates,
 }: UuploadPcapFileProps) => {
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
@@ -45,7 +43,6 @@ export const UploadPcapFile = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pcap_files"] });
-      resetStates();
       setFile(null);
       setOpen(false);
     },
@@ -55,7 +52,7 @@ export const UploadPcapFile = ({
     ? files?.find((element) => element === file.name) !== undefined
     : false;
   const isDisabled = Boolean(
-    pcaFilesloading || !file || !file.name || isFileAlreadyUploaded
+    pcaFilesloading || !file || !file.name || isFileAlreadyUploaded,
   );
 
   return (

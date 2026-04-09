@@ -35,7 +35,6 @@ interface PcapFileListProps {
     string,
     unknown
   >;
-  resetStates: () => void;
 }
 
 export const PcapFileList = ({
@@ -43,7 +42,6 @@ export const PcapFileList = ({
   selectFile,
   setSelectFile,
   pcaFilesloading,
-  resetStates,
 }: PcapFileListProps) => {
   const queryClient = useQueryClient();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -153,11 +151,7 @@ export const PcapFileList = ({
             </DialogContent>
           </Dialog>
         )}
-        <UploadPcapFile
-          files={pcapFiles}
-          pcaFilesloading={pcaFilesloading}
-          resetStates={resetStates}
-        />
+        <UploadPcapFile files={pcapFiles} pcaFilesloading={pcaFilesloading} />
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogTrigger asChild>
             <Button type="submit" variant="destructive" disabled={!selectFile}>

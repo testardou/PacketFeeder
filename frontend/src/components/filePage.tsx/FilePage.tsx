@@ -58,7 +58,6 @@ export const FilePage = () => {
     <div className="p-6 space-y-4 max-w-6xl mx-auto">
       <h1 className="text-4xl mx-auto w-fit font-bold">Files</h1>
       <HandleFiles
-        resetStates={resetRewrites}
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={handleSetSelectFile}

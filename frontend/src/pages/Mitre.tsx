@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { Tactic, Technique, PcapDataResponse } from "@/types/mitre";
 import {
   Card,
@@ -10,9 +10,14 @@ import {
 } from "@/components/ui/card";
 import { TacticSelector } from "@/components/mitre/TacticSelector";
 import { TechniqueSelector } from "@/components/mitre/TechniqueSelector";
-import { ReplayConfiguration } from "@/components/mitre/ReplayConfiguration";
 import { API_CONFIG } from "@/config/api";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
+import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
+import { ReplayConfiguration } from "@/components/mitre/ReplayConfiguration";
 import { RewriteProvider } from "@/context/RewriteContext";
+import type { PacketDetailsType, PcapInfoType } from "@/types/types";
+import { TechniqueCard } from "@/components/mitre/TechniqueCard";
 
 export default function Mitre() {
   const [selectedTactic, setSelectedTactic] = useState<string | null>(null);
@@ -23,7 +28,6 @@ export default function Mitre() {
   const [tacticData, setTacticData] = useState<Tactic | null>(null);
   const [techniqueData, setTechniqueData] = useState<Technique | null>(null);
 
-  // Load available tactics
   const { data: tacticsList, isLoading: tacticsLoading } = useQuery<{
     files: string[];
   }>({
@@ -35,7 +39,6 @@ export default function Mitre() {
     },
   });
 
-  // Load tactic data when selected
   const { data: loadedTactic } = useQuery<Tactic>({
     queryKey: ["tactic", selectedTactic],
     queryFn: async () => {
@@ -49,14 +52,12 @@ export default function Mitre() {
     enabled: !!selectedTactic,
   });
 
-  // Load all techniques for the selected tactic to get their names
   const { data: techniquesData } = useQuery<Record<string, Technique>>({
     queryKey: ["tactic_techniques", tacticData?.techniques],
     queryFn: async () => {
       if (!tacticData?.techniques) throw new Error("No techniques available");
       const techniques: Record<string, Technique> = {};
 
-      // Load all techniques in parallel
       await Promise.all(
         tacticData.techniques.map(async (techId) => {
           try {
@@ -78,7 +79,6 @@ export default function Mitre() {
     enabled: !!tacticData?.techniques && tacticData.techniques.length > 0,
   });
 
-  // Load technique data when selected
   const { data: loadedTechnique } = useQuery<Technique>({
     queryKey: ["technique", selectedTechnique],
     queryFn: async () => {
@@ -92,7 +92,6 @@ export default function Mitre() {
     enabled: !!selectedTechnique,
   });
 
-  // Load PCAP datasets for selected technique
   const { data: pcapData, isLoading: pcapFilesLoading } =
     useQuery<PcapDataResponse>({
       queryKey: ["technique_pcaps", selectedTechnique],
@@ -107,7 +106,28 @@ export default function Mitre() {
       enabled: !!selectedTechnique,
     });
 
-  // Update state when tactic data loads
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
+
+      if (!res.ok) throw new Error("API Error");
+
+      return res.json();
+    },
+  });
+
+  const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(
+        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`,
+      );
+
+      if (!res.ok) throw new Error("Erreur API");
+
+      return res.json();
+    },
+  });
+
   useEffect(() => {
     if (loadedTactic) {
       setTacticData(loadedTactic);
@@ -117,13 +137,23 @@ export default function Mitre() {
     }
   }, [loadedTactic]);
 
-  // Update state when technique data loads
   useEffect(() => {
     if (loadedTechnique) {
       setTechniqueData(loadedTechnique);
       setSelectFile(null);
     }
   }, [loadedTechnique]);
+
+  useEffect(() => {
+    detailsMutation.reset();
+    infosMutation.reset();
+    // resetRewrites();
+    if (selectFile) {
+      infosMutation.mutate(selectFile);
+      detailsMutation.mutate(selectFile);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectFile]);
 
   const handleTacticChange = (tacticFile: string) => {
     setSelectedTactic(tacticFile);
@@ -145,10 +175,8 @@ export default function Mitre() {
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-4 max-w-6xl mx-auto">
       <h1 className="text-4xl mx-auto w-fit font-bold">Mitre</h1>
-
-      {/* Tactic and Technique Selection */}
       <Card>
         <CardHeader>
           <CardTitle>MITRE ATT&CK Selection</CardTitle>
@@ -168,22 +196,37 @@ export default function Mitre() {
             selectedTechnique={selectedTechnique}
             tacticData={tacticData}
             techniquesData={techniquesData}
-            techniqueData={techniqueData}
-            selectFile={selectFile}
-            pcapData={pcapData}
-            pcapFilesLoading={pcapFilesLoading}
             onTechniqueChange={handleTechniqueChange}
-            onDatasetSelect={handleFileChange}
           />
+          {techniqueData && (
+            <TechniqueCard
+              technique={techniqueData}
+              selectFile={selectFile}
+              pcapData={pcapData}
+              pcapFilesLoading={pcapFilesLoading}
+              onDatasetSelect={handleFileChange}
+            />
+          )}
         </CardContent>
       </Card>
 
-      {/* Replay Configuration */}
-      {selectFile && (
-        <RewriteProvider>
-          <ReplayConfiguration selectFile={selectFile} />
-        </RewriteProvider>
-      )}
+      <RewriteProvider>
+        {selectFile && (
+          <>
+            <h2 className="text-2xl">Informations</h2>
+            <PcapInfos pcapInfos={infosMutation} />
+            <PcapRewrite pcapInfos={infosMutation} />
+            <PcapDetails
+              selectedFile={selectFile}
+              detailsMutation={detailsMutation}
+            />
+          </>
+        )}
+        <ReplayConfiguration
+          infosMutation={infosMutation}
+          selectFile={selectFile ?? ""}
+        />
+      </RewriteProvider>
     </div>
   );
 }

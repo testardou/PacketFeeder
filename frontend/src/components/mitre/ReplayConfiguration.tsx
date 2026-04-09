@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery, type UseMutationResult } from "@tanstack/react-query";
 import type {
   InterfacesType,
-  PacketDetailsType,
   PcapInfoType,
   ReplayModeType,
 } from "@/types/types";
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
@@ -16,9 +14,13 @@ import { useRewriteContext } from "@/context/RewriteContext";
 
 interface ReplayConfigurationProps {
   selectFile: string;
+  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
 }
 
-export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
+export function ReplayConfiguration({
+  selectFile,
+  infosMutation,
+}: ReplayConfigurationProps) {
   const { rewriteValues, resetRewrites } = useRewriteContext();
 
   const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
@@ -30,12 +32,13 @@ export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState<string>("");
 
-  const resetStates = () => {
+  useEffect(() => {
     resetRewrites();
     setStepIndex(0);
     setFilterIndex(null);
     setFilterRange("");
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectFile]);
 
   const { data: ifaces_list, isLoading: interfacesLoading } =
     useQuery<InterfacesType>({
@@ -49,74 +52,34 @@ export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
       },
     });
 
-  const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
-    mutationFn: async (file: string) => {
-      const res = await fetch(
-        `${API_CONFIG.API_BASE}/detail-packets-pcap?file=${file}`,
-      );
-      if (!res.ok) throw new Error("Erreur API");
-      return res.json();
-    },
-    onSuccess: () => {
-      resetStates();
-    },
-  });
-
-  const infosMutation = useMutation<PcapInfoType, Error, string>({
-    mutationFn: async (file: string) => {
-      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
-      if (!res.ok) throw new Error("API Error");
-      return res.json();
-    },
-    onSuccess: () => {
-      resetStates();
-    },
-  });
-
-  // Load details and infos when file changes
-  useEffect(() => {
-    if (selectFile) {
-      resetStates();
-      detailsMutation.reset();
-      infosMutation.reset();
-      detailsMutation.mutate(selectFile);
-      infosMutation.mutate(selectFile);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFile]);
-
   if (interfacesLoading) {
     return <p>Loading interfaces...</p>;
   }
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-2xl">Configuration</h2>
-
-      <PcapInfos pcapInfos={infosMutation} />
-
-      {/* <PacketDetails
-        selectedFile={selectFile}
-        data={detailsMutation?.data}
-        isPending={detailsMutation.isPending}
-      /> */}
-      <div className="flex flex-row gap-20">
+      <h2 className="text-2xl">Configurations</h2>
+      <div className="flex flex-row gap-8">
         <SelectInterface
+          disabled={!selectFile}
           selectedInterface={selectedInterface}
           setSelectedInterface={setSelectedInterface}
           ifaces={ifaces_list?.interfaces}
         />
         <SelectReplayModes
+          disabled={!selectFile}
           selected={selectedMode}
           setSelected={setSelectedMode}
         />
+        <ReplayFilter
+          totalPackets={infosMutation?.data?.packet_count ?? 0}
+          disabled={!selectFile || infosMutation.isPending}
+          filterIndex={filterIndex}
+          setFilterIndex={setFilterIndex}
+          filterRange={filterRange}
+          setFilterRange={setFilterRange}
+        />
       </div>
-      <ReplayFilter
-        filterIndex={filterIndex}
-        setFilterIndex={setFilterIndex}
-        filterRange={filterRange}
-        setFilterRange={setFilterRange}
-      />
       <RunReplay
         selectedInterface={selectedInterface}
         rewrites={rewriteValues}

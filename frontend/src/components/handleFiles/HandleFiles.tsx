@@ -13,14 +13,12 @@ interface IHandleFilesProps {
     string,
     unknown
   >;
-  resetStates: () => void;
 }
 
 export const HandleFiles = ({
   selectFile,
   setSelectFile,
   detailsMutation,
-  resetStates,
 }: IHandleFilesProps) => {
   const pcapFilesMutation = useQuery<PcapFilesType>({
     queryKey: ["pcap_files"],
@@ -48,7 +46,6 @@ export const HandleFiles = ({
           selectFile={selectFile}
           setSelectFile={handleSetSelectFile}
           pcaFilesloading={pcapFilesMutation.isLoading}
-          resetStates={resetStates}
         />
       </div>
     </div>
