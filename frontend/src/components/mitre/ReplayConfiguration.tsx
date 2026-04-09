@@ -7,9 +7,8 @@ import type {
   ReplayModeType,
 } from "@/types/types";
 import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { ReplayModes } from "@/components/replayModes/ReplayModes";
+import { ReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { API_CONFIG } from "@/config/api";
@@ -96,11 +95,11 @@ export function ReplayConfiguration({ selectFile }: ReplayConfigurationProps) {
 
       <PcapInfos pcapInfos={infosMutation} />
 
-      <PacketDetails
+      {/* <PacketDetails
         selectedFile={selectFile}
         data={detailsMutation?.data}
         isPending={detailsMutation.isPending}
-      />
+      /> */}
       <div className="flex flex-row gap-20">
         <SelectInterface
           selectedInterface={selectedInterface}

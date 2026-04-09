@@ -1,11 +1,31 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { FileText } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+} from "@/components/ui/select";
 
 type FilterMode = "all" | "index" | "range";
 
+type SelectFilterModeType = { value: FilterMode; label: string };
+
+const replayModes: SelectFilterModeType[] = [
+  {
+    value: "all",
+    label: "All Pcakets",
+  },
+  {
+    value: "index",
+    label: "Single Packet",
+  },
+  {
+    value: "range",
+    label: "Packet Range",
+  },
+];
 interface IReplayFilterProps {
   filterIndex: number | null;
   setFilterIndex: (index: number | null) => void;
@@ -19,22 +39,16 @@ export const ReplayFilter = ({
   filterRange,
   setFilterRange,
 }: IReplayFilterProps) => {
-  // Determine current mode based on values
   const getCurrentMode = (): FilterMode => {
     if (filterIndex !== null) return "index";
     if (filterRange !== "") return "range";
     return "all";
   };
-
-  // Initialize mode from current values
   const [filterMode, setFilterMode] = useState<FilterMode>(() =>
-    getCurrentMode()
+    getCurrentMode(),
   );
-
-  // Update mode when user explicitly changes it
   const handleModeChange = (mode: FilterMode) => {
     setFilterMode(mode);
-    // Clear values when switching modes
     if (mode === "all") {
       setFilterIndex(null);
       setFilterRange("");
@@ -44,10 +58,7 @@ export const ReplayFilter = ({
       setFilterIndex(null);
     }
   };
-
-  // Use filterMode directly - it's controlled by user selection
   const displayedMode = filterMode;
-
   const handleIndexChange = (value: string) => {
     if (value === "") {
       setFilterIndex(null);
@@ -58,94 +69,59 @@ export const ReplayFilter = ({
       }
     }
   };
-
   const handleRangeChange = (value: string) => {
     setFilterRange(value);
   };
-
   return (
-    <div className="flex flex-col gap-3 w-full max-w-3xl">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <FileText className="h-4 w-4" />
-        <span>Packet Filter</span>
+    <>
+      <div className="flex flex-col gap-2 text-sm font-medium">
+        <span>Packet Selection</span>
+        <div className="flex flex-row gap-4">
+          <Select
+            onValueChange={(value: FilterMode) => handleModeChange(value)}
+            value={filterMode ?? ""}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a replay mode" />
+            </SelectTrigger>
+            <SelectContent>
+              {replayModes?.map((mode: SelectFilterModeType) => (
+                <SelectItem value={mode.value} key={mode.value}>
+                  {mode.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex flex-row items-center gap-4 flex-wrap">
+            {displayedMode === "index" && (
+              <div className="flex flex-col items-center gap-2">
+                <Input
+                  id="filter-index"
+                  type="number"
+                  min="0"
+                  placeholder="Index"
+                  value={filterIndex !== null ? filterIndex.toString() : ""}
+                  onChange={(e) => handleIndexChange(e.target.value)}
+                  className="w-24 h-8"
+                />
+              </div>
+            )}
+
+            {displayedMode === "range" && (
+              <div className="flex flex-col items-center gap-2">
+                <Input
+                  id="filter-range"
+                  type="text"
+                  placeholder="e.g., 5-10"
+                  value={filterRange}
+                  onChange={(e) => handleRangeChange(e.target.value)}
+                  className="w-32 h-8"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      <div className="flex flex-row items-center gap-4 flex-wrap">
-        <RadioGroup
-          value={displayedMode}
-          onValueChange={(value) => handleModeChange(value as FilterMode)}
-          className="flex flex-row gap-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="all" id="filter-all" />
-            <Label
-              htmlFor="filter-all"
-              className="cursor-pointer text-sm font-normal"
-            >
-              All
-            </Label>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="index" id="filter-index-option" />
-            <Label
-              htmlFor="filter-index-option"
-              className="cursor-pointer text-sm font-normal"
-            >
-              Index
-            </Label>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="range" id="filter-range-option" />
-            <Label
-              htmlFor="filter-range-option"
-              className="cursor-pointer text-sm font-normal"
-            >
-              Range
-            </Label>
-          </div>
-        </RadioGroup>
-
-        {displayedMode === "index" && (
-          <div className="flex items-center gap-2">
-            <Label
-              htmlFor="filter-index"
-              className="text-sm text-muted-foreground whitespace-nowrap"
-            >
-              Index:
-            </Label>
-            <Input
-              id="filter-index"
-              type="number"
-              min="0"
-              placeholder="e.g., 5"
-              value={filterIndex !== null ? filterIndex.toString() : ""}
-              onChange={(e) => handleIndexChange(e.target.value)}
-              className="w-24 h-8"
-            />
-          </div>
-        )}
-
-        {displayedMode === "range" && (
-          <div className="flex items-center gap-2">
-            <Label
-              htmlFor="filter-range"
-              className="text-sm text-muted-foreground whitespace-nowrap"
-            >
-              Range:
-            </Label>
-            <Input
-              id="filter-range"
-              type="text"
-              placeholder="e.g., 5-10"
-              value={filterRange}
-              onChange={(e) => handleRangeChange(e.target.value)}
-              className="w-32 h-8"
-            />
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 };

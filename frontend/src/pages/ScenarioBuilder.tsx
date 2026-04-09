@@ -6,7 +6,7 @@ import { useScenarioInfos } from "@/hooks/useScenarioInfos";
 import { useScenarioRewrites } from "@/hooks/useScenarioRewrites";
 import { ScenarioRewritePanel } from "@/components/scenariobuilder/ScenarioRewritePanel";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
-import { ReplayModes } from "@/components/replayModes/ReplayModes";
+import { ReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
 import { API_CONFIG } from "@/config/api";

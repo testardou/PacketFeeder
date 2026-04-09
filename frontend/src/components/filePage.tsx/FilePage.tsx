@@ -1,19 +1,12 @@
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
-import { PacketDetails } from "@/components/packetDetails/PacketDetails";
-import { Button } from "@/components/ui/button";
 import type { PacketDetailsType, PcapInfoType } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { API_CONFIG } from "@/config/api";
 import { useRewriteContext } from "@/context/RewriteContext";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
-import { Spinner } from "@/components/ui/spinner";
-import { ChevronDownIcon } from "lucide-react";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
+import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
 
 export const FilePage = () => {
   const { resetRewrites } = useRewriteContext();
@@ -65,39 +58,20 @@ export const FilePage = () => {
     <div className="p-6 space-y-4 max-w-6xl mx-auto">
       <h1 className="text-4xl mx-auto w-fit font-bold">Files</h1>
       <HandleFiles
-        infosMutation={infosMutation}
         resetStates={resetRewrites}
         detailsMutation={detailsMutation}
         selectFile={selectFile}
         setSelectFile={handleSetSelectFile}
       />
       {selectFile && (
-        <Card>
-          <CardContent>
-            <Collapsible className="rounded-md">
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="group w-full">
-                  Packet Details
-                  <ChevronDownIcon className="ml-auto group-data-[state=open]:rotate-180" />
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-8">
-                {detailsMutation?.isPending ? (
-                  <div className="flex flex-row gap-2">
-                    <Spinner />
-                    <p>Fetching packet details...</p>
-                  </div>
-                ) : (
-                  <PacketDetails
-                    selectedFile={selectFile}
-                    data={detailsMutation?.data}
-                    isPending={detailsMutation.isPending}
-                  />
-                )}
-              </CollapsibleContent>
-            </Collapsible>
-          </CardContent>
-        </Card>
+        <>
+          <PcapInfos pcapInfos={infosMutation} />
+          <PcapRewrite pcapInfos={infosMutation} />
+          <PcapDetails
+            selectedFile={selectFile}
+            detailsMutation={detailsMutation}
+          />
+        </>
       )}
     </div>
   );

@@ -4,16 +4,19 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   InterfacesType,
   PacketDetailsType,
+  PcapInfoType,
   ReplayModeType,
 } from "@/types/types";
-import { ReplayModes } from "@/components/replayModes/ReplayModes";
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { HandleFiles } from "@/components/handleFiles/HandleFiles";
-import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 import { RunReplay } from "@/components/runReplay/RunReplay";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
 import { API_CONFIG } from "@/config/api";
 import { useRewriteContext } from "@/context/RewriteContext";
+import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
+import { PcapRewrite } from "@/components/pcapRewrite/PcapRewrite";
+import { PcapDetails } from "@/components/pcapDetails/PcapDetails";
+import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 
 export const ReplayPage = () => {
   const { rewriteValues, resetRewrites } = useRewriteContext();
@@ -48,6 +51,19 @@ export const ReplayPage = () => {
     },
   });
 
+  const infosMutation = useMutation<PcapInfoType, Error, string>({
+    mutationFn: async (file: string) => {
+      const res = await fetch(`${API_CONFIG.API_BASE}/infos-pcap?file=${file}`);
+
+      if (!res.ok) throw new Error("API Error");
+
+      return res.json();
+    },
+    onSuccess: () => {
+      resetRewrites();
+    },
+  });
+
   const detailsMutation = useMutation<PacketDetailsType[], Error, string>({
     mutationFn: async (file: string) => {
       const res = await fetch(
@@ -77,7 +93,7 @@ export const ReplayPage = () => {
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-4 max-w-6xl mx-auto">
       <h1 className="text-4xl mx-auto w-fit font-bold">Replay</h1>
       <HandleFiles
         resetStates={resetStates}
@@ -85,28 +101,35 @@ export const ReplayPage = () => {
         selectFile={selectFile}
         setSelectFile={handleSetSelectFile}
       />
+      {selectFile && (
+        <>
+          <PcapInfos pcapInfos={infosMutation} />
+          <PcapRewrite pcapInfos={infosMutation} />
+          <PcapDetails
+            selectedFile={selectFile}
+            detailsMutation={detailsMutation}
+          />
+        </>
+      )}
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl">Configuration</h2>
-
-        <PacketDetails
-          selectedFile={selectFile}
-          data={detailsMutation?.data}
-          isPending={detailsMutation.isPending}
-        />
-        <div className="flex flex-row gap-20">
+        <div className="flex flex-row gap-10">
           <SelectInterface
             selectedInterface={selectedInterface}
             setSelectedInterface={setSelectedInterface}
             ifaces={ifaces_list?.interfaces}
           />
-          <ReplayModes selected={selectedMode} setSelected={setSelectedMode} />
+          <SelectReplayModes
+            selected={selectedMode}
+            setSelected={setSelectedMode}
+          />
+          <ReplayFilter
+            filterIndex={filterIndex}
+            setFilterIndex={setFilterIndex}
+            filterRange={filterRange}
+            setFilterRange={setFilterRange}
+          />
         </div>
-        <ReplayFilter
-          filterIndex={filterIndex}
-          setFilterIndex={setFilterIndex}
-          filterRange={filterRange}
-          setFilterRange={setFilterRange}
-        />
         <RunReplay
           selectedInterface={selectedInterface}
           rewrites={rewriteValues}

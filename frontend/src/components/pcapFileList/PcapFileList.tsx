@@ -15,7 +15,7 @@ import {
   type UseMutationResult,
 } from "@tanstack/react-query";
 import { useState } from "react";
-import type { PacketDetailsType, PcapInfoType } from "@/types/types";
+import type { PacketDetailsType } from "@/types/types";
 import { FileScrollArea } from "@/components/fileScrollArea/FileScrollArea";
 import { UploadPcapFile } from "@/components/uploadPcapFile/UploadPcapFile";
 import { API_CONFIG } from "@/config/api";
@@ -28,7 +28,6 @@ interface PcapFileListProps {
   pcapFiles?: string[];
   selectFile: string | null;
   setSelectFile: (fileName: string | null) => void;
-  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
   pcaFilesloading?: boolean;
   detailsMutation: UseMutationResult<
     PacketDetailsType[],
@@ -169,7 +168,7 @@ export const PcapFileList = ({
             <DialogHeader>
               <DialogTitle>Confirm deletion</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete the file
+                Are you sure you want to delete the file{" "}
                 <strong>{selectFile}</strong>? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>

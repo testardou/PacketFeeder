@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { PacketPayload } from "@/packetPayload/PacketPayload";
 
-interface IPacketDetailsProps {
+interface IPcapDetailsTableProps {
   data?: PacketDetailsType[] | ReplayStepType["parsed_packet"];
   selectedFile: string | null;
   isPending?: boolean;
@@ -62,20 +62,20 @@ const ipPortFilterFn: FilterFn<
   );
 };
 
-export const PacketDetails = ({
+export const PcapDetailsTable = ({
   data,
   selectedFile,
   isPending,
   highlightedIndex,
   hidePagination = false,
-}: IPacketDetailsProps) => {
+}: IPcapDetailsTableProps) => {
   const [shownPayloadId, setShownPayloadId] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState<string>("");
 
   const packetPayloadMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(
-        `${API_CONFIG.API_BASE}/packet-payload?id=${id}&file=${selectedFile}`
+        `${API_CONFIG.API_BASE}/packet-payload?id=${id}&file=${selectedFile}`,
       );
 
       if (!res.ok) throw new Error("Erreur API");
@@ -99,7 +99,7 @@ export const PacketDetails = ({
 
   const normalizedData: TableRow[] = useMemo(
     () => (Array.isArray(data) ? data : []),
-    [data]
+    [data],
   );
 
   const getProtocolColor = (proto: string) => {
@@ -163,7 +163,7 @@ export const PacketDetails = ({
           return (
             <div
               className={`font-semibold text-sm uppercase ${getProtocolColor(
-                proto
+                proto,
               )}`}
             >
               {proto}
@@ -280,7 +280,7 @@ export const PacketDetails = ({
         },
       },
     ],
-    [packetPayloadMutation, shownPayloadId]
+    [packetPayloadMutation, shownPayloadId],
   );
 
   // Filter data based on search
@@ -380,7 +380,7 @@ export const PacketDetails = ({
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         );
@@ -404,8 +404,8 @@ export const PacketDetails = ({
                             isHighlighted
                               ? "bg-yellow-200 dark:bg-yellow-900/30 border-l-4 border-yellow-500"
                               : index % 2 === 0
-                              ? "bg-background"
-                              : "bg-muted/20"
+                                ? "bg-background"
+                                : "bg-muted/20"
                           }`}
                         >
                           {row.getVisibleCells().map((cell) => (
@@ -415,7 +415,7 @@ export const PacketDetails = ({
                             >
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </TableCell>
                           ))}
@@ -441,7 +441,7 @@ export const PacketDetails = ({
                   Showing {table.getState().pagination.pageIndex * 25 + 1} to{" "}
                   {Math.min(
                     (table.getState().pagination.pageIndex + 1) * 25,
-                    table.getFilteredRowModel().rows.length
+                    table.getFilteredRowModel().rows.length,
                   )}{" "}
                   of {table.getFilteredRowModel().rows.length} packets
                 </div>

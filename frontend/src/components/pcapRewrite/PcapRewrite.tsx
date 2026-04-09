@@ -1,6 +1,6 @@
 import type { PcapInfoType } from "@/types/types";
 import type { UseMutationResult } from "@tanstack/react-query";
-import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
+import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,11 +11,11 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
-interface IPcapInfosProps {
+interface IPcapRewriteProps {
   pcapInfos?: UseMutationResult<PcapInfoType, Error, string, unknown>;
 }
 
-export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
+export const PcapRewrite = ({ pcapInfos }: IPcapRewriteProps) => {
   const data: PcapInfoType | undefined = pcapInfos?.data;
 
   return (
@@ -24,7 +24,7 @@ export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
         <Collapsible className="rounded-md">
           <CollapsibleTrigger asChild>
             <Button variant="ghost" className="group w-full">
-              Pcap Informations {pcapInfos?.isPending && <Spinner />}
+              Protocols & Rewrite {pcapInfos?.isPending && <Spinner />}
               <ChevronDownIcon className="ml-auto group-data-[state=open]:rotate-180" />
             </Button>
           </CollapsibleTrigger>
@@ -32,10 +32,10 @@ export const PcapInfos = ({ pcapInfos }: IPcapInfosProps) => {
             {pcapInfos?.isPending ? (
               <div className="flex flex-row gap-2">
                 <Spinner />
-                <p>Fetching PCAP Informations...</p>
+                <p>Fetching protocols & Rewrite...</p>
               </div>
             ) : (
-              <PcapGeneralInfos pcapInfosData={data} />
+              <PcapProtocolsScrollArea pcapInfosData={data} />
             )}
           </CollapsibleContent>
         </Collapsible>

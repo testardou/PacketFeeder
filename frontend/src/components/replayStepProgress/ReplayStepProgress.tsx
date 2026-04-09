@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { PacketDetails } from "@/components/packetDetails/PacketDetails";
 
 dayjs.extend(utc);
 
@@ -60,12 +59,12 @@ export const ReplayStepProgress = ({
           <CardContent>{data?.size ? `${data?.size} bytes` : "-"}</CardContent>
         </Card>
       </div>
-      <PacketDetails
+      {/* <PacketDetails
         data={data?.parsed_packet}
         selectedFile={selectFile}
         highlightedIndex={data?.index}
         hidePagination={true}
-      />
+      /> */}
     </div>
   );
 };

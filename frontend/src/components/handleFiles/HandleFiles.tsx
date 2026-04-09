@@ -1,10 +1,5 @@
 import { PcapFileList } from "@/components/pcapFileList/PcapFileList";
-import { PcapInfos } from "@/components/pcapInfos/PcapInfos";
-import type {
-  PacketDetailsType,
-  PcapFilesType,
-  PcapInfoType,
-} from "@/types/types";
+import type { PacketDetailsType, PcapFilesType } from "@/types/types";
 import { useQuery, type UseMutationResult } from "@tanstack/react-query";
 import { API_CONFIG } from "@/config/api";
 
@@ -19,7 +14,6 @@ interface IHandleFilesProps {
     unknown
   >;
   resetStates: () => void;
-  infosMutation: UseMutationResult<PcapInfoType, Error, string, unknown>;
 }
 
 export const HandleFiles = ({
@@ -27,7 +21,6 @@ export const HandleFiles = ({
   setSelectFile,
   detailsMutation,
   resetStates,
-  infosMutation,
 }: IHandleFilesProps) => {
   const pcapFilesMutation = useQuery<PcapFilesType>({
     queryKey: ["pcap_files"],
@@ -54,12 +47,10 @@ export const HandleFiles = ({
           pcapFiles={pcapFilesMutation.data?.files}
           selectFile={selectFile}
           setSelectFile={handleSetSelectFile}
-          infosMutation={infosMutation}
           pcaFilesloading={pcapFilesMutation.isLoading}
           resetStates={resetStates}
         />
       </div>
-      {selectFile && <PcapInfos pcapInfos={infosMutation} />}
     </div>
   );
 };

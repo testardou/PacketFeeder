@@ -10,6 +10,13 @@ interface IPcapInfosProps {
 }
 
 export const PcapGeneralInfos = ({ pcapInfosData }: IPcapInfosProps) => {
+  if (!pcapInfosData || pcapInfosData?.packet_count === 0) {
+    return (
+      <div className="p-4 text-sm text-muted-foreground">
+        This PCAP is empty.
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-row gap-4 items-center mb-4">
