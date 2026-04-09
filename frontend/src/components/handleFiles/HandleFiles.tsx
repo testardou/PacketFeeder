@@ -30,7 +30,7 @@ export const HandleFiles = ({
   infosMutation,
 }: IHandleFilesProps) => {
   const pcapFilesMutation = useQuery<PcapFilesType>({
-    queryKey: ["pcap_files"], // identifiant unique du cache
+    queryKey: ["pcap_files"],
     queryFn: async () => {
       const res = await fetch(`${API_CONFIG.API_BASE}/get-pcap-files/`);
 
