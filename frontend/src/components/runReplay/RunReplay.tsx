@@ -8,7 +8,7 @@ import type {
   RunStatusType,
 } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { API_CONFIG } from "@/config/api";
 import { REWRITE_KEYS } from "@/constants/rewriteKeys";
@@ -37,11 +37,11 @@ export const RunReplay = ({
   const [clientSid, setClientSid] = useState<string | null>(null);
   const [socketData, setSocketData] = useState<ReplayProgressType | null>(null);
   const [running, setRunning] = useState(false);
-  const socket = io(API_CONFIG.SOCKET_URL, {
-    autoConnect: true,
-  });
+  const socketRef = useRef<ReturnType<typeof io> | null>(null);
 
   useEffect(() => {
+    const socket = io(API_CONFIG.SOCKET_URL, { autoConnect: true });
+    socketRef.current = socket;
     const replayProgress = (data: ReplayProgressType) => {
       setSocketData(data);
     };
@@ -65,18 +65,19 @@ export const RunReplay = ({
     socket.on("replay_progress", replayProgress);
     socket.on("run_status", handleStatus);
 
+    const handleUnload = () => socket.emit("stop_replay");
+    window.addEventListener("beforeunload", handleUnload);
+
     return () => {
       socket.off("connect", handleConnect);
       socket.off("sid", handleSid);
       socket.off("replay_progress", replayProgress);
       socket.off("run_status", handleStatus);
+      window.removeEventListener("beforeunload", handleUnload);
+      socket.emit("stop_replay");
+      socket.disconnect();
     };
   }, []);
-
-  window.addEventListener("beforeunload", () => {
-    socket.emit("stop_replay");
-    setSocketData(null);
-  });
 
   const runMutation = useMutation({
     mutationFn: async (file: string) => {
@@ -124,7 +125,7 @@ export const RunReplay = ({
         runMutation={runMutation}
         selectFile={selectFile}
         selectedInterface={selectedInterface}
-        socket={socket}
+        socket={{ emit: (event: string) => socketRef.current?.emit(event) }}
         setStepIndex={setStepIndex}
         stepIndex={stepIndex}
       />
