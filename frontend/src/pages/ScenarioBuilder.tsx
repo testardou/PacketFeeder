@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useScenarioBuilderQueries } from "@/hooks/useScenarioBuilderQueries";
 import { useScenarioItems } from "@/hooks/useScenarioItems";
@@ -8,36 +8,53 @@ import { ScenarioRewritePanel } from "@/components/scenariobuilder/ScenarioRewri
 import { SelectInterface } from "@/components/selectInterface/SelectInterface";
 import { SelectReplayModes } from "@/components/selectReplayModes/SelectReplayModes";
 import { ReplayFilter } from "@/components/replayFilter/ReplayFilter";
-// import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
 import { API_CONFIG } from "@/config/api";
 import type { InterfacesType, ReplayModeType } from "@/types/types";
+
 import { ScenarioBuildPhase } from "@/components/scenarioBuildPhase/ScenarioBuildPhase";
+import { Spinner } from "@/components/ui/spinner";
+import { RunScenarioReplay } from "@/components/runReplay/RunScenarioReplay";
+import { TechniqueScenarioList } from "@/components/scenariobuilder/TechniqueScenarioList";
+import { Button } from "@/components/ui/button";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 export default function ScenarioBuilder() {
   const queries = useScenarioBuilderQueries();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const scenario = useScenarioItems();
+  const {
+    addPcapFromDrop,
+    removeItem,
+    reorderItems,
+    addSleep,
+    updateSleepDuration,
+    scenarioItems,
+  } = scenario;
 
-  // --- Scenario infos ---
   const scenarioInfosMutation = useScenarioInfos();
 
-  // --- Rewrites ---
   const {
-    // globalRewrites,
-    // perPcapRewrites,
+    globalRewrites,
+    perPcapRewrites,
     globalRewriteValues,
     getPerPcapRewriteValues,
     resetAll: resetRewrites,
   } = useScenarioRewrites();
 
-  // --- Replay state ---
   const [selectedMode, setSelectedMode] = useState<ReplayModeType>("realTime");
   const [selectedInterface, setSelectedInterface] = useState<string | null>(
     null,
   );
-  // const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
   const [filterIndex, setFilterIndex] = useState<number | null>(null);
   const [filterRange, setFilterRange] = useState("");
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (step === 1) handleFetchInfos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const { data: ifacesList } = useQuery<InterfacesType>({
     queryKey: ["interfaces"],
@@ -48,64 +65,102 @@ export default function ScenarioBuilder() {
     },
   });
 
+  const handleFetchInfos = () => {
+    resetRewrites();
+    scenarioInfosMutation.mutate(scenarioItems, {});
+  };
+
   if (queries.tacticsLoading) {
-    return <p>Loading...</p>;
+    <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-row gap-2 items-center ">
+        <Spinner className="size-8" />
+        <p className="text-5xl w-auto ">Loading...</p>
+      </div>
+    </div>;
   }
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-4xl mx-auto w-fit font-bold">Scenario Builder</h1>
-
-      <ScenarioBuildPhase
-        scenario={scenario}
-        queries={queries}
-        scenarioInfosMutation={scenarioInfosMutation}
-        resetRewrites={resetRewrites}
-      />
-
-      {scenarioInfosMutation.data && (
-        <ScenarioRewritePanel
-          scenarioInfos={scenarioInfosMutation.data}
-          globalRewriteValues={globalRewriteValues}
-          getPerPcapRewriteValues={getPerPcapRewriteValues}
-        />
-      )}
-      {scenario.scenarioItems.some((item) => item.type === "pcap") && (
-        <div className="flex flex-col gap-5">
-          <h2 className="text-2xl font-bold">Replay</h2>
-
-          <div className="flex flex-row gap-20">
-            <SelectInterface
+    <>
+      <div
+        className={`fixed top-12 left-0 bottom-0 w-72 border-r bg-card z-10 transition-transform duration-200 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-4 h-full flex flex-col">
+          <TechniqueScenarioList
+            items={scenarioItems}
+            onRemove={removeItem}
+            onReorder={reorderItems}
+            onDropFromOutside={addPcapFromDrop}
+            onAddSleep={addSleep}
+            onUpdateSleepDuration={updateSleepDuration}
+            setStep={setStep}
+            step={step}
+          />
+        </div>
+      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        className={`fixed top-14 z-20 transition-all duration-200 ${
+          sidebarOpen ? "left-68" : "left-2"
+        }`}
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? (
+          <PanelLeftClose className="h-4 w-4" />
+        ) : (
+          <PanelLeftOpen className="h-4 w-4" />
+        )}
+      </Button>
+      <div className="p-6 space-y-4 max-w-6xl mx-auto">
+        <h1 className="text-4xl mx-auto w-fit font-bold">Scenario Builder</h1>
+        {step === 0 && (
+          <ScenarioBuildPhase scenario={scenario} queries={queries} />
+        )}
+        {step === 1 && scenarioInfosMutation.data && (
+          <ScenarioRewritePanel
+            globalRewriteValues={globalRewriteValues}
+            getPerPcapRewriteValues={getPerPcapRewriteValues}
+            scenarioInfos={scenarioInfosMutation.data}
+          />
+        )}
+        {step === 2 && (
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-row gap-8">
+              <SelectInterface
+                selectedInterface={selectedInterface}
+                setSelectedInterface={setSelectedInterface}
+                ifaces={ifacesList?.interfaces}
+                disabled={false}
+              />
+              <SelectReplayModes
+                selected={selectedMode}
+                setSelected={setSelectedMode}
+                disabled={false}
+              />
+              <ReplayFilter
+                filterIndex={filterIndex}
+                setFilterIndex={setFilterIndex}
+                filterRange={filterRange}
+                setFilterRange={setFilterRange}
+                disabled={false}
+              />
+            </div>
+            <RunScenarioReplay
+              scenarioItems={scenarioItems}
+              globalRewrites={globalRewrites}
+              perPcapRewrites={perPcapRewrites}
+              selectedMode={selectedMode}
               selectedInterface={selectedInterface}
-              setSelectedInterface={setSelectedInterface}
-              ifaces={ifacesList?.interfaces}
-            />
-            <SelectReplayModes
-              selected={selectedMode}
-              setSelected={setSelectedMode}
+              stepIndex={stepIndex}
+              setStepIndex={setStepIndex}
+              filterIndex={filterIndex}
+              filterRange={filterRange}
             />
           </div>
-
-          <ReplayFilter
-            filterIndex={filterIndex}
-            setFilterIndex={setFilterIndex}
-            filterRange={filterRange}
-            setFilterRange={setFilterRange}
-          />
-
-          {/* <RunScenarioReplay
-            scenarioItems={scenario.scenarioItems}
-            globalRewrites={globalRewrites}
-            perPcapRewrites={perPcapRewrites}
-            selectedMode={selectedMode}
-            selectedInterface={selectedInterface}
-            stepIndex={stepIndex}
-            setStepIndex={setStepIndex}
-            filterIndex={filterIndex}
-            filterRange={filterRange}
-          /> */}
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

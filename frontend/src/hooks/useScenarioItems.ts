@@ -3,6 +3,7 @@ import type {
   ScenarioItem,
   ScenarioPcapItem,
 } from "@/components/scenariobuilder/types";
+import type { PcapDataset } from "@/types/mitre";
 
 export function useScenarioItems() {
   const [scenarioItems, setScenarioItems] = useState<ScenarioItem[]>([]);
@@ -12,6 +13,7 @@ export function useScenarioItems() {
     technique: ScenarioPcapItem["technique"],
     pcapFile: string,
     tacticId?: string,
+    dataset?: PcapDataset,
   ) => {
     const newItem: ScenarioPcapItem = {
       type: "pcap",
@@ -20,6 +22,7 @@ export function useScenarioItems() {
       technique,
       tacticId,
       pcapFile,
+      dataset,
     };
     setScenarioItems((prev) => [...prev, newItem]);
   };

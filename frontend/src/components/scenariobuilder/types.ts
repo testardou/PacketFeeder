@@ -1,5 +1,9 @@
-import type { Technique } from "@/types/mitre";
-import type { NewValuesPcapType, PcapInfoType } from "@/types/types";
+import type { PcapDataset, Technique } from "@/types/mitre";
+import type {
+  NewValuesPcapType,
+  PcapInfoType,
+  RewriteState,
+} from "@/types/types";
 
 export interface ScenarioPcapItem {
   type: "pcap";
@@ -8,6 +12,7 @@ export interface ScenarioPcapItem {
   technique: Technique;
   tacticId?: string;
   pcapFile: string;
+  dataset?: PcapDataset;
 }
 
 export interface ScenarioSleepItem {
@@ -30,7 +35,7 @@ export interface RewriteMapsCollection {
 
 export interface PerPcapInfoEntry {
   index: number;
-  pcap_file: string;
+  file_path: string;
   infos: PcapInfoType;
 }
 
@@ -38,5 +43,4 @@ export interface ScenarioInfosResponse {
   per_pcap: PerPcapInfoEntry[];
   all: PcapInfoType;
 }
-
-export type PerPcapRewrites = Record<string, RewriteMapsCollection>;
+export type PerPcapRewrites = Record<string, RewriteState>;

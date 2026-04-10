@@ -49,7 +49,7 @@ export const ScenarioRewritePanel = ({
             const isExpanded = expandedPcaps[entry.index] ?? false;
             const rewriteValues = getPerPcapRewriteValues(entry.index);
             const fileName =
-              entry.pcap_file.split("/").pop() ?? entry.pcap_file;
+              entry.file_path.split("/").pop() ?? entry.file_path;
 
             return (
               <Card key={entry.index}>

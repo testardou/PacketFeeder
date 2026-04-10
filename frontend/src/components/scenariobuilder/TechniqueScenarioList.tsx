@@ -15,6 +15,8 @@ interface TechniqueScenarioListProps {
   onDropFromOutside?: (data: Omit<ScenarioPcapItem, "id">) => void;
   onAddSleep: () => void;
   onUpdateSleepDuration: (id: string, duration: number) => void;
+  setStep: (val: number) => void;
+  step: number;
 }
 
 export function TechniqueScenarioList({
@@ -24,6 +26,8 @@ export function TechniqueScenarioList({
   onDropFromOutside,
   onAddSleep,
   onUpdateSleepDuration,
+  setStep,
+  step,
 }: TechniqueScenarioListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -147,7 +151,7 @@ export function TechniqueScenarioList({
   return (
     <div className="flex flex-col h-full gap-3">
       <div
-        className={`flex-1 rounded-lg border-2 border-dashed p-3 transition-colors overflow-auto ${dropZoneClass}`}
+        className={`flex-1 min-h-0 rounded-lg border-2 border-dashed p-3 transition-colors overflow-y-auto ${dropZoneClass}`}
         onDragOver={handleContainerDragOver}
         onDragLeave={handleContainerDragLeave}
         onDrop={handleContainerDrop}
@@ -186,14 +190,24 @@ export function TechniqueScenarioList({
           ))}
         </div>
       </div>
-      <Button
-        variant="outline"
-        className="w-full shrink-0"
-        onClick={onAddSleep}
-      >
-        <Clock className="h-4 w-4 mr-2" />
-        Add a Sleep
-      </Button>
+      <div className="flex flex-col gap-2 shrink-0">
+        <Button variant="outline" className="flex-1" onClick={onAddSleep}>
+          <Clock className="h-4 w-4 mr-2" />
+          Add a Sleep
+        </Button>
+        {step > 0 && (
+          <Button className="flex-1" onClick={() => setStep(step - 1)}>
+            Previous Step
+          </Button>
+        )}
+        <Button
+          variant="destructive"
+          className="flex-1"
+          onClick={() => setStep(step + 1)}
+        >
+          Next Step
+        </Button>
+      </div>
     </div>
   );
 }
