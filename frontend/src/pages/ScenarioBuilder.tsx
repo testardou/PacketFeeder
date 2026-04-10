@@ -78,11 +78,11 @@ export default function ScenarioBuilder() {
   return (
     <>
       <div
-        className={`fixed top-12 left-0 bottom-0 w-72 border-r bg-card z-10 transition-transform duration-200 ${
+        className={`fixed top-0 pt-12 left-0 bottom-0 w-80 border-r bg-card z-2 transition-transform duration-200 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-4 h-full flex flex-col">
+        <div className="p-4 pt-11 h-full flex flex-col">
           <TechniqueScenarioList
             items={scenarioItems}
             onRemove={removeItem}
@@ -104,9 +104,9 @@ export default function ScenarioBuilder() {
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         {sidebarOpen ? (
-          <PanelLeftClose className="h-4 w-4" />
+          <PanelLeftClose className="size-6" />
         ) : (
-          <PanelLeftOpen className="h-4 w-4" />
+          <PanelLeftOpen className="size-6" />
         )}
       </Button>
       <div className="p-6 space-y-4 max-w-6xl mx-auto">
@@ -114,12 +114,24 @@ export default function ScenarioBuilder() {
         {step === 0 && (
           <ScenarioBuildPhase scenario={scenario} queries={queries} />
         )}
-        {step === 1 && scenarioInfosMutation.data && (
-          <ScenarioRewritePanel
-            globalRewriteValues={globalRewriteValues}
-            getPerPcapRewriteValues={getPerPcapRewriteValues}
-            scenarioInfos={scenarioInfosMutation.data}
-          />
+        {step === 1 && (
+          <>
+            {scenarioInfosMutation.isPending && (
+              <div className="flex items-center justify-center h-screen">
+                <div className="flex flex-row gap-2 items-center">
+                  <Spinner className="size-8" />
+                  <p className="text-5xl w-auto">Loading...</p>
+                </div>
+              </div>
+            )}
+            {scenarioInfosMutation.data && (
+              <ScenarioRewritePanel
+                globalRewriteValues={globalRewriteValues}
+                getPerPcapRewriteValues={getPerPcapRewriteValues}
+                scenarioInfos={scenarioInfosMutation.data}
+              />
+            )}
+          </>
         )}
         {step === 2 && (
           <div className="flex flex-col gap-5">

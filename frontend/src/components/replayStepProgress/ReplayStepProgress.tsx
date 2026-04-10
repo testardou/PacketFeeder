@@ -11,13 +11,9 @@ dayjs.extend(utc);
 
 interface IReplayStepProgressProps {
   mutation: UseMutationResult<unknown, Error, string, unknown>;
-  selectFile: string | null;
 }
 
-export const ReplayStepProgress = ({
-  mutation,
-  selectFile,
-}: IReplayStepProgressProps) => {
+export const ReplayStepProgress = ({ mutation }: IReplayStepProgressProps) => {
   const [data, setData] = useState<ReplayStepType | null>(null);
 
   useEffect(() => {
@@ -45,12 +41,6 @@ export const ReplayStepProgress = ({
           <CardContent>
             {data?.index ?? "-"} / {data?.packet_count ?? "-"}
           </CardContent>
-        </Card>
-        <Card className="flex-1">
-          <CardHeader>
-            <CardTitle>Timestamp</CardTitle>
-          </CardHeader>
-          <CardContent>{data?.timestamp ?? "-"}</CardContent>
         </Card>
         <Card className="flex-1">
           <CardHeader>

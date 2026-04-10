@@ -42,12 +42,6 @@ export const ReplayProgress = ({
       </Card>
       <Card className="flex-1">
         <CardHeader>
-          <CardTitle>Timestamp</CardTitle>
-        </CardHeader>
-        <CardContent>{socketData?.timestamp}</CardContent>
-      </Card>
-      <Card className="flex-1">
-        <CardHeader>
           <CardTitle>Size</CardTitle>
         </CardHeader>
         <CardContent>{socketData?.size} bytes</CardContent>

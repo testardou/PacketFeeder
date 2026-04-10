@@ -14,7 +14,7 @@ export function Navbar() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="flex items-center justify-between border-b border-border bg-card px-6 py-2">
+    <nav className="flex items-center justify-between border-b border-border bg-card px-6 py-2 sticky top-0 z-4">
       <div className="flex items-center gap-1">
         <span className="text-lg font-bold mr-6">PacketFeeder</span>
         {items.map((item) => (

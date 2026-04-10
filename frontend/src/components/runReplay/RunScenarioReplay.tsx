@@ -172,10 +172,7 @@ export const RunScenarioReplay = ({
         />
       </div>
       {selectedMode === "step" ? (
-        <ReplayStepProgress
-          mutation={wrappedMutation as never}
-          selectFile="scenario"
-        />
+        <ReplayStepProgress mutation={wrappedMutation as never} />
       ) : (
         <ReplayProgress
           socketData={socketData}

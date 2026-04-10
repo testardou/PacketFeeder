@@ -129,7 +129,7 @@ export const RunReplay = ({
         stepIndex={stepIndex}
       />
       {selectedMode === "step" ? (
-        <ReplayStepProgress mutation={runMutation} selectFile={selectFile} />
+        <ReplayStepProgress mutation={runMutation} />
       ) : (
         <ReplayProgress
           socketData={socketData}

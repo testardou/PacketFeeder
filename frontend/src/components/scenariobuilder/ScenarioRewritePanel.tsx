@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
 import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/PcapProtocolsScrollArea";
 import type { RewriteValues } from "@/types/types";
@@ -29,7 +28,6 @@ export const ScenarioRewritePanel = ({
 
   return (
     <div className="space-y-6">
-      {/* All PCAPs section */}
       <Card>
         <CardHeader>
           <CardTitle>All PCAPs (Global Rewrites)</CardTitle>
@@ -41,8 +39,6 @@ export const ScenarioRewritePanel = ({
           </RewriteProvider>
         </CardContent>
       </Card>
-
-      {/* Per-pcap sections */}
       {scenarioInfos.per_pcap.length > 1 && (
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">Per-PCAP Rewrites</h3>
