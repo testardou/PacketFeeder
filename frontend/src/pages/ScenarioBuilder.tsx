@@ -52,7 +52,8 @@ export default function ScenarioBuilder() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (step === 1) handleFetchInfos();
+    if (step === 0) resetRewrites();
+    if (step === 1) scenarioInfosMutation.mutate(scenarioItems, {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
@@ -64,11 +65,6 @@ export default function ScenarioBuilder() {
       return res.json();
     },
   });
-
-  const handleFetchInfos = () => {
-    resetRewrites();
-    scenarioInfosMutation.mutate(scenarioItems, {});
-  };
 
   if (queries.tacticsLoading) {
     <div className="flex items-center justify-center h-screen">

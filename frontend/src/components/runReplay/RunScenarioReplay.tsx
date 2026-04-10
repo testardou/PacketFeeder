@@ -158,7 +158,7 @@ export const RunScenarioReplay = ({
   };
 
   return (
-    <div className="flex flex-row gap-10 w-full items-center">
+    <div className="flex flex-col gap-10 w-full">
       <div className="mb-auto">
         <ButtonsReplay
           selectedMode={selectedMode}

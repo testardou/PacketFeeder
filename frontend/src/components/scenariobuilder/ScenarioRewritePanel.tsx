@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { PcapGeneralInfos } from "@/components/pcapGeneralInfos/PcapGeneralInfos";
@@ -6,6 +6,7 @@ import { PcapProtocolsScrollArea } from "@/components/pcapProtocolsScrollArea/Pc
 import type { RewriteValues } from "@/types/types";
 import type { ScenarioInfosResponse } from "@/components/scenariobuilder/types";
 import { RewriteProvider } from "@/context/RewriteContext";
+import { PcapRewriteEntry } from "@/components/pcapRewriteEntry/PcapRewriteEntry";
 
 interface ScenarioRewritePanelProps {
   scenarioInfos: ScenarioInfosResponse;
@@ -46,40 +47,14 @@ export const ScenarioRewritePanel = ({
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">Per-PCAP Rewrites</h3>
           {scenarioInfos.per_pcap.map((entry) => {
-            const isExpanded = expandedPcaps[entry.index] ?? false;
-            const rewriteValues = getPerPcapRewriteValues(entry.index);
-            const fileName =
-              entry.file_path.split("/").pop() ?? entry.file_path;
-
             return (
-              <Card key={entry.index}>
-                <CardHeader
-                  className="cursor-pointer select-none"
-                  onClick={() => togglePcap(entry.index)}
-                >
-                  <div className="flex items-center gap-3">
-                    {isExpanded ? (
-                      <ChevronDown className="h-4 w-4 shrink-0" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 shrink-0" />
-                    )}
-                    <CardTitle className="text-base flex items-center gap-3">
-                      <span>{fileName}</span>
-                      <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                        {entry.infos.packet_count} packets
-                      </span>
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                {isExpanded && (
-                  <CardContent className="space-y-4">
-                    <PcapGeneralInfos pcapInfosData={entry.infos} />
-                    <RewriteProvider externalValues={rewriteValues}>
-                      <PcapProtocolsScrollArea pcapInfosData={entry.infos} />
-                    </RewriteProvider>
-                  </CardContent>
-                )}
-              </Card>
+              <PcapRewriteEntry
+                key={entry.index}
+                entry={entry}
+                getPerPcapRewriteValues={getPerPcapRewriteValues}
+                expandedPcaps={expandedPcaps}
+                togglePcap={togglePcap}
+              />
             );
           })}
         </div>
