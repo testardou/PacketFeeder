@@ -8,8 +8,6 @@ export function useScenarioBuilderQueries() {
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(
     null,
   );
-  const [tacticData, setTacticData] = useState<Tactic | null>(null);
-  const [techniqueData, setTechniqueData] = useState<Technique | null>(null);
   const [selectFile, setSelectFile] = useState<string | null>(null);
 
   const { data: tacticsList, isLoading: tacticsLoading } = useQuery<{
@@ -23,7 +21,7 @@ export function useScenarioBuilderQueries() {
     },
   });
 
-  const { data: loadedTactic } = useQuery<Tactic>({
+  const { data: tacticData = null } = useQuery<Tactic>({
     queryKey: ["tactic", selectedTactic],
     queryFn: async () => {
       if (!selectedTactic) throw new Error("No tactic selected");
@@ -63,7 +61,7 @@ export function useScenarioBuilderQueries() {
     enabled: !!tacticData?.techniques && tacticData.techniques.length > 0,
   });
 
-  const { data: loadedTechnique } = useQuery<Technique>({
+  const { data: techniqueData = null } = useQuery<Technique>({
     queryKey: ["technique", selectedTechnique],
     queryFn: async () => {
       if (!selectedTechnique) throw new Error("No technique selected");
@@ -89,19 +87,6 @@ export function useScenarioBuilderQueries() {
       },
       enabled: !!selectedTechnique,
     });
-
-  // Sync loaded data into local state
-  if (loadedTactic && loadedTactic !== tacticData) {
-    setTacticData(loadedTactic);
-    setSelectedTechnique(null);
-    setTechniqueData(null);
-    setSelectFile(null);
-  }
-
-  if (loadedTechnique && loadedTechnique !== techniqueData) {
-    setTechniqueData(loadedTechnique);
-    setSelectFile(null);
-  }
 
   const handleTacticChange = (tacticFile: string) => {
     setSelectedTactic(tacticFile);

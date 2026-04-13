@@ -67,12 +67,14 @@ export default function ScenarioBuilder() {
   });
 
   if (queries.tacticsLoading) {
-    <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-row gap-2 items-center ">
-        <Spinner className="size-8" />
-        <p className="text-5xl w-auto ">Loading...</p>
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-row gap-2 items-center ">
+          <Spinner className="size-8" />
+          <p className="text-5xl w-auto ">Loading...</p>
+        </div>
       </div>
-    </div>;
+    );
   }
 
   return (
