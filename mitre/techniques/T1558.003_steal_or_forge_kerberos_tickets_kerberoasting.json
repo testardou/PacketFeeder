@@ -1,0 +1,107 @@
+{
+  "mitre": {
+    "technique_id": "T1558.003",
+    "technique_name": "Steal or Forge Kerberos Tickets: Kerberoasting",
+    "url": "https://attack.mitre.org/techniques/T1558/003/",
+    "tactics": ["TA0006"]
+  },
+  "description": "Adversaries may abuse a valid Kerberos ticket-granting ticket (TGT) or sniff network traffic to obtain a ticket-granting service (TGS) ticket that may be vulnerable to Brute Force. Service principal names (SPNs) are used to uniquely identify each instance of a Windows service.",
+  "artifacts": [
+    "LDAP queries (TCP/389, TCP/636) targeting servicePrincipalName attribute for SPN enumeration",
+    "LDAP search requests filtering on (&(samAccountType=805306368)(servicePrincipalName=*))",
+    "Kerberos TGS-REQ requests (TCP/88, UDP/88) for service tickets associated with kerberoastable accounts",
+    "Kerberos TGS-REP responses containing RC4-HMAC (etype 23) encrypted service tickets",
+    "Multiple sequential TGS-REQ requests to different SPNs from a single account",
+    "SPN enumeration activity followed shortly by TGS-REQ requests",
+    "Domain controller responses on Kerberos port with encrypted ticket material suitable for offline cracking"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1558.003-internal-auth-kerberoasting-netexec-ldap",
+        "file": "pcaps/techniques/t1558.003/t1558.003_internal_auth_kerberoasting__netexec-ldap.pcap",
+        "name": "Internal kerberoasting (netexec LDAP)",
+        "description": "Internal authenticated kerberoasting using netexec LDAP module showing SPN enumeration via LDAP and Kerberos TGS-REQ/TGS-REP exchanges with the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "kerberoasting",
+          "kerberos",
+          "tgs-req",
+          "tgs-rep",
+          "spn",
+          "netexec",
+          "ldap",
+          "tcp",
+          "88",
+          "389",
+          "high"
+        ],
+        "command": "nxc ldap 10.10.10.30 -u maintenance -p 'P@ssword123!' --kerberoasting /tmp/kerberoast.txt"
+      },
+      {
+        "id": "t1558.003-internal-auth-kerberoasting-impacket",
+        "file": "pcaps/techniques/t1558.003/t1558.003_internal_auth_kerberoasting__impacket.pcap",
+        "name": "Internal kerberoasting (impacket GetUserSPNs)",
+        "description": "Internal authenticated kerberoasting using impacket GetUserSPNs.py showing SPN discovery via LDAP and Kerberos TGS-REQ/TGS-REP exchanges with the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "kerberoasting",
+          "kerberos",
+          "tgs-req",
+          "tgs-rep",
+          "spn",
+          "impacket",
+          "getuserspns",
+          "ldap",
+          "tcp",
+          "88",
+          "389",
+          "high"
+        ],
+        "command": "GetUserSPNs.py 'ad.packetfeeder.lab/maintenance:P@ssword123!' -dc-ip 10.10.10.30 -request"
+      },
+      {
+        "id": "t1558.003-internal-auth-kerberoasting-rubeus",
+        "file": "pcaps/techniques/t1558.003/t1558.003_internal_auth_kerberoasting__rubeus.pcap",
+        "name": "Internal kerberoasting (Rubeus)",
+        "description": "Internal authenticated kerberoasting using Rubeus showing Kerberos TGS-REQ/TGS-REP exchanges for kerberoastable service accounts with the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "kerberoasting",
+          "kerberos",
+          "tgs-req",
+          "tgs-rep",
+          "spn",
+          "rubeus",
+          "tcp",
+          "88",
+          "high"
+        ],
+        "command": "Rubeus.exe kerberoast /outfile:kerberoast.out"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

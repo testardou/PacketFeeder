@@ -249,25 +249,25 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1595 — Active Scanning (parent: external IP block scanning)
     - [ ] T1595.002 — Active Scanning: Vulnerability Scanning
     - [ ] T1595.003 — Active Scanning: Wordlist Scanning
-  - [ ] Discovery (TA0007)
+  - [x] Discovery (TA0007)
     - [x] T1018 — Remote System Discovery
     - [x] T1046 — Network Service Discovery
-    - [x] T1087.002 — Account Discovery: Domain Account
-    - [x] T1135 — Network Share Discovery
     - [x] T1069.002 — Permission Groups Discovery: Domain Groups
     - [x] T1083 — File and Directory Discovery
+    - [x] T1087.002 — Account Discovery: Domain Account
+    - [x] T1135 — Network Share Discovery
     - [x] T1201 — Password Policy Discovery
   - [ ] Credential Access (TA0006)
     - [x] T1003 — OS Credential Dumping
+    - [ ] T1003.001 — OS Credential Dumping: LSASS Memory
     - [x] T1003.003 — OS Credential Dumping: NTDS
     - [x] T1110.001 — Brute Force: Password Guessing
     - [x] T1110.003 — Brute Force: Password Spraying
     - [x] T1110.004 — Brute Force: Credential Stuffing
-    - [ ] T1003.001 — OS Credential Dumping: LSASS Memory
     - [ ] T1187 — Forced Authentication
     - [ ] T1557.001 — Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning
     - [ ] T1557.002 — Adversary-in-the-Middle: ARP Cache Poisoning
-    - [ ] T1558.003 — Steal or Forge Kerberos Tickets: Kerberoasting
+    - [x] T1558.003 — Steal or Forge Kerberos Tickets: Kerberoasting
     - [ ] T1558.004 — Steal or Forge Kerberos Tickets: AS-REP Roasting
   - [ ] Defense Evasion (TA0005)
     - [ ] T1550.002 — Use Alternate Authentication Material: Pass the Hash
