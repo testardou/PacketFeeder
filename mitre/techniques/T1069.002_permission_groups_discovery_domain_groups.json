@@ -1,0 +1,105 @@
+{
+  "mitre": {
+    "technique_id": "T1069.002",
+    "technique_name": "Permission Groups Discovery: Domain Groups",
+    "url": "https://attack.mitre.org/techniques/T1069/002/",
+    "tactics": ["TA0007"]
+  },
+  "description": "Adversaries may attempt to find domain-level groups and permission settings. The knowledge of domain-level permission groups can help adversaries determine which groups exist and which users belong to a particular group.",
+  "artifacts": [
+    "LDAP queries (TCP/389, TCP/636) for domain group enumeration",
+    "LDAP search requests and responses for Active Directory group objects",
+    "RPC endpoint mapper connections (TCP/135) for domain group enumeration",
+    "SMB protocol negotiation packets (TCP/445) associated with domain group queries",
+    "RPC calls to SAMR (Security Account Manager Remote) protocol for group enumeration",
+    "RPC calls to LSARPC (Local Security Authority Remote) protocol for group enumeration",
+    "Domain controller responses containing domain group information",
+    "Sequential or patterned group enumeration behavior"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1069.002-internal-auth-domain-groups-enum-netexec-ldap",
+        "file": "pcaps/techniques/t1069.002/t1069.002_internal_auth_domain_groups_enum__netexec-ldap.pcap",
+        "name": "Internal domain groups enumeration (netexec LDAP)",
+        "description": "Internal authenticated domain groups enumeration using netexec LDAP module showing LDAP queries to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "groups",
+          "enum",
+          "netexec",
+          "ldap",
+          "tcp",
+          "389",
+          "high"
+        ],
+        "command": "nxc ldap 10.10.10.30 -u maintenance -p 'P@ssword123!' --groups"
+      },
+      {
+        "id": "t1069.002-internal-auth-domain-groups-enum-net-group",
+        "file": "pcaps/techniques/t1069.002/t1069.002_internal_auth_domain_groups_enum__net-group.pcap",
+        "name": "Internal domain groups enumeration (net group)",
+        "description": "Internal authenticated domain groups enumeration using net group command showing RPC calls to domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "groups",
+          "enum",
+          "net",
+          "rpc",
+          "smb",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "net group /domain; net group \"Domain Admins\" /domain"
+      },
+      {
+        "id": "t1069.002-internal-auth-domain-groups-enum-rpcclient",
+        "file": "pcaps/techniques/t1069.002/t1069.002_internal_auth_domain_groups_enum__rpcclient.pcap",
+        "name": "Internal domain groups enumeration (rpcclient)",
+        "description": "Internal authenticated domain groups enumeration using rpcclient command showing RPC calls to SAMR and LSARPC protocols.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "groups",
+          "enum",
+          "rpcclient",
+          "rpc",
+          "samr",
+          "lsarpc",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "rpcclient -U 'ad.packetfeeder.lab/maintenance%P@ssword123!' 10.10.10.30 -c \"enumdomgroups; querygroupmem 0x200\""
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
