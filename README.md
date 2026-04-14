@@ -254,10 +254,9 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1046 — Network Service Discovery
     - [x] T1087.002 — Account Discovery: Domain Account
     - [x] T1135 — Network Share Discovery
-    - [ ] T1069.002 — Permission Groups Discovery: Domain Groups
+    - [x] T1069.002 — Permission Groups Discovery: Domain Groups
     - [x] T1083 — File and Directory Discovery
-    - [ ] T1201 — Password Policy Discovery
-    - [ ] T1482 — Domain Trust Discovery
+    - [x] T1201 — Password Policy Discovery
   - [ ] Credential Access (TA0006)
     - [x] T1003 — OS Credential Dumping
     - [x] T1003.003 — OS Credential Dumping: NTDS
