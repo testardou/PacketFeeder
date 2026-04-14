@@ -1,0 +1,140 @@
+{
+  "mitre": {
+    "technique_id": "T1558.004",
+    "technique_name": "Steal or Forge Kerberos Tickets: AS-REP Roasting",
+    "url": "https://attack.mitre.org/techniques/T1558/004/",
+    "tactics": ["TA0006"]
+  },
+  "description": "Adversaries may reveal credentials of accounts that have disabled Kerberos preauthentication by Password Cracking Kerberos messages. Preauthentication offers protection against offline password cracking. When enabled, a user requesting access to a resource initiates communication with the Domain Controller (DC) by sending an Authentication Server Request (AS-REQ) message with a timestamp that is encrypted with the hash of their password.",
+  "artifacts": [
+    "LDAP queries (TCP/389, TCP/636) filtering on userAccountControl bit DONT_REQ_PREAUTH (0x400000)",
+    "LDAP search requests for accounts with Kerberos preauthentication disabled",
+    "Kerberos AS-REQ requests (TCP/88, UDP/88) without preauthentication data (PA-ENC-TIMESTAMP absent)",
+    "Kerberos AS-REP responses containing RC4-HMAC (etype 23) encrypted material for offline cracking",
+    "KRB_ERROR responses (KDC_ERR_PREAUTH_REQUIRED or KDC_ERR_C_PRINCIPAL_UNKNOWN) for invalid attempts",
+    "Multiple sequential AS-REQ requests for different usernames from the same source",
+    "AS-REQ with kdc-options flags indicating no preauth and targeting user principals"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1558.004-internal-auth-asrep-roasting-netexec-ldap",
+        "file": "pcaps/techniques/t1558.004/t1558.004_internal_auth_asrep_roasting__netexec-ldap.pcap",
+        "name": "Internal AS-REP roasting (netexec LDAP)",
+        "description": "Internal authenticated AS-REP roasting using netexec LDAP module showing enumeration of DONT_REQ_PREAUTH accounts via LDAP and Kerberos AS-REQ/AS-REP exchanges with the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "asrep-roasting",
+          "asreproast",
+          "kerberos",
+          "as-req",
+          "as-rep",
+          "preauth",
+          "netexec",
+          "ldap",
+          "tcp",
+          "88",
+          "389",
+          "high"
+        ],
+        "command": "nxc ldap 10.10.10.30 -u maintenance -p 'P@ssword123!' --asreproast /tmp/asrep.txt"
+      },
+      {
+        "id": "t1558.004-internal-auth-asrep-roasting-impacket",
+        "file": "pcaps/techniques/t1558.004/t1558.004_internal_auth_asrep_roasting__impacket.pcap",
+        "name": "Internal AS-REP roasting (impacket GetNPUsers, authenticated)",
+        "description": "Internal authenticated AS-REP roasting using impacket GetNPUsers.py showing enumeration of DONT_REQ_PREAUTH accounts via LDAP and Kerberos AS-REQ/AS-REP exchanges with the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 389]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "asrep-roasting",
+          "asreproast",
+          "kerberos",
+          "as-req",
+          "as-rep",
+          "preauth",
+          "impacket",
+          "getnpusers",
+          "ldap",
+          "tcp",
+          "88",
+          "389",
+          "high"
+        ],
+        "command": "GetNPUsers.py 'ad.packetfeeder.lab/maintenance:P@ssword123!' -dc-ip 10.10.10.30 -request"
+      },
+      {
+        "id": "t1558.004-internal-unauth-asrep-roasting-succeeded-impacket",
+        "file": "pcaps/techniques/t1558.004/t1558.004_internal_unauth_asrep_roasting_succeeded__impacket.pcap",
+        "name": "Internal AS-REP roasting succeeded (impacket GetNPUsers, unauthenticated)",
+        "description": "Internal unauthenticated AS-REP roasting using impacket GetNPUsers.py with a valid DONT_REQ_PREAUTH username, showing Kerberos AS-REQ without preauth and AS-REP response containing crackable material.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "asrep-roasting",
+          "asreproast",
+          "succeeded",
+          "kerberos",
+          "as-req",
+          "as-rep",
+          "preauth",
+          "impacket",
+          "getnpusers",
+          "tcp",
+          "88",
+          "high"
+        ],
+        "command": "GetNPUsers.py ad.packetfeeder.lab/ -dc-ip 10.10.10.30 -usersfile users_valid.txt -no-pass -request"
+      },
+      {
+        "id": "t1558.004-internal-unauth-asrep-roasting-failed-impacket",
+        "file": "pcaps/techniques/t1558.004/t1558.004_internal_unauth_asrep_roasting_failed__impacket.pcap",
+        "name": "Internal AS-REP roasting failed (impacket GetNPUsers, unauthenticated)",
+        "description": "Internal unauthenticated AS-REP roasting attempt using impacket GetNPUsers.py against accounts without DONT_REQ_PREAUTH or with invalid usernames, showing Kerberos AS-REQ and KRB_ERROR responses from the domain controller.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "asrep-roasting",
+          "asreproast",
+          "failed",
+          "kerberos",
+          "as-req",
+          "krb-error",
+          "preauth",
+          "impacket",
+          "getnpusers",
+          "tcp",
+          "88",
+          "high"
+        ],
+        "command": "GetNPUsers.py ad.packetfeeder.lab/ -dc-ip 10.10.10.30 -usersfile users_invalid.txt -no-pass -request"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
