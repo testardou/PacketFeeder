@@ -1,0 +1,88 @@
+{
+  "mitre": {
+    "technique_id": "T1021.003",
+    "technique_name": "Remote Services: Distributed Component Object Model",
+    "url": "https://attack.mitre.org/techniques/T1021/003/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may use Valid Accounts to interact with remote machines by leveraging Distributed Component Object Model (DCOM). The adversary may then perform actions as the logged-on user. DCOM is transparent middleware that extends the functionality of Component Object Model (COM) beyond a local computer using remote procedure call (RPC) technology.",
+  "artifacts": [
+    "RPC endpoint mapper connections (TCP/135) followed by DCOM activation traffic on dynamic high ports",
+    "DCERPC IRemoteSCMActivator RemoteCreateInstance requests targeting DCOM CLSIDs (e.g., MMC20.Application, ShellWindows, ShellBrowserWindow)",
+    "DCOM object activation referencing MMC20.Application (CLSID 49B2791A-B1AE-4C90-9B8E-E860BA07F889) for ExecuteShellCommand abuse",
+    "NTLMSSP NEGOTIATE/CHALLENGE/AUTH messages during DCOM bind using valid account credentials",
+    "SMB session setup (TCP/445) following DCOM activation for command output retrieval (dcomexec pattern)",
+    "DCERPC bind failures or ACCESS_DENIED responses when supplied credentials are invalid",
+    "NTLM authentication failures (STATUS_LOGON_FAILURE) during DCOM activation attempts",
+    "Remote WMI/DCOM-based process execution without prior interactive logon on the target"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1021.003-internal-auth-dcom-exec-mmc20-impacket-dcomexec",
+        "file": "pcaps/techniques/t1021.003/t1021.003_internal_auth_dcom_exec_mmc20__impacket-dcomexec.pcap",
+        "name": "Internal DCOM execution via MMC20 (impacket dcomexec)",
+        "description": "Internal authenticated DCOM lateral movement using impacket dcomexec.py with the MMC20.Application object, showing RPC endpoint mapper lookup, DCOM activation over dynamic high ports, and remote command execution on the target.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lateral",
+          "dcom",
+          "exec",
+          "mmc20",
+          "rpc",
+          "ntlm",
+          "smb",
+          "impacket",
+          "dcomexec",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "dcomexec.py -object MMC20 'Administrator:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1021.003-internal-auth-dcom-exec-mmc20-failed-impacket-dcomexec",
+        "file": "pcaps/techniques/t1021.003/t1021.003_internal_auth_dcom_exec_mmc20_failed__impacket-dcomexec.pcap",
+        "name": "Internal DCOM execution failed via MMC20 (impacket dcomexec)",
+        "description": "Internal DCOM lateral movement attempt using impacket dcomexec.py with the MMC20.Application object and an invalid password, showing RPC endpoint mapper lookup and NTLM authentication failure during DCOM activation.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "failed",
+          "lateral",
+          "dcom",
+          "exec",
+          "mmc20",
+          "badpass",
+          "rpc",
+          "ntlm",
+          "smb",
+          "impacket",
+          "dcomexec",
+          "tcp",
+          "135",
+          "445",
+          "medium"
+        ],
+        "command": "dcomexec.py -object MMC20 'Administrator:toto@10.10.10.50'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
