@@ -24,7 +24,7 @@
     "pcaps": [
       {
         "id": "t1135-internal-domainadmin-smb-share-enum-net-view-all",
-        "file": "pcaps/techniques/t1135/t1135_internal_domainadmin_smb_share_enum__net_view_all.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_domainadmin_smb_share_enum__net-view-all.pcap",
         "name": "Internal domain admin SMB share enumeration (net view /all)",
         "description": "Internal authenticated domain admin SMB share enumeration using net view /all command showing comprehensive share discovery.",
         "criticality": "high",
@@ -49,7 +49,7 @@
       },
       {
         "id": "t1135-internal-user-smb-share-enum-net-view-all",
-        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_share_enum__net_view_all.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_share_enum__net-view-all.pcap",
         "name": "Internal user SMB share enumeration (net view /all)",
         "description": "Internal authenticated user SMB share enumeration using net view /all command showing comprehensive share discovery.",
         "criticality": "high",
@@ -74,7 +74,7 @@
       },
       {
         "id": "t1135-internal-user-smb-unc-browse-denied-impacket-smbclient-use",
-        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_unc_browse_denied__impacket_smbclient_use.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_unc_browse_denied__impacket-smbclient-use.pcap",
         "name": "Internal user SMB UNC browse admin shares (impacket-smbclient use)",
         "description": "Internal authenticated user SMB UNC path browsing attempt of admin shares using impacket-smbclient use command showing access denied responses.",
         "criticality": "high",
@@ -104,7 +104,7 @@
       },
       {
         "id": "t1135-internal-user-smb-share-enum-impacket-smbclient-shares",
-        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_share_enum__impacket_smbclient_shares.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_share_enum__impacket-smbclient-shares.pcap",
         "name": "Internal user SMB share enumeration (impacket-smbclient shares)",
         "description": "Internal authenticated user SMB share enumeration using impacket-smbclient shares command showing Tree Connect requests and share discovery.",
         "criticality": "high",
@@ -131,7 +131,7 @@
       },
       {
         "id": "t1135-internal-domainadmin-smb-netbios-share-enum-impacket-smbclient-shares",
-        "file": "pcaps/techniques/t1135/t1135_internal_domainadmin_smb_netbios_share_enum__impacket_smbclient_shares.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_domainadmin_smb_netbios_share_enum__impacket-smbclient-shares.pcap",
         "name": "Internal domain admin SMB NetBIOS share enumeration (impacket-smbclient shares)",
         "description": "Internal authenticated domain admin SMB share enumeration over NetBIOS Session Service using impacket-smbclient shares command showing Tree Connect requests.",
         "criticality": "high",
@@ -159,7 +159,7 @@
       },
       {
         "id": "t1135-internal-user-smb-netbios-share-enum-impacket-smbclient-shares",
-        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_netbios_share_enum__impacket_smbclient_shares.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_netbios_share_enum__impacket-smbclient-shares.pcap",
         "name": "Internal user SMB NetBIOS share enumeration (impacket-smbclient shares)",
         "description": "Internal authenticated user SMB share enumeration over NetBIOS Session Service using impacket-smbclient shares command showing Tree Connect requests and share discovery.",
         "criticality": "high",
@@ -187,7 +187,7 @@
       },
       {
         "id": "t1135-internal-user-smb-netbios-unc-browse-denied-impacket-smbclient-use",
-        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_netbios_unc_browse_denied__impacket_smbclient_use.pcap",
+        "file": "pcaps/techniques/t1135/t1135_internal_user_smb_netbios_unc_browse_denied__impacket-smbclient-use.pcap",
         "name": "Internal user SMB NetBIOS UNC browse admin shares (impacket-smbclient use)",
         "description": "Internal authenticated user SMB UNC path browsing attempt of admin shares over NetBIOS Session Service using impacket-smbclient use command showing access denied responses.",
         "criticality": "high",

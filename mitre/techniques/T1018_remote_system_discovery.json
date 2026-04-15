@@ -145,7 +145,7 @@
       },
       {
         "id": "t1018-internal-auth-ad-computers-ldapsearch-389",
-        "file": "pcaps/techniques/t1018/t1018_internal_auth_ad-computers__ldapsearch-389.pcap",
+        "file": "pcaps/techniques/t1018/t1018_internal_auth_ad_computers__ldapsearch-389.pcap",
         "name": "Internal AD computers enumeration (ldapsearch)",
         "description": "Internal authenticated LDAP query for AD computers enumeration using ldapsearch on port 389.",
         "criticality": "high",
@@ -167,7 +167,7 @@
       },
       {
         "id": "t1018-internal-auth-domain-computers-net-group",
-        "file": "pcaps/techniques/t1018/t1018_internal_auth_domain-computers__net-group.pcap",
+        "file": "pcaps/techniques/t1018/t1018_internal_auth_domain_computers__net-group.pcap",
         "name": "Internal domain computers enumeration (net group)",
         "description": "Internal authenticated domain computers enumeration using net group command.",
         "criticality": "high",
@@ -188,7 +188,7 @@
       },
       {
         "id": "t1018-internal-auth-domain-dclist-nltest",
-        "file": "pcaps/techniques/t1018/t1018_internal_auth_domain-dclist__nltest.pcap",
+        "file": "pcaps/techniques/t1018/t1018_internal_auth_domain_dclist__nltest.pcap",
         "name": "Internal domain controller list (nltest)",
         "description": "Internal authenticated domain controller list enumeration using nltest.",
         "criticality": "high",
