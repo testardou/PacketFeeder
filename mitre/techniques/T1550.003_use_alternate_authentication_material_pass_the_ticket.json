@@ -1,0 +1,153 @@
+{
+  "mitre": {
+    "technique_id": "T1550.003",
+    "technique_name": "Use Alternate Authentication Material: Pass the Ticket",
+    "url": "https://attack.mitre.org/techniques/T1550/003/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may Pass the Ticket (PtT) using stolen Kerberos tickets to move laterally within an environment, bypassing normal system access controls. Pass the Ticket is a method of authenticating to a system using Kerberos tickets without having access to an account's password.",
+  "artifacts": [
+    "Kerberos AP-REQ messages (TCP/88, UDP/88) presenting a previously obtained service ticket",
+    "Absence of preceding AS-REQ/TGS-REQ exchanges for the authenticating principal on the host",
+    "RPC endpoint mapper connections (TCP/135) followed by DCERPC bind using SPNEGO/Kerberos (not NTLMSSP)",
+    "SMB session setup (TCP/445) authenticating via Kerberos rather than NTLM",
+    "DCOM activation traffic (TCP/135 + dynamic high ports) with Kerberos authentication consistent with WMI-based execution",
+    "DRSUAPI replication calls (DCSync) over DCERPC when a ticket with sufficient privileges is used",
+    "Remote service creation (SVCCTL), WMI Win32_Process::Create, or writes to ADMIN$/C$ following Kerberos authentication",
+    "Service ticket presented for service hosts (cifs/, host/, HTTP/) on target systems from unexpected source hosts"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1550.003-internal-auth-ptt-exec-impacket-wmiexec",
+        "file": "pcaps/techniques/t1550.003/t1550.003_internal_auth_ptt_exec__impacket-wmiexec.pcap",
+        "name": "Internal Pass-the-Ticket execution (impacket wmiexec)",
+        "description": "Internal authenticated Pass-the-Ticket lateral movement using impacket wmiexec.py with a cached Kerberos ticket, showing Kerberos AP-REQ authentication and DCOM/WMI Win32_Process::Create invocation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ptt",
+          "pass-the-ticket",
+          "lateral",
+          "exec",
+          "kerberos",
+          "wmi",
+          "dcom",
+          "rpc",
+          "smb",
+          "impacket",
+          "wmiexec",
+          "tcp",
+          "88",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "wmiexec.py -k -no-pass 'ad.packetfeeder.lab/maintenance@WIN-BE108JUB3NB.ad.packetfeeder.lab' 'whoami' -dc-ip 10.10.10.30"
+      },
+      {
+        "id": "t1550.003-internal-auth-ptt-exec-impacket-smbexec",
+        "file": "pcaps/techniques/t1550.003/t1550.003_internal_auth_ptt_exec__impacket-smbexec.pcap",
+        "name": "Internal Pass-the-Ticket execution (impacket smbexec)",
+        "description": "Internal authenticated Pass-the-Ticket lateral movement using impacket smbexec.py with a cached Kerberos ticket, showing Kerberos AP-REQ authentication over SMB and RPC-based service creation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ptt",
+          "pass-the-ticket",
+          "lateral",
+          "exec",
+          "kerberos",
+          "smb",
+          "rpc",
+          "svcctl",
+          "impacket",
+          "smbexec",
+          "tcp",
+          "88",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "smbexec.py -k -no-pass 'ad.packetfeeder.lab/maintenance@WIN-BE108JUB3NB.ad.packetfeeder.lab' -dc-ip 10.10.10.30"
+      },
+      {
+        "id": "t1550.003-internal-auth-ptt-exec-impacket-psexec",
+        "file": "pcaps/techniques/t1550.003/t1550.003_internal_auth_ptt_exec__impacket-psexec.pcap",
+        "name": "Internal Pass-the-Ticket execution (impacket psexec)",
+        "description": "Internal authenticated Pass-the-Ticket lateral movement using impacket psexec.py with a cached Kerberos ticket, showing Kerberos AP-REQ authentication over SMB, ADMIN$ share access, and RPC-based service creation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ptt",
+          "pass-the-ticket",
+          "lateral",
+          "exec",
+          "kerberos",
+          "smb",
+          "rpc",
+          "svcctl",
+          "impacket",
+          "psexec",
+          "tcp",
+          "88",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "psexec.py -k -no-pass 'ad.packetfeeder.lab/maintenance@WIN-BE108JUB3NB.ad.packetfeeder.lab' 'whoami' -dc-ip 10.10.10.30"
+      },
+      {
+        "id": "t1550.003-internal-auth-ptt-dump-impacket-secretsdump",
+        "file": "pcaps/techniques/t1550.003/t1550.003_internal_auth_ptt_dump__impacket-secretsdump.pcap",
+        "name": "Internal Pass-the-Ticket credential dump (impacket secretsdump)",
+        "description": "Internal authenticated Pass-the-Ticket credential dump using impacket secretsdump.py with a cached Kerberos ticket, showing Kerberos AP-REQ authentication and DRSUAPI replication (DCSync) calls to extract credential material for a target user.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [88, 135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "ptt",
+          "pass-the-ticket",
+          "dump",
+          "dcsync",
+          "kerberos",
+          "drsuapi",
+          "rpc",
+          "smb",
+          "impacket",
+          "secretsdump",
+          "tcp",
+          "88",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "secretsdump.py -k -no-pass 'ad.packetfeeder.lab/maintenance@WIN-BE108JUB3NB.ad.packetfeeder.lab' -dc-ip 10.10.10.30 -just-dc-user alice"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
