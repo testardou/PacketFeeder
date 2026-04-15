@@ -272,13 +272,13 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Defense Evasion (TA0005)
     - [x] T1550.002 — Use Alternate Authentication Material: Pass the Hash
     - [x] T1550.003 — Use Alternate Authentication Material: Pass the Ticket
-  - [ ] Lateral Movement (TA0008)
+  - [x] Lateral Movement (TA0008)
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
     - [x] T1021.002 — Remote Services: SMB/Windows Admin Shares
     - [x] T1021.004 — Remote Services: SSH
     - [x] T1021.006 — Remote Services: Windows Remote Management
     - [x] T1210 — Exploitation of Remote Services
-    - [ ] T1021.003 — Remote Services: Distributed Component Object Model
+    - [x] T1021.003 — Remote Services: Distributed Component Object Model
   - [ ] Collection (TA0009)
     - [ ] T1039 — Data from Network Shared Drive
     - [ ] T1083 — File and Directory Discovery
