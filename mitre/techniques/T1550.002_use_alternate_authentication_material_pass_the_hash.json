@@ -1,0 +1,171 @@
+{
+  "mitre": {
+    "technique_id": "T1550.002",
+    "technique_name": "Use Alternate Authentication Material: Pass the Hash",
+    "url": "https://attack.mitre.org/techniques/T1550/002/",
+    "tactics": ["TA0008"]
+  },
+  "description": "Adversaries may Pass the Hash (PtH) using stolen password hashes to move laterally within an environment, bypassing normal system access controls. Pass the Hash is a method of authenticating as a user without having access to the user's cleartext password.",
+  "artifacts": [
+    "SMB protocol negotiation packets (TCP/445) using NTLM authentication with NT hash material",
+    "NTLMSSP NEGOTIATE/CHALLENGE/AUTH messages carrying NT hash-derived response (no cleartext password or Kerberos ticket)",
+    "SMB Tree Connect requests to ADMIN$, C$, or IPC$ shares after NTLM authentication",
+    "RPC endpoint mapper connections (TCP/135) followed by service creation (SVCCTL) for remote execution",
+    "DCOM activation traffic (TCP/135 + dynamic high ports) associated with WMI-based execution",
+    "WinRM traffic (TCP/5985 HTTP, TCP/5986 HTTPS) authenticating via NTLM rather than Kerberos",
+    "NTLM authentication traffic from non-domain controllers to member servers using domain credentials",
+    "Remote service creation, remote WMI Win32_Process::Create, or remote file writes consistent with lateral execution"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1550.002-internal-auth-pth-exec-evil-winrm",
+        "file": "pcaps/techniques/t1550.002/t1550.002_internal_auth_pth_exec__evil-winrm.pcap",
+        "name": "Internal Pass-the-Hash execution (evil-winrm)",
+        "description": "Internal authenticated Pass-the-Hash lateral movement using evil-winrm over WinRM with an NT hash, showing NTLM authentication and WinRM command execution on the target.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [5985]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "pth",
+          "pass-the-hash",
+          "lateral",
+          "exec",
+          "ntlm",
+          "winrm",
+          "evil-winrm",
+          "tcp",
+          "5985",
+          "high"
+        ],
+        "command": "evil-winrm -i 10.10.10.30 -u maintenance -H 'c5f2d015f316018f6405522825689ffe'"
+      },
+      {
+        "id": "t1550.002-internal-auth-pth-exec-netexec-smb",
+        "file": "pcaps/techniques/t1550.002/t1550.002_internal_auth_pth_exec__netexec-smb.pcap",
+        "name": "Internal Pass-the-Hash execution (netexec SMB)",
+        "description": "Internal authenticated Pass-the-Hash lateral movement using netexec SMB module with an NT hash, showing NTLM authentication over SMB and remote command execution on the target.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "pth",
+          "pass-the-hash",
+          "lateral",
+          "exec",
+          "ntlm",
+          "smb",
+          "netexec",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "nxc smb 10.10.10.30 -u maintenance -H 'c5f2d015f316018f6405522825689ffe' -x 'whoami' --smb-timeout 30"
+      },
+      {
+        "id": "t1550.002-internal-auth-pth-exec-impacket-smbexec",
+        "file": "pcaps/techniques/t1550.002/t1550.002_internal_auth_pth_exec__impacket-smbexec.pcap",
+        "name": "Internal Pass-the-Hash execution (impacket smbexec)",
+        "description": "Internal authenticated Pass-the-Hash lateral movement using impacket smbexec.py with an NT hash, showing NTLM authentication over SMB and RPC-based service creation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "pth",
+          "pass-the-hash",
+          "lateral",
+          "exec",
+          "ntlm",
+          "smb",
+          "rpc",
+          "svcctl",
+          "impacket",
+          "smbexec",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "smbexec.py -hashes 'aad3b435b51404eeaad3b435b51404ee:c5f2d015f316018f6405522825689ffe' 'ad.packetfeeder.lab/maintenance@10.10.10.30'"
+      },
+      {
+        "id": "t1550.002-internal-auth-pth-exec-impacket-wmiexec",
+        "file": "pcaps/techniques/t1550.002/t1550.002_internal_auth_pth_exec__impacket-wmiexec.pcap",
+        "name": "Internal Pass-the-Hash execution (impacket wmiexec)",
+        "description": "Internal authenticated Pass-the-Hash lateral movement using impacket wmiexec.py with an NT hash, showing NTLM authentication and DCOM/WMI Win32_Process::Create invocation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "pth",
+          "pass-the-hash",
+          "lateral",
+          "exec",
+          "ntlm",
+          "wmi",
+          "dcom",
+          "rpc",
+          "smb",
+          "impacket",
+          "wmiexec",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "wmiexec.py -hashes 'aad3b435b51404eeaad3b435b51404ee:c5f2d015f316018f6405522825689ffe' 'ad.packetfeeder.lab/maintenance@10.10.10.30' 'whoami'"
+      },
+      {
+        "id": "t1550.002-internal-auth-pth-exec-impacket-psexec",
+        "file": "pcaps/techniques/t1550.002/t1550.002_internal_auth_pth_exec__impacket-psexec.pcap",
+        "name": "Internal Pass-the-Hash execution (impacket psexec)",
+        "description": "Internal authenticated Pass-the-Hash lateral movement using impacket psexec.py with an NT hash, showing NTLM authentication over SMB, ADMIN$ share access, and RPC-based service creation for remote command execution.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [135, 445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "pth",
+          "pass-the-hash",
+          "lateral",
+          "exec",
+          "ntlm",
+          "smb",
+          "rpc",
+          "svcctl",
+          "impacket",
+          "psexec",
+          "tcp",
+          "135",
+          "445",
+          "high"
+        ],
+        "command": "psexec.py -hashes 'aad3b435b51404eeaad3b435b51404ee:c5f2d015f316018f6405522825689ffe' 'ad.packetfeeder.lab/maintenance@10.10.10.30' 'whoami'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

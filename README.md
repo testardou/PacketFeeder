@@ -270,7 +270,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1558.003 — Steal or Forge Kerberos Tickets: Kerberoasting
     - [x] T1558.004 — Steal or Forge Kerberos Tickets: AS-REP Roasting
   - [ ] Defense Evasion (TA0005)
-    - [ ] T1550.002 — Use Alternate Authentication Material: Pass the Hash
+    - [x] T1550.002 — Use Alternate Authentication Material: Pass the Hash
     - [ ] T1550.003 — Use Alternate Authentication Material: Pass the Ticket
   - [ ] Lateral Movement (TA0008)
     - [x] T1021.001 — Remote Services: Remote Desktop Protocol
