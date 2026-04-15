@@ -200,13 +200,15 @@ export function TechniqueScenarioList({
             Previous Step
           </Button>
         )}
-        <Button
-          variant="destructive"
-          className="flex-1"
-          onClick={() => setStep(step + 1)}
-        >
-          Next Step
-        </Button>
+        {step < 2 && (
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setStep(step + 1)}
+          >
+            Next Step
+          </Button>
+        )}
       </div>
     </div>
   );
