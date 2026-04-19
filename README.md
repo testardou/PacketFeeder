@@ -280,8 +280,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1210 — Exploitation of Remote Services
     - [x] T1021.003 — Remote Services: Distributed Component Object Model
   - [ ] Collection (TA0009)
-    - [ ] T1039 — Data from Network Shared Drive
-    - [ ] T1083 — File and Directory Discovery
+    - [] T1039 — Data from Network Shared Drive
+    - [x] T1083 — File and Directory Discovery
   - [ ] Execution (TA0002)
     - [ ] T1053.005 — Scheduled Task/Job: Scheduled Task
   - [ ] Persistence (TA0003)
