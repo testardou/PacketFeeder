@@ -211,10 +211,10 @@
         "command": "lsassy -m comsvcs -e smb -u testuser -p 'P@ssword123!' 10.10.10.50 --timeout 120 -vv"
       },
       {
-        "id": "t1003.001-internal-unauth-lsass-dump-exfil-failed-badpwd-lsassy",
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-failed-badpwd-lsassy",
         "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_failed__lsassy.pcap",
         "name": "Internal LSASS dump and exfiltration - failed bad password (lsassy)",
-        "description": "Internal unauthenticated LSASS memory dump attempt using lsassy with the comsvcs method and MMC remote execution vector, showing failed authentication due to incorrect credentials.",
+        "description": "Internal authenticated LSASS memory dump attempt using lsassy with the comsvcs method and MMC remote execution vector, showing failed authentication due to incorrect credentials.",
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
@@ -222,7 +222,7 @@
         },
         "filter": [
           "internal",
-          "unauth",
+          "auth",
           "lsass",
           "lsassy",
           "comsvcs",

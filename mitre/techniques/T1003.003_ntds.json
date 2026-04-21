@@ -79,10 +79,10 @@
         "command": "secretsdump.py -just-dc AD/bob@10.10.10.30"
       },
       {
-        "id": "t1003.003-internal-unauth-ntds-dump-drsuapi-failed-badpwd-secretsdump",
-        "file": "pcaps/techniques/t1003.003/t1003.003_internal_unauth_ntds_dump_drsuapi_failed_badpwd__secretsdump.pcap",
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-failed-badpwd-secretsdump",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi_failed_badpwd__secretsdump.pcap",
         "name": "Internal NTDS dump via DRSUAPI - failed bad password (secretsdump)",
-        "description": "Internal unauthenticated NTDS dump attempt using secretsdump.py (impacket) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
+        "description": "Internal authenticated NTDS dump attempt using secretsdump.py (impacket) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
@@ -90,7 +90,7 @@
         },
         "filter": [
           "internal",
-          "unauth",
+          "auth",
           "ntds",
           "drsuapi",
           "secretsdump",
@@ -195,10 +195,10 @@
         "command": "netexec smb 10.10.10.30 -u bob -p 'Password123!' -d AD --ntds"
       },
       {
-        "id": "t1003.003-internal-unauth-ntds-dump-drsuapi-failed-badpwd-netexec",
-        "file": "pcaps/techniques/t1003.003/t1003.003_internal_unauth_ntds_dump_drsuapi_failed_badpwd__netexec.pcap",
+        "id": "t1003.003-internal-auth-ntds-dump-drsuapi-failed-badpwd-netexec",
+        "file": "pcaps/techniques/t1003.003/t1003.003_internal_auth_ntds_dump_drsuapi_failed_badpwd__netexec.pcap",
         "name": "Internal NTDS dump via DRSUAPI - failed bad password (netexec)",
-        "description": "Internal unauthenticated NTDS dump attempt using netexec (CrackMapExec fork) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
+        "description": "Internal authenticated NTDS dump attempt using netexec (CrackMapExec fork) via DRSUAPI protocol showing failed authentication due to incorrect credentials.",
         "criticality": "high",
         "scope": {
           "protocol": "tcp",
@@ -206,7 +206,7 @@
         },
         "filter": [
           "internal",
-          "unauth",
+          "auth",
           "ntds",
           "drsuapi",
           "netexec",

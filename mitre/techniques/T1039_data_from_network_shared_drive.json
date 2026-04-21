@@ -1,0 +1,137 @@
+{
+  "mitre": {
+    "technique_id": "T1039",
+    "technique_name": "Data from Network Shared Drive",
+    "url": "https://attack.mitre.org/techniques/T1039/",
+    "tactics": ["TA0009"]
+  },
+  "description": "Adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives (host shared directory, network file server, etc.) that are accessible from the current system prior to Exfiltration. Interactive command shells may be in use, and common functionality within cmd may be used to gather information.",
+  "artifacts": [
+    "SMB NetShareEnum / NetShareEnumAll requests to enumerate available shares",
+    "SMB Tree Connect requests to shares (e.g. C$, ADMIN$, IT, custom shares)",
+    "SMB2 CREATE / READ operations on files within accessed shares",
+    "NTLM or Kerberos authentication to SMB server",
+    "SMB file download traffic (GET operations) towards the client",
+    "failed authentication attempts (STATUS_LOGON_FAILURE)",
+    "access denied responses on restricted shares (STATUS_ACCESS_DENIED)",
+    "authenticated access with domain or local credentials"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1039-internal-auth-smb-file-download-impacket-smbclient",
+        "file": "pcaps/techniques/t1039/t1039_internal_auth_smb_file_download__impacket-smbclient.pcap",
+        "name": "Internal SMB share file download - successful (impacket-smbclient)",
+        "description": "Internal authenticated enumeration of SMB shares and file download from the IT share using impacket-smbclient.py, showing successful retrieval of sensitive files (mimikatz.exe, passwords.txt).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "share",
+          "file",
+          "download",
+          "collection",
+          "smbclient",
+          "impacket",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "smbclient.py 'ad.packetfeeder.lab/maintenance:P@ssword123!@10.10.10.30' # shares; use IT; get Mimikatz.exe; get passwords.txt; exit"
+      },
+      {
+        "id": "t1039-internal-auth-smb-file-download-smbclient",
+        "file": "pcaps/techniques/t1039/t1039_internal_auth_smb_file_download__smbclient.pcap",
+        "name": "Internal SMB share file download - successful (smbclient)",
+        "description": "Internal authenticated file download from the IT SMB share using the native smbclient (Samba) client, showing successful retrieval of sensitive files (mimikatz.exe, password.txt) in a single command.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "share",
+          "file",
+          "download",
+          "collection",
+          "smbclient",
+          "samba",
+          "tcp",
+          "445",
+          "high"
+        ],
+        "command": "smbclient '//10.10.10.30/IT' -U 'AD\\maintenance%P@ssword123!' -c 'ls; get mimikatz.exe; get password.txt'"
+      },
+      {
+        "id": "t1039-internal-auth-smb-file-download-denied-impacket-smbclient",
+        "file": "pcaps/techniques/t1039/t1039_internal_auth_smb_file_download_denied__impacket-smbclient.pcap",
+        "name": "Internal SMB share file download - failed access denied (impacket-smbclient)",
+        "description": "Internal authenticated SMB share access attempt using impacket-smbclient.py towards the administrative C$ share, showing failed access due to insufficient privileges (user authenticated but lacks local Administrator rights on the target).",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "share",
+          "file",
+          "download",
+          "collection",
+          "smbclient",
+          "impacket",
+          "failed",
+          "denied",
+          "noprivs",
+          "tcp",
+          "445",
+          "medium"
+        ],
+        "command": "smbclient.py 'ad.packetfeeder.lab/alice:P@ssword123!@10.10.10.30' # use C$"
+      },
+      {
+        "id": "t1039-internal-auth-smb-file-download-failed-badpwd-impacket-smbclient",
+        "file": "pcaps/techniques/t1039/t1039_internal_auth_smb_file_download_failed_badpwd__impacket-smbclient.pcap",
+        "name": "Internal SMB share file download - failed bad password (impacket-smbclient)",
+        "description": "Internal authenticated SMB share access attempt using impacket-smbclient.py showing failed authentication due to incorrect credentials.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "smb",
+          "share",
+          "file",
+          "download",
+          "collection",
+          "smbclient",
+          "impacket",
+          "failed",
+          "badpwd",
+          "tcp",
+          "445",
+          "medium"
+        ],
+        "command": "smbclient.py 'ad.packetfeeder.lab/maintenance:WrongPass!@10.10.10.30'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

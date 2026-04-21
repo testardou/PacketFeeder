@@ -1,0 +1,13 @@
+{
+  "mitre": {
+    "tactic_id": "TA0009",
+    "tactic_name": "Collection",
+    "url": "https://attack.mitre.org/tactics/TA0009/"
+  },
+  "description": "Collection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to steal (exfiltrate) the data.",
+  "techniques": ["T1039"],
+  "metadata": {
+    "domain": "enterprise",
+    "schema_version": "1.0"
+  }
+}
