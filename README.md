@@ -285,7 +285,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1053.005 — Scheduled Task/Job: Scheduled Task
   - [ ] Persistence (TA0003)
     - [x] T1505.003 — Server Software Component: Web Shell
-    - [ ] T1136.002 — Create Account: Domain Account
+    - [x] T1136.002 — Create Account: Domain Account
     - [ ] T1098.001 — Account Manipulation: Additional Cloud Credentials
   - [ ] Exfiltration (TA0010)
     - [ ] T1048.001 — Exfiltration Over Alternative Protocol: DNS

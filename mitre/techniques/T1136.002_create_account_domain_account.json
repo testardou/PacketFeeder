@@ -1,0 +1,228 @@
+{
+  "mitre": {
+    "technique_id": "T1136.002",
+    "technique_name": "Create Account: Domain Account",
+    "url": "https://attack.mitre.org/techniques/T1136/002/",
+    "tactics": ["TA0003"]
+  },
+  "description": "Adversaries may create a domain account to maintain access to victim systems. Domain accounts are those managed by Active Directory Domain Services where access and permissions are configured across systems and services that are part of that domain. Domain accounts can cover user, administrator, and service accounts. With a sufficient level of access, the net user /add /domain command can be used to create a domain account.",
+  "artifacts": [
+    "DCE/RPC calls to SAMR (Security Account Manager Remote) protocol on the domain controller",
+    "DCE/RPC calls to LSARPC (Local Security Authority Remote) protocol",
+    "LDAP / LDAPS write operations creating new user or computer objects in Active Directory",
+    "SAMR SamrCreateUser2InDomain / SamrCreateUser RPC operations",
+    "computer account creation via LDAP (ms-DS-MachineAccountQuota / addcomputer.py)",
+    "Kerberos authentication to the domain controller",
+    "NTLM authentication to the domain controller",
+    "failed authentication attempts (STATUS_LOGON_FAILURE)",
+    "access denied responses on account creation operations (STATUS_ACCESS_DENIED)",
+    "successful creation of new domain user / computer objects"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-impacket-addcomputer",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create__impacket-addcomputer.pcap",
+        "name": "Internal domain computer account creation - successful (impacket-addcomputer)",
+        "description": "Internal authenticated creation of a domain computer account using impacket-addcomputer.py via LDAP / SAMR on the domain controller, showing successful registration of a new machine account (FAKE01$) in Active Directory.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135, 389, 636]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "computer",
+          "addcomputer",
+          "impacket",
+          "persistence",
+          "ldap",
+          "samr",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "389",
+          "636",
+          "high"
+        ],
+        "command": "addcomputer.py -computer-name 'FAKE01$' -computer-pass 'P@ssword123!' -dc-ip 10.10.10.30 'ad.packetfeeder.lab/maintenance:P@ssword123!'"
+      },
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-impacket-samrdump",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create__impacket-samrdump.pcap",
+        "name": "Internal domain user account creation via SAMR - successful (net rpc user add)",
+        "description": "Internal authenticated creation of a domain user account using samba's net rpc user add command on the domain controller, leveraging the SAMR (Security Account Manager Remote) protocol over SMB to register a new user (backdoor2) in Active Directory.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "user",
+          "net",
+          "samba",
+          "samr",
+          "samrdump",
+          "persistence",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "net rpc user add backdoor2 P@ssword123! -U 'AD/maintenance%P@ssword123!' -S 10.10.10.30"
+      },
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-net-user",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create__net-user.pcap",
+        "name": "Internal domain user account creation - successful (net user)",
+        "description": "Internal authenticated creation of a domain user account using the native Windows net user command with the /domain switch, showing successful registration of a new user (backdoor) in Active Directory via SAMR/LSARPC over SMB.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "user",
+          "net-user",
+          "native",
+          "samr",
+          "lsarpc",
+          "persistence",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "net user backdoor P@ssword123! /add /domain"
+      },
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-powershell-new-aduser",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create__powershell-new-aduser.pcap",
+        "name": "Internal domain user account creation - successful (PowerShell New-ADUser)",
+        "description": "Internal authenticated creation of a domain user account using the PowerShell New-ADUser cmdlet (ActiveDirectory module) over LDAP/LDAPS to the domain controller, showing successful registration of an enabled user (svc_backdoor) in Active Directory.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [389, 636, 445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "user",
+          "powershell",
+          "new-aduser",
+          "active-directory",
+          "persistence",
+          "ldap",
+          "ldaps",
+          "tcp",
+          "389",
+          "636",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "New-ADUser -Name 'svc_backdoor' -SamAccountName 'svc_backdoor' -AccountPassword (ConvertTo-SecureString 'P@ssword123!' -AsPlainText -Force) -Enabled $true -Server 10.10.10.30"
+      },
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-denied-impacket-addcomputer",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create_denied__impacket-addcomputer.pcap",
+        "name": "Internal domain computer account creation - failed access denied (impacket-addcomputer)",
+        "description": "Internal authenticated domain computer account creation attempt using impacket-addcomputer.py, showing failed creation due to insufficient privileges (user authenticated but lacks rights to register machine accounts in Active Directory, e.g. ms-DS-MachineAccountQuota exceeded or no Create Computer Object permission).",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135, 389, 636]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "computer",
+          "addcomputer",
+          "impacket",
+          "persistence",
+          "failed",
+          "denied",
+          "noprivs",
+          "ldap",
+          "samr",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "389",
+          "636",
+          "medium"
+        ],
+        "command": "addcomputer.py -computer-name 'FAKE01$' -computer-pass 'P@ssword123!' -dc-ip 10.10.10.30 'ad.packetfeeder.lab/alice:P@ssword123!'"
+      },
+      {
+        "id": "t1136.002-internal-auth-domain-account-create-failed-badpwd-impacket-addcomputer",
+        "file": "pcaps/techniques/t1136.002/t1136.002_internal_auth_domain_account_create_failed_badpwd__impacket-addcomputer.pcap",
+        "name": "Internal domain computer account creation - failed bad password (impacket-addcomputer)",
+        "description": "Internal authenticated domain computer account creation attempt using impacket-addcomputer.py, showing failed authentication to the domain controller due to incorrect credentials.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135, 389, 636]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "domain",
+          "account",
+          "create",
+          "computer",
+          "addcomputer",
+          "impacket",
+          "persistence",
+          "failed",
+          "badpwd",
+          "ldap",
+          "samr",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "389",
+          "636",
+          "medium"
+        ],
+        "command": "addcomputer.py -computer-name 'FAKE01$' -computer-pass 'P@ssword123!' -dc-ip 10.10.10.30 'ad.packetfeeder.lab/maintenance:WrongPassword'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
