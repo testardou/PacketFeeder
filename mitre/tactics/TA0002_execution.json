@@ -1,0 +1,13 @@
+{
+  "mitre": {
+    "tactic_id": "TA0002",
+    "tactic_name": "Execution",
+    "url": "https://attack.mitre.org/tactics/TA0002/"
+  },
+  "description": "Execution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data.",
+  "techniques": ["T1053.005"],
+  "metadata": {
+    "domain": "enterprise",
+    "schema_version": "1.0"
+  }
+}

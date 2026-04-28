@@ -1,0 +1,154 @@
+{
+  "mitre": {
+    "technique_id": "T1053.005",
+    "technique_name": "Scheduled Task/Job: Scheduled Task",
+    "url": "https://attack.mitre.org/techniques/T1053/005/",
+    "tactics": ["TA0002"]
+  },
+  "description": "Adversaries may abuse the Windows Task Scheduler to perform task scheduling for initial or recurring execution of malicious code. There are multiple ways to access the Task Scheduler in Windows. The schtasks utility can be run directly on the command line, or the Task Scheduler can be opened through the GUI within the Administrator Tools section of the Control Panel. In some cases, adversaries have used a .NET wrapper for the Windows Task Scheduler, and alternatively, adversaries have used the Windows netapi32 library to create a scheduled task.",
+  "artifacts": [
+    "DCE/RPC calls to ATSVC / TSCH (Task Scheduler) protocol over SMB named pipe (\\PIPE\\atsvc)",
+    "SMB connections to ADMIN$ share for command output retrieval",
+    "SchRpcRegisterTask / SchRpcRun / SchRpcDelete RPC operations",
+    "remote scheduled task creation on the target host (e.g. tasks running as SYSTEM)",
+    "command execution via cmd.exe redirected to files in C:\\Windows\\Temp\\",
+    "authentication attempts with elevated privileges (local Administrator or domain account)",
+    "failed authentication attempts (STATUS_LOGON_FAILURE)",
+    "access denied responses on task scheduler operations (STATUS_ACCESS_DENIED)",
+    "SMB read operations to retrieve command output files"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1053.005-internal-auth-schtask-exec-impacket-atexec",
+        "file": "pcaps/techniques/t1053.005/t1053.005_internal_auth_schtask_exec__impacket-atexec.pcap",
+        "name": "Internal scheduled task remote execution - successful (impacket-atexec)",
+        "description": "Internal authenticated remote command execution via Windows Task Scheduler (ATSVC/TSCH RPC) using impacket-atexec, showing successful task creation, command execution as SYSTEM and SMB retrieval of the command output.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "schtask",
+          "scheduled-task",
+          "atsvc",
+          "tsch",
+          "exec",
+          "execution",
+          "atexec",
+          "impacket",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "atexec.py 'Administrator:P@ssword123!@10.10.10.50' 'whoami'"
+      },
+      {
+        "id": "t1053.005-internal-auth-schtask-exec-schtasks",
+        "file": "pcaps/techniques/t1053.005/t1053.005_internal_auth_schtask_exec__schtasks.pcap",
+        "name": "Internal scheduled task remote execution - successful (schtasks)",
+        "description": "Internal authenticated remote command execution via Windows Task Scheduler using the native schtasks.exe utility, showing successful create / run / delete sequence of a SYSTEM-level scheduled task on the target host.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "schtask",
+          "scheduled-task",
+          "atsvc",
+          "tsch",
+          "exec",
+          "execution",
+          "schtasks",
+          "native",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "high"
+        ],
+        "command": "schtasks /create /s 10.10.10.30 /u AD\\maintenance /p 'P@ssword123!' /tn 'MaintenanceTask' /tr 'cmd.exe /c whoami > C:\\Windows\\Temp\\output.txt' /sc once /st 00:00 /ru SYSTEM /f; schtasks /run /s 10.10.10.30 /u AD\\maintenance /p 'P@ssword123!' /tn 'MaintenanceTask'; schtasks /delete /s 10.10.10.30 /u AD\\maintenance /p 'P@ssword123!' /tn 'MaintenanceTask' /f"
+      },
+      {
+        "id": "t1053.005-internal-auth-schtask-exec-denied-impacket-atexec",
+        "file": "pcaps/techniques/t1053.005/t1053.005_internal_auth_schtask_exec_denied__impacket-atexec.pcap",
+        "name": "Internal scheduled task remote execution - failed access denied (impacket-atexec)",
+        "description": "Internal authenticated remote command execution attempt via Windows Task Scheduler using impacket-atexec, showing failed task creation due to insufficient privileges (user authenticated but lacks rights to register a scheduled task on the target).",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "schtask",
+          "scheduled-task",
+          "atsvc",
+          "tsch",
+          "exec",
+          "execution",
+          "atexec",
+          "impacket",
+          "failed",
+          "denied",
+          "noprivs",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "medium"
+        ],
+        "command": "atexec.py 'testuser:P@ssword123!@10.10.10.50' 'whoami'"
+      },
+      {
+        "id": "t1053.005-internal-auth-schtask-exec-failed-badpwd-impacket-atexec",
+        "file": "pcaps/techniques/t1053.005/t1053.005_internal_auth_schtask_exec_failed_badpwd__impacket-atexec.pcap",
+        "name": "Internal scheduled task remote execution - failed bad password (impacket-atexec)",
+        "description": "Internal authenticated remote command execution attempt via Windows Task Scheduler using impacket-atexec, showing failed authentication due to incorrect credentials.",
+        "criticality": "medium",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [445, 135]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "schtask",
+          "scheduled-task",
+          "atsvc",
+          "tsch",
+          "exec",
+          "execution",
+          "atexec",
+          "impacket",
+          "failed",
+          "badpwd",
+          "smb",
+          "rpc",
+          "tcp",
+          "445",
+          "135",
+          "medium"
+        ],
+        "command": "atexec.py 'Administrator:WrongPassword@10.10.10.50' 'whoami'"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

@@ -281,8 +281,8 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1021.003 — Remote Services: Distributed Component Object Model
   - [x] Collection (TA0009)
     - [x] T1039 — Data from Network Shared Drive
-  - [ ] Execution (TA0002)
-    - [ ] T1053.005 — Scheduled Task/Job: Scheduled Task
+  - [x] Execution (TA0002)
+    - [x] T1053.005 — Scheduled Task/Job: Scheduled Task
   - [ ] Persistence (TA0003)
     - [x] T1505.003 — Server Software Component: Web Shell
     - [ ] T1136.002 — Create Account: Domain Account
