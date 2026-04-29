@@ -1,0 +1,13 @@
+{
+  "mitre": {
+    "tactic_id": "TA0010",
+    "tactic_name": "Exfiltration",
+    "url": "https://attack.mitre.org/tactics/TA0010/"
+  },
+  "description": "Exfiltration consists of techniques that adversaries may use to steal data from your network. Once they've collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel.",
+  "techniques": ["T1048.001"],
+  "metadata": {
+    "domain": "enterprise",
+    "schema_version": "1.0"
+  }
+}
