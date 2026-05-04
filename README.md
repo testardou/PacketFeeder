@@ -290,7 +290,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1048.001 — Exfiltration Over Alternative Protocol: DNS
     - [ ] T1048.003 — Exfiltration Over Alternative Protocol: HTTP
   - [ ] Command and Control (TA0011)
-    - [ ] T1071.001 — Application Layer Protocol: Web Protocols
+    - [x] T1071.001 — Application Layer Protocol: Web Protocols
     - [ ] T1071.004 — Application Layer Protocol: DNS
     - [ ] T1090.001 — Proxy: Internal Proxy
     - [ ] T1095 — Non-Application Layer Protocol

