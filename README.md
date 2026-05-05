@@ -286,9 +286,9 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Persistence (TA0003)
     - [x] T1505.003 — Server Software Component: Web Shell
     - [x] T1136.002 — Create Account: Domain Account
-  - [ ] Exfiltration (TA0010)
+  - [x] Exfiltration (TA0010)
     - [x] T1048.001 — Exfiltration Over Alternative Protocol: DNS
-    - [ ] T1048.003 — Exfiltration Over Alternative Protocol: HTTP
+    - [x] T1048.003 — Exfiltration Over Alternative Protocol: HTTP
   - [ ] Command and Control (TA0011)
     - [x] T1071.001 — Application Layer Protocol: Web Protocols
     - [x] T1071.004 — Application Layer Protocol: DNS
