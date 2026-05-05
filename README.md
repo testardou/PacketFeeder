@@ -292,7 +292,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
   - [ ] Command and Control (TA0011)
     - [x] T1071.001 — Application Layer Protocol: Web Protocols
     - [x] T1071.004 — Application Layer Protocol: DNS
-    - [ ] T1090.001 — Proxy: Internal Proxy
+    - [x] T1090.001 — Proxy: Internal Proxy
     - [ ] T1095 — Non-Application Layer Protocol
     - [ ] T1102 — Web Service
     - [ ] T1568.002 — Dynamic Resolution: Domain Generation Algorithms

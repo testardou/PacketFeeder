@@ -1,0 +1,87 @@
+{
+  "mitre": {
+    "technique_id": "T1090.001",
+    "technique_name": "Proxy: Internal Proxy",
+    "url": "https://attack.mitre.org/techniques/T1090/001/",
+    "tactics": ["TA0011"]
+  },
+  "description": "Adversaries may use an internal proxy to direct command and control traffic between two or more systems in a compromised environment. Many tools exist that enable traffic redirection through proxies or port redirection, including HTRAN, ZXProxy, and ZXPortMap. Adversaries use internal proxies to manage command and control communications inside a compromised environment, to reduce the number of simultaneous outbound network connections, to provide resiliency in the face of connection loss, or to ride over existing trusted communications paths between infected systems to avoid suspicion. Internal proxy connections may use common peer-to-peer (p2p) networking protocols, such as SMB, to better blend in with the environment.",
+  "artifacts": [
+    "long-lived TCP session to a compromised internal host (pivot) acting as a SOCKS proxy",
+    "SSH dynamic port forwarding (`-D <port>`) establishing a SOCKS5 listener on the operator host",
+    "chisel TCP session on the pivot's listener port (e.g. TCP/8888) carrying multiplexed HTTP/WebSocket-tunneled SOCKS5 traffic",
+    "second-hop SSH connections (port 22) from the pivot host towards deeper internal targets",
+    "proxychains-style relayed traffic visible as connections sourced from the pivot rather than the operator",
+    "Linux command output patterns (whoami, id, hostname, ps aux, uname -a) inside the relayed second-hop SSH session",
+    "TCP keep-alive / heartbeat traffic on the proxy session"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1090.001-external-ssh-socks-proxy-openssh",
+        "file": "pcaps/techniques/t1090.001/t1090.001_external_ssh_socks_proxy__openssh.pcap",
+        "name": "Internal SOCKS proxy via SSH dynamic forwarding - openssh",
+        "description": "Operator establishes a SOCKS5 proxy through SSH dynamic port forwarding (`ssh -D 1080`) to a compromised pivot host (10.10.10.20), then uses proxychains to reach a deeper internal target (10.10.10.40) over a second-hop SSH session and runs reconnaissance commands (whoami, id, hostname, ps aux, uname -a).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [22, 1080]
+        },
+        "filter": [
+          "external",
+          "ssh",
+          "socks",
+          "socks5",
+          "proxy",
+          "pivot",
+          "tunnel",
+          "openssh",
+          "proxychains",
+          "command-and-control",
+          "recon",
+          "tcp",
+          "22",
+          "1080",
+          "high"
+        ],
+        "command": "# operator -> pivot: ssh -D 1080 -N user@10.10.10.20\n# operator -> deep target via SOCKS: proxychains ssh user@10.10.10.40\n# inside second-hop session: whoami; id; hostname; ps aux; uname -a"
+      },
+      {
+        "id": "t1090.001-external-http-socks-proxy-chisel",
+        "file": "pcaps/techniques/t1090.001/t1090.001_external_http_socks_proxy__chisel.pcap",
+        "name": "Internal SOCKS proxy via chisel HTTP tunnel - chisel",
+        "description": "Operator establishes a SOCKS5 proxy via chisel: server runs on the compromised pivot (10.10.10.20:8888 with --socks5), client on the operator host connects and exposes a local SOCKS5 listener. proxychains is then used to reach a deeper internal target (10.10.10.40) over a second-hop SSH session and run reconnaissance commands (whoami, id, hostname, ps aux, uname -a).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "tcp",
+          "ports": [8888, 22, 1080]
+        },
+        "filter": [
+          "external",
+          "http",
+          "socks",
+          "socks5",
+          "proxy",
+          "pivot",
+          "tunnel",
+          "chisel",
+          "websocket",
+          "proxychains",
+          "command-and-control",
+          "recon",
+          "tcp",
+          "8888",
+          "22",
+          "1080",
+          "high"
+        ],
+        "command": "# pivot (10.10.10.20): /tmp/chisel server -p 8888 --socks5\n# operator: ./chisel client 10.10.10.20:8888 socks\n# operator -> deep target via SOCKS: proxychains ssh user@10.10.10.40\n# inside second-hop session: whoami; id; hostname; ps aux; uname -a"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
