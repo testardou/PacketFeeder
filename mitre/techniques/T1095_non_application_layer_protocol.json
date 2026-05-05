@@ -1,0 +1,56 @@
+{
+  "mitre": {
+    "technique_id": "T1095",
+    "technique_name": "Non-Application Layer Protocol",
+    "url": "https://attack.mitre.org/techniques/T1095/",
+    "tactics": ["TA0011"]
+  },
+  "description": "Adversaries may use an OSI non-application layer protocol for communication between host and C2 server or among infected hosts within a network. The list of possible protocols is extensive. Specific examples include use of network layer protocols, such as the Internet Control Message Protocol (ICMP), transport layer protocols, such as the User Datagram Protocol (UDP), session layer protocols, such as Socket Secure (SOCKS), as well as redirected/tunneled protocols, such as Serial over LAN (SOL). ICMP communication between hosts is one example of this. Because ICMP is part of the Internet Protocol Suite, it is required to be implemented by all IP-compatible hosts; however, it is not as commonly monitored as other Internet Protocols such as TCP or UDP and may be used by adversaries to hide communications.",
+  "artifacts": [
+    "abnormally high volume of ICMP echo request / echo reply packets between two hosts",
+    "ICMP echo packets with non-standard / variable payload lengths (often >56 bytes, fluctuating)",
+    "non-zero / structured ICMP payload data (encrypted or framed) instead of typical ping fixed pattern",
+    "long-lived bidirectional ICMP conversation between a single client and a single server",
+    "ptunnel-ng magic value / framing in ICMP payloads",
+    "tunneled TCP/SSH traffic reassembled from ICMP payload chunks",
+    "second-hop SSH session (port 22) carried inside the ICMP tunnel reaching the victim",
+    "Linux command output patterns (hostname, whoami, uname -a, ps aux) inside the tunneled SSH session"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1095-external-icmp-tunnel-ptunnel-ng",
+        "file": "pcaps/techniques/t1095/t1095_external_icmp_tunnel__ptunnel-ng.pcap",
+        "name": "External ICMP tunnel - ptunnel-ng",
+        "description": "Operator establishes an ICMP tunnel to a compromised victim host (10.10.10.20) using ptunnel-ng: server mode runs on the victim, client mode on the operator forwards local TCP/2222 to the victim's TCP/22 over ICMP echo request/reply packets. The operator then SSHes through the tunnel (`ssh user@127.0.0.1 -p 2222`) and runs reconnaissance commands (hostname, whoami, uname -a, ps aux).",
+        "criticality": "high",
+        "scope": {
+          "protocol": "icmp",
+          "ports": [22, 2222]
+        },
+        "filter": [
+          "external",
+          "icmp",
+          "tunnel",
+          "ptunnel",
+          "ptunnel-ng",
+          "command-and-control",
+          "covert",
+          "non-application-layer",
+          "ssh",
+          "recon",
+          "tcp",
+          "22",
+          "2222",
+          "high"
+        ],
+        "command": "# debian-ssh (10.10.10.20): sudo ptunnel-ng -s\n# attacker-ext: sudo ptunnel-ng -p 10.10.10.20 -r 10.10.10.20 -R 22 -l 2222\n# attacker-ext -> tunneled SSH: ssh user@127.0.0.1 -p 2222\n# inside tunneled session: hostname; whoami; uname -a; ps aux"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
