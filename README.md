@@ -269,7 +269,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [ ] T1557.002 — Adversary-in-the-Middle: ARP Cache Poisoning
     - [x] T1558.003 — Steal or Forge Kerberos Tickets: Kerberoasting
     - [x] T1558.004 — Steal or Forge Kerberos Tickets: AS-REP Roasting
-  - [ ] Defense Evasion (TA0005)
+  - [x] Defense Evasion (TA0005)
     - [x] T1550.002 — Use Alternate Authentication Material: Pass the Hash
     - [x] T1550.003 — Use Alternate Authentication Material: Pass the Ticket
   - [x] Lateral Movement (TA0008)
