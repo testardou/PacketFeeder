@@ -295,7 +295,7 @@ This lab generates/replays traffic on an isolated network (lab-ovs) and captures
     - [x] T1090.001 — Proxy: Internal Proxy
     - [x] T1095 — Non-Application Layer Protocol
     - [ ] T1102 — Web Service
-    - [ ] T1568.002 — Dynamic Resolution: Domain Generation Algorithms
+    - [x] T1568.002 — Dynamic Resolution: Domain Generation Algorithms
     - [ ] T1572 — Protocol Tunneling
 
 ### Attack Builder

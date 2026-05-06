@@ -1,0 +1,107 @@
+{
+  "mitre": {
+    "technique_id": "T1568.002",
+    "technique_name": "Dynamic Resolution: Domain Generation Algorithms",
+    "url": "https://attack.mitre.org/techniques/T1568/002/",
+    "tactics": ["TA0011"]
+  },
+  "description": "Adversaries may make use of Domain Generation Algorithms (DGAs) to dynamically identify a destination domain for command and control traffic rather than relying on a list of static IP addresses or domains. This has the advantage of making it much harder for defenders to block, track, or take over the command and control channel, as there potentially could be thousands of domains that malware can check for instructions. DGAs can take the form of apparently meaningless strings of characters generated using a seed (often the current date) that produce many candidate domains; the malware iterates through these until one resolves to a live C2.",
+  "artifacts": [
+    "burst of DNS queries to many randomly-generated, never-before-seen domains in a short time window",
+    "high NXDOMAIN response rate from the recursive resolver",
+    "DNS queries with high-entropy / pseudo-random second-level domain labels",
+    "fixed length / fixed TLD pattern characteristic of a specific DGA family (e.g. Locky, Necurs, QakBot)",
+    "queries originating from a single internal client towards the corporate resolver for many distinct domains",
+    "absence of corresponding HTTP/HTTPS connections for the vast majority of resolved/attempted domains",
+    "DNS query timing pattern consistent with a tight client-side loop (sequential, low inter-query delay)"
+  ],
+  "datasets": {
+    "pcaps": [
+      {
+        "id": "t1568.002-internal-dga-resolve-locky-dig",
+        "file": "pcaps/techniques/t1568.002/t1568.002_internal_dga_resolve_locky__dig.pcap",
+        "name": "Internal DGA resolution - Locky family (dig)",
+        "description": "Simulation of Locky ransomware DGA behavior: a Python DGA generator (Locky variant) emits candidate C2 domains which are then resolved one by one via dig against the internal resolver (10.10.10.1), producing a burst of DNS queries with the high-entropy / fixed-length pattern characteristic of the Locky family.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "dga",
+          "domain-generation-algorithm",
+          "dynamic-resolution",
+          "command-and-control",
+          "locky",
+          "ransomware",
+          "dig",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "python3 dgav3.py | while read domain; do dig \"$domain\" @10.10.10.1; done   # locky DGA seed/variant"
+      },
+      {
+        "id": "t1568.002-internal-dga-resolve-necurs-dig",
+        "file": "pcaps/techniques/t1568.002/t1568.002_internal_dga_resolve_necurs__dig.pcap",
+        "name": "Internal DGA resolution - Necurs family (dig)",
+        "description": "Simulation of Necurs botnet DGA behavior: a Python DGA generator (Necurs variant) emits candidate C2 domains which are then resolved one by one via dig against the internal resolver (10.10.10.1), producing a burst of DNS queries with the pseudo-random pattern characteristic of the Necurs family.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "dga",
+          "domain-generation-algorithm",
+          "dynamic-resolution",
+          "command-and-control",
+          "necurs",
+          "botnet",
+          "dig",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "python3 dgav3.py | while read domain; do dig \"$domain\" @10.10.10.1; done   # necurs DGA seed/variant"
+      },
+      {
+        "id": "t1568.002-internal-dga-resolve-qakbot-dig",
+        "file": "pcaps/techniques/t1568.002/t1568.002_internal_dga_resolve_qakbot__dig.pcap",
+        "name": "Internal DGA resolution - QakBot family (dig)",
+        "description": "Simulation of QakBot/Qbot banking trojan DGA behavior: a Python DGA generator (QakBot variant) emits candidate C2 domains which are then resolved one by one via dig against the internal resolver (10.10.10.1), producing a burst of DNS queries with the deterministic seed-based pattern characteristic of the QakBot family.",
+        "criticality": "high",
+        "scope": {
+          "protocol": "udp",
+          "ports": [53]
+        },
+        "filter": [
+          "internal",
+          "dns",
+          "dga",
+          "domain-generation-algorithm",
+          "dynamic-resolution",
+          "command-and-control",
+          "qakbot",
+          "qbot",
+          "banker",
+          "trojan",
+          "dig",
+          "udp",
+          "53",
+          "high"
+        ],
+        "command": "python3 dgav3.py | while read domain; do dig \"$domain\" @10.10.10.1; done   # qakbot DGA seed/variant"
+      }
+    ]
+  },
+  "metadata": {
+    "domain": "enterprise",
+    "confidence": "high",
+    "schema_version": "1.0"
+  }
+}
