@@ -27,6 +27,10 @@ export function useScenarioItems() {
     setScenarioItems((prev) => [...prev, newItem]);
   };
 
+  const clearScenario = () => {
+    setScenarioItems([]);
+  };
+
   const addPcapFromDrop = (data: Omit<ScenarioPcapItem, "id">) => {
     const newItem: ScenarioPcapItem = {
       ...data,
@@ -67,5 +71,6 @@ export function useScenarioItems() {
     updateSleepDuration,
     removeItem,
     reorderItems,
+    clearScenario,
   };
 }

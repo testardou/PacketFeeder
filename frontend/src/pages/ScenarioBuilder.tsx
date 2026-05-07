@@ -30,6 +30,7 @@ export default function ScenarioBuilder() {
     addSleep,
     updateSleepDuration,
     scenarioItems,
+    clearScenario,
   } = scenario;
 
   const scenarioInfosMutation = useScenarioInfos();
@@ -86,6 +87,7 @@ export default function ScenarioBuilder() {
       >
         <div className="p-4 pt-11 h-full flex flex-col">
           <TechniqueScenarioList
+            clearScenario={clearScenario}
             items={scenarioItems}
             onRemove={removeItem}
             onReorder={reorderItems}

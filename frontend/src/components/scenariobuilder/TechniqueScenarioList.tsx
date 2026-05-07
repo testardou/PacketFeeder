@@ -1,10 +1,34 @@
 import { useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ScenarioItem, ScenarioPcapItem } from "./types";
 import { PcapItemCard } from "./PcapItemCard";
 import { SleepItemCard } from "./SleepItemCard";
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "@/components/ui/alert-dialog";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export type { ScenarioItem, ScenarioPcapItem } from "./types";
 
@@ -17,6 +41,7 @@ interface TechniqueScenarioListProps {
   onUpdateSleepDuration: (id: string, duration: number) => void;
   setStep: (val: number) => void;
   step: number;
+  clearScenario: () => void;
 }
 
 export function TechniqueScenarioList({
@@ -28,10 +53,12 @@ export function TechniqueScenarioList({
   onUpdateSleepDuration,
   setStep,
   step,
+  clearScenario,
 }: TechniqueScenarioListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragOverContainer, setIsDragOverContainer] = useState(false);
+  const [exportFilename, setExportFilename] = useState<string | null>(null);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -116,94 +143,197 @@ export function TechniqueScenarioList({
     }
   };
 
+  const exportScenario = () => {
+    const content = {
+      version: 1,
+      data: new Date().toISOString(),
+      name: exportFilename,
+      items: items.map((item) =>
+        item.type === "sleep"
+          ? { type: "sleep", duration: item.duration }
+          : {
+              type: "pcap",
+              techniqueId: item.techniqueId,
+              tacticId: item.tacticId,
+              pcapFile: item.pcapFile,
+            },
+      ),
+    };
+    const blob = new Blob([JSON.stringify(content, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const safeName = (exportFilename || "scenario").replace(
+      /[^a-z0-9-_]/gi,
+      "_",
+    );
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${safeName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setExportFilename(null);
+  };
+
   const dropZoneClass = isDragOverContainer
     ? "border-primary bg-primary/5"
     : "border-border";
 
-  if (items.length === 0) {
-    return (
-      <div className="flex flex-col h-full gap-3">
-        <div
-          className={`flex-1 flex flex-col items-center justify-center text-center p-4 text-muted-foreground border-2 border-dashed rounded-lg transition-colors ${dropZoneClass}`}
-          onDragOver={handleContainerDragOver}
-          onDragLeave={handleContainerDragLeave}
-          onDrop={handleContainerDrop}
-        >
-          <p>No technique in the scenario</p>
-          <p className="text-sm mt-2">
-            {isDragOverContainer
-              ? "Release to add the technique"
-              : "Select a tactic and technique on the left to get started, or drag and drop"}
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          className="w-full shrink-0"
-          onClick={onAddSleep}
-        >
-          <Clock className="h-4 w-4 mr-2" />
-          Add a Sleep
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col h-full gap-3">
       <div
-        className={`flex-1 min-h-0 rounded-lg border-2 border-dashed p-3 transition-colors overflow-y-auto ${dropZoneClass}`}
+        className={
+          items.length === 0
+            ? `flex-1 flex flex-col items-center justify-center text-center p-4 text-muted-foreground border-2 border-dashed rounded-lg transition-colors ${dropZoneClass}`
+            : `flex-1 min-h-0 rounded-lg border-2 border-dashed p-3 transition-colors overflow-y-auto ${dropZoneClass}`
+        }
         onDragOver={handleContainerDragOver}
         onDragLeave={handleContainerDragLeave}
         onDrop={handleContainerDrop}
       >
-        <div className="space-y-3">
-          {items.map((item, index) => (
-            <Card
-              key={item.id}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDrop(e, index)}
-              onDragEnd={handleDragEnd}
-              className={`cursor-move transition-all duration-200 ${
-                draggedIndex === index ? "opacity-50 scale-95" : ""
-              } ${
-                dragOverIndex === index && draggedIndex !== index
-                  ? "border-primary border-2 shadow-lg bg-primary/5"
-                  : "hover:border-border/50"
-              }`}
-            >
-              <CardContent className="p-4">
-                {item.type === "pcap" ? (
-                  <PcapItemCard item={item} index={index} onRemove={onRemove} />
-                ) : (
-                  <SleepItemCard
-                    item={item}
-                    index={index}
-                    onRemove={onRemove}
-                    onUpdateDuration={onUpdateSleepDuration}
-                  />
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {items.length === 0 ? (
+          <>
+            <p>No technique in the scenario</p>
+            <p className="text-sm mt-2">
+              {isDragOverContainer
+                ? "Release to add the technique"
+                : "Select a tactic and technique on the left to get started, or drag and drop"}
+            </p>
+          </>
+        ) : (
+          <div className="space-y-3">
+            {items.map((item, index) => (
+              <Card
+                key={item.id}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                className={`cursor-move transition-all duration-200 ${
+                  draggedIndex === index ? "opacity-50 scale-95" : ""
+                } ${
+                  dragOverIndex === index && draggedIndex !== index
+                    ? "border-primary border-2 shadow-lg bg-primary/5"
+                    : "hover:border-border/50"
+                }`}
+              >
+                <CardContent className="p-4">
+                  {item.type === "pcap" ? (
+                    <PcapItemCard
+                      item={item}
+                      index={index}
+                      onRemove={onRemove}
+                    />
+                  ) : (
+                    <SleepItemCard
+                      item={item}
+                      index={index}
+                      onRemove={onRemove}
+                      onUpdateDuration={onUpdateSleepDuration}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-2 shrink-0">
+        <div className="flex flex-row gap-2">
+          <Button variant="outline" className="flex-1" onClick={onAddSleep}>
+            Import
+          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex-1"
+                disabled={items.length === 0}
+              >
+                Export
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Export scenario</DialogTitle>
+                <DialogDescription>
+                  <div className="flex flex-col gap-2">
+                    Export the current scenario ({items.length} item(s)) as a
+                    JSON file that can be shared and re-imported later.
+                    <Label>New file name</Label>
+                    <Input
+                      disabled={items.length === 0}
+                      onChange={(e) => setExportFilename(e.target.value)}
+                    />
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose>Cancel</DialogClose>
+                <DialogClose>
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={exportScenario}
+                    disabled={items.length === 0 || exportFilename === null}
+                  >
+                    Export
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
         <Button variant="outline" className="flex-1" onClick={onAddSleep}>
           <Clock className="h-4 w-4 mr-2" />
           Add a Sleep
         </Button>
-        {step > 0 && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              disabled={items.length === 0}
+            >
+              <Trash2Icon className="h-4 w-4 mr-2" />
+              Clear
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Clear scenario?</DialogTitle>
+              <DialogDescription>
+                This will remove all {items.length} item(s) from the scenario.
+                This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose>Cancel</DialogClose>
+              <DialogClose>
+                <Button
+                  onClick={() => clearScenario()}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Clear
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        {items.length > 0 && step > 0 && (
           <Button className="flex-1" onClick={() => setStep(step - 1)}>
             Previous Step
           </Button>
         )}
-        {step < 2 && (
+        {items.length > 0 && step < 2 && (
           <Button
-            variant="destructive"
-            className="flex-1"
+            variant="outline"
+            className="flex-1 bg-blue-500 hover:bg-blue-700 text-white"
             onClick={() => setStep(step + 1)}
           >
             Next Step
