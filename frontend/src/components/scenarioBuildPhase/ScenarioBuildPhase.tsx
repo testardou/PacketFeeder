@@ -44,7 +44,7 @@ export const ScenarioBuildPhase = ({
       selectedTechnique,
       techniqueData,
       selectFile,
-      selectedTactic || undefined,
+      selectedTactic?.split("_")[0] || undefined,
       dataset,
     );
   };

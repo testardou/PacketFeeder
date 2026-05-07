@@ -26,7 +26,7 @@ export function PcapItemCard({ item, index, onRemove }: PcapItemCardProps) {
               </div>
               <GripVertical className="h-4 w-4" />
             </div>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold line-clamp-2">
               {item.technique.mitre.technique_name}
             </p>
             {item.dataset && (

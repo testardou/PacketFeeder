@@ -30,10 +30,9 @@ export function TacticSelector({
         </SelectTrigger>
         <SelectContent>
           {tacticsList?.files.map((file) => {
-            const tacticId = file.split("_")[0]; // "TA0011"
             const tacticLabel = file.replace("_", " ").replace(".json", "");
             return (
-              <SelectItem key={file} value={tacticId}>
+              <SelectItem key={file} value={file}>
                 {tacticLabel}
               </SelectItem>
             );
