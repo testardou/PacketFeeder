@@ -26,10 +26,10 @@ def get_tactics():
         if not os.path.isdir(tactics_dir):
             return jsonify({"files": []})
         
-        tactic_files = [
+        tactic_files = sorted(
             f for f in os.listdir(tactics_dir)
             if os.path.isfile(os.path.join(tactics_dir, f)) and f.endswith(".json")
-        ]
+        )
         current_app.logger.info("Found %d tactic files", len(tactic_files))
         return jsonify({"files": tactic_files})
     except Exception as e:

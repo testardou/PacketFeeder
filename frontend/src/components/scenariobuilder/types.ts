@@ -44,3 +44,12 @@ export interface ScenarioInfosResponse {
   all: PcapInfoType;
 }
 export type PerPcapRewrites = Record<string, RewriteState>;
+
+export type ImportScenarioResponseItem =
+  | Omit<ScenarioPcapItem, "id">
+  | Omit<ScenarioSleepItem, "id">;
+
+export interface ImportScenarioResponse {
+  items: ImportScenarioResponseItem[];
+  missing: string[];
+}

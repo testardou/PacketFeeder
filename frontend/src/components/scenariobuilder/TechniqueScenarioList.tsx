@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Clock, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { ScenarioItem, ScenarioPcapItem } from "./types";
+import type {
+  ImportScenarioResponse,
+  ScenarioItem,
+  ScenarioPcapItem,
+} from "./types";
 import { PcapItemCard } from "./PcapItemCard";
 import { SleepItemCard } from "./SleepItemCard";
+import { API_CONFIG } from "@/config/api";
 // import {
 //   AlertDialog,
 //   AlertDialogAction,
@@ -42,6 +47,7 @@ interface TechniqueScenarioListProps {
   setStep: (val: number) => void;
   step: number;
   clearScenario: () => void;
+  setScenarioItems: (items: ScenarioItem[]) => void;
 }
 
 export function TechniqueScenarioList({
@@ -54,11 +60,14 @@ export function TechniqueScenarioList({
   setStep,
   step,
   clearScenario,
+  setScenarioItems,
 }: TechniqueScenarioListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragOverContainer, setIsDragOverContainer] = useState(false);
   const [exportFilename, setExportFilename] = useState<string | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -140,6 +149,69 @@ export function TechniqueScenarioList({
     const externalData = parseDropData(e);
     if (externalData && onDropFromOutside) {
       onDropFromOutside(externalData);
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      if (!Array.isArray(parsed.items)) {
+        throw new Error("Invalid scenario file: missing items array");
+      }
+
+      const res = await fetch(`${API_CONFIG.API_BASE}/import-scenario/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: parsed.items }),
+      });
+
+      if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({}));
+        throw new Error(errorBody.error || `Server returned ${res.status}`);
+      }
+
+      const data: ImportScenarioResponse = await res.json();
+
+      const now = Date.now();
+      const reconstructed: ScenarioItem[] = data.items.map((item, i) => {
+        if (item.type === "sleep") {
+          return {
+            type: "sleep",
+            id: `sleep-${now}-${i}`,
+            duration: item.duration,
+          };
+        }
+        return {
+          type: "pcap",
+          id: `${item.techniqueId}-${now}-${i}`,
+          techniqueId: item.techniqueId,
+          tacticId: item.tacticId,
+          pcapFile: item.pcapFile,
+          technique: item.technique,
+          dataset: item.dataset,
+        };
+      });
+
+      setScenarioItems(reconstructed);
+
+      if (data.missing.length > 0) {
+        alert(
+          `Some techniques were not found and have been skipped:\n${data.missing.join(", ")}`,
+        );
+      }
+    } catch (err) {
+      alert(
+        `Failed to import scenario: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
+    } finally {
+      setIsImporting(false);
+      e.target.value = "";
     }
   };
 
@@ -245,9 +317,21 @@ export function TechniqueScenarioList({
       </div>
       <div className="flex flex-col gap-2 shrink-0">
         <div className="flex flex-row gap-2">
-          <Button variant="outline" className="flex-1" onClick={onAddSleep}>
-            Import
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isImporting}
+          >
+            {isImporting ? "Importing..." : "Import"}
           </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={handleImport}
+          />
           <Dialog>
             <DialogTrigger asChild>
               <Button

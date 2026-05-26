@@ -31,6 +31,7 @@ export default function ScenarioBuilder() {
     updateSleepDuration,
     scenarioItems,
     clearScenario,
+    setScenarioItems,
   } = scenario;
 
   const scenarioInfosMutation = useScenarioInfos();
@@ -96,6 +97,7 @@ export default function ScenarioBuilder() {
             onUpdateSleepDuration={updateSleepDuration}
             setStep={setStep}
             step={step}
+            setScenarioItems={setScenarioItems}
           />
         </div>
       </div>

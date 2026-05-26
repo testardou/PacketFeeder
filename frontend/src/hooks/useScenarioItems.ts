@@ -65,6 +65,7 @@ export function useScenarioItems() {
 
   return {
     scenarioItems,
+    setScenarioItems,
     addPcap,
     addPcapFromDrop,
     addSleep,
