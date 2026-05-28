@@ -67,6 +67,7 @@ export function TechniqueScenarioList({
   const [isDragOverContainer, setIsDragOverContainer] = useState(false);
   const [exportFilename, setExportFilename] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragStart = (index: number) => {
@@ -215,39 +216,55 @@ export function TechniqueScenarioList({
     }
   };
 
-  const exportScenario = () => {
-    const content = {
-      version: 1,
-      data: new Date().toISOString(),
-      name: exportFilename,
-      items: items.map((item) =>
-        item.type === "sleep"
-          ? { type: "sleep", duration: item.duration }
-          : {
-              type: "pcap",
-              techniqueId: item.techniqueId,
-              tacticId: item.tacticId,
-              pcapFile: item.pcapFile,
-            },
-      ),
-    };
-    const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
+  const exportScenario = async () => {
+    setIsExporting(true);
+    try {
+      const res = await fetch(`${API_CONFIG.API_BASE}/export-scenario/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: exportFilename || "scenario",
+          items: items.map((item) =>
+            item.type === "sleep"
+              ? { type: "sleep", duration: item.duration }
+              : {
+                  type: "pcap",
+                  techniqueId: item.techniqueId,
+                  tacticId: item.tacticId,
+                  pcapFile: item.pcapFile,
+                },
+          ),
+        }),
+      });
 
-    const safeName = (exportFilename || "scenario").replace(
-      /[^a-z0-9-_]/gi,
-      "_",
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${safeName}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setExportFilename(null);
+      if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({}));
+        throw new Error(errorBody.error || `Server returned ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const disposition = res.headers.get("Content-Disposition");
+      const match = disposition?.match(/filename="?([^"]+)"?/);
+      const filename =
+        match?.[1] ??
+        `${(exportFilename || "scenario").replace(/[^a-z0-9-_]/gi, "_")}.json`;
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setExportFilename(null);
+    } catch (err) {
+      alert(
+        `Failed to export scenario: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const dropZoneClass = isDragOverContainer
@@ -364,9 +381,9 @@ export function TechniqueScenarioList({
                     variant="outline"
                     className="flex-1"
                     onClick={exportScenario}
-                    disabled={items.length === 0 || exportFilename === null}
+                    disabled={items.length === 0 || exportFilename === null || isExporting}
                   >
-                    Export
+                    {isExporting ? "Exporting..." : "Export"}
                   </Button>
                 </DialogClose>
               </DialogFooter>

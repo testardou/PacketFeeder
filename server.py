@@ -20,6 +20,7 @@ from backend.routes.get_mitre import get_mitre_bp
 from backend.routes.scenario_infos import scenario_infos_bp
 from backend.routes.replay_scenario import replay_scenario_bp
 from backend.routes.import_scenario import import_scenario_bp
+from backend.routes.export_scenario import export_scenario_bp
 from backend.sockets.realtime import ReplayNamespace
 from backend.extension import socketio
 
@@ -71,6 +72,7 @@ api.register_blueprint(rewrite_pcap_file_bp)
 api.register_blueprint(scenario_infos_bp)
 api.register_blueprint(replay_scenario_bp)
 api.register_blueprint(import_scenario_bp)
+api.register_blueprint(export_scenario_bp)
 
 ### DELETE ###
 api.register_blueprint(delete_pcap_file_bp)
