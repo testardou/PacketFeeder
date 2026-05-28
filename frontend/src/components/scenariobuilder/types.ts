@@ -11,7 +11,7 @@ export interface ScenarioPcapItem {
   techniqueId: string;
   technique: Technique;
   tacticId?: string;
-  pcapFile: string;
+  file_path: string;
   dataset?: PcapDataset;
 }
 

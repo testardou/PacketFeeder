@@ -95,7 +95,7 @@ export function TechniqueScenarioList({
         techniqueId: data.techniqueId,
         technique: data.technique,
         tacticId: data.tacticId,
-        pcapFile: data.pcapFile,
+        file_path: data.file_path,
       };
     } catch {
       return null;
@@ -193,7 +193,7 @@ export function TechniqueScenarioList({
           id: `${item.techniqueId}-${now}-${i}`,
           techniqueId: item.techniqueId,
           tacticId: item.tacticId,
-          pcapFile: item.pcapFile,
+          file_path: item.file_path,
           technique: item.technique,
           dataset: item.dataset,
         };
@@ -231,7 +231,7 @@ export function TechniqueScenarioList({
                   type: "pcap",
                   techniqueId: item.techniqueId,
                   tacticId: item.tacticId,
-                  pcapFile: item.pcapFile,
+                  pcapFile: item.file_path,
                 },
           ),
         }),

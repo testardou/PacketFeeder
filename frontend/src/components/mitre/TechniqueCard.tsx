@@ -103,7 +103,7 @@ export function TechniqueCard({
       techniqueId: technique.mitre.technique_id,
       technique,
       tacticId: tacticId || undefined,
-      pcapFile: dataset.file,
+      file_path: dataset.file,
     };
 
     e.dataTransfer.setData("application/json", JSON.stringify(dragData));
@@ -120,7 +120,7 @@ export function TechniqueCard({
       techniqueId: technique.mitre.technique_id,
       technique,
       tacticId: tacticId || undefined,
-      pcapFile: file,
+      file_path: file,
     };
 
     e.dataTransfer.setData("application/json", JSON.stringify(dragData));

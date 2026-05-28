@@ -11,7 +11,7 @@ export function useScenarioItems() {
   const addPcap = (
     techniqueId: string,
     technique: ScenarioPcapItem["technique"],
-    pcapFile: string,
+    file_path: string,
     tacticId?: string,
     dataset?: PcapDataset,
   ) => {
@@ -21,7 +21,7 @@ export function useScenarioItems() {
       techniqueId,
       technique,
       tacticId,
-      pcapFile,
+      file_path,
       dataset,
     };
     setScenarioItems((prev) => [...prev, newItem]);

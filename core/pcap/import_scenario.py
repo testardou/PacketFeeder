@@ -77,7 +77,7 @@ def resolve_scenario_import(items: list) -> dict:
                 "type": "pcap",
                 "techniqueId": technique_id,
                 "tacticId": tactic_id,
-                "pcapFile": pcap_file,
+                "file_path": pcap_file,
                 "technique": technique_data,
                 "dataset": dataset,
             })

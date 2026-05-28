@@ -10,7 +10,7 @@ function toApiItems(items: ScenarioItem[]) {
     if (item.type === "pcap") {
       return {
         type: "pcap" as const,
-        pcap_file: item.pcapFile,
+        pcap_file: item.file_path,
         technique_id: item.techniqueId ?? null,
         tactic_id: item.tacticId ?? null,
       };

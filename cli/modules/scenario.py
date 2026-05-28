@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 
 from cli.mixins.infos import InfosMixin
@@ -9,6 +10,8 @@ from core.utils.get_ifaces import get_ifaces
 from core.pcap.merge_pcaps import merge_pcaps
 from core.utils.parse_mapping import parse_mapping
 from core.replay.replay_with_speed import replay_with_speed
+from core.pcap.import_scenario import resolve_scenario_import
+from core.pcap.export_scenario import build_scenario_export, safe_export_filename
 
 class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
     name = "scenario"
@@ -96,6 +99,39 @@ class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
                 new_rewrites[key] = value
         self.per_pcap_rewrites = new_rewrites
         print(f"[Scenario] Removed: {removed['type']} at index {index}")
+
+    def do_import(self, args):
+        """Load a scenario from a JSON file: import <file.json>"""
+        path = args.strip()
+        if not path:
+            print("Usage: import <file.json>")
+            return
+        if not os.path.isfile(path):
+            print(f"Error: file not found: {path}")
+            return
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                parsed = json.load(f)
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error reading file: {e}")
+            return
+        if not isinstance(parsed.get("items"), list):
+            print("Error: invalid scenario file (missing 'items' array)")
+            return
+        try:
+            result = resolve_scenario_import(parsed["items"])
+        except ValueError as e:
+            print(f"Error: {e}")
+            return
+        self.scenario = result["items"]
+        self.per_pcap_rewrites = {}
+        print(f"[Scenario] Loaded {len(self.scenario)} item(s) from {path}")
+        if result["missing"]:
+            print(f"[Scenario] Skipped (technique not found): {', '.join(result['missing'])}")
+
+    def complete_import(self, text, line, begidx, endidx):
+        pattern = (text or "") + "*.json"
+        return glob.glob(pattern)
 
     def do_move(self, args):
         """Move an item: move <from_index> <to_index>"""
