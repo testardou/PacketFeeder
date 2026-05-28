@@ -55,11 +55,11 @@ def resolve_scenario_import(items: list) -> dict:
 
         elif item_type == "pcap":
             technique_id = item.get("techniqueId")
-            pcap_file = item.get("pcapFile")
+            pcap_file = item.get("file_path")
             tactic_id = item.get("tacticId")
 
             if not technique_id or not pcap_file:
-                raise ValueError(f"Item {i}: missing 'techniqueId' or 'pcapFile'")
+                raise ValueError(f"Item {i}: missing 'techniqueId' or 'file_path'")
 
             try:
                 technique_data = load_technique(technique_id)

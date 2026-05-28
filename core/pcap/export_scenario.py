@@ -22,14 +22,14 @@ def build_scenario_export(name: str, items: list) -> dict:
         elif item_type == "pcap":
             technique_id = item.get("techniqueId")
             tactic_id = item.get("tacticId")
-            pcap_file = item.get("pcapFile")
+            pcap_file = item.get("file_path")
             if not technique_id or not pcap_file:
-                raise ValueError(f"Item {i}: missing 'techniqueId' or 'pcapFile'")
+                raise ValueError(f"Item {i}: missing 'techniqueId' or 'file_path'")
             exported_items.append({
                 "type": "pcap",
                 "techniqueId": technique_id,
                 "tacticId": tactic_id,
-                "pcapFile": pcap_file,
+                "file_path": pcap_file,
             })
 
         else:

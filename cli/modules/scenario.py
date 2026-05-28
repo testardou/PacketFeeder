@@ -129,6 +129,37 @@ class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
         if result["missing"]:
             print(f"[Scenario] Skipped (technique not found): {', '.join(result['missing'])}")
 
+    def do_export(self, args):
+        """Save the scenario to a JSON file: export <name>"""
+        name = args.strip()
+        if not name:
+            print("Usage: export <name>")
+            return
+        if not self.scenario:
+            print("Scenario is empty.")
+            return
+        items_to_export = []
+        skipped = 0
+        for item in self.scenario:
+            if item["type"] == "pcap" and not item.get("techniqueId"):
+                skipped += 1
+                continue
+            items_to_export.append(item)
+        if skipped:
+            print(f"[Scenario] Warning: {skipped} item(s) skipped (no techniqueId)")
+        if not items_to_export:
+            print("Nothing to export.")
+            return
+        try:
+            content = build_scenario_export(name, items_to_export)
+        except ValueError as e:
+            print(f"Error: {e}")
+            return
+        filename = safe_export_filename(name)
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(content, f, indent=2)
+        print(f"[Scenario] Exported to {filename}")
+
     def complete_import(self, text, line, begidx, endidx):
         pattern = (text or "") + "*.json"
         return glob.glob(pattern)

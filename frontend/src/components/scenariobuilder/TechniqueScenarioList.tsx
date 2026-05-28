@@ -231,7 +231,7 @@ export function TechniqueScenarioList({
                   type: "pcap",
                   techniqueId: item.techniqueId,
                   tacticId: item.tacticId,
-                  pcapFile: item.file_path,
+                  file_path: item.file_path,
                 },
           ),
         }),

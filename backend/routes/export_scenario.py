@@ -20,7 +20,7 @@ def export_scenario():
         "name": "my-scenario",
         "items": [
             {"type": "sleep", "duration": 5},
-            {"type": "pcap", "techniqueId": "T1003.001", "tacticId": "TA0006", "pcapFile": "pcaps/..."},
+            {"type": "pcap", "techniqueId": "T1003.001", "tacticId": "TA0006", "file_path": "pcaps/..."},
             ...
         ]
     }
