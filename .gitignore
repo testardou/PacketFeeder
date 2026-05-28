@@ -75,3 +75,5 @@ local_settings.py
 node_modules/
 
 .packetfeeder_history
+.agents/
+skills-lock.json
