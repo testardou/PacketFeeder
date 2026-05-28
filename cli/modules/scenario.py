@@ -1,9 +1,11 @@
 import glob
 import json
 import os
+import re
 
 from cli.mixins.infos import InfosMixin
 from cli.mixins.rewrite import REWRITE_TYPES, RewriteMixin
+from cli.mixins.show import ShowMixin
 from cli.modules.base import BaseModule
 from core.utils.rewrite_params import REWRITE_KEY_TO_PARAM
 from core.utils.get_ifaces import get_ifaces
@@ -13,7 +15,7 @@ from core.replay.replay_with_speed import replay_with_speed
 from core.pcap.import_scenario import resolve_scenario_import
 from core.pcap.export_scenario import build_scenario_export, safe_export_filename
 
-class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
+class ScenarioModule(ShowMixin, RewriteMixin, InfosMixin, BaseModule):
     name = "scenario"
     description = "Build and replay attack scenarios from MITRE technique PCAPs"
 
@@ -36,7 +38,11 @@ class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
             if not os.path.isfile(pcap):
                 print('Error: PCAP not found')
                 return
-            self.scenario.append({"type": "pcap", "file_path": pcap})
+            item = {"type": "pcap", "file_path": pcap}
+            match = re.match(r'(t\d+(?:\.\d+)?)_', os.path.basename(pcap), re.IGNORECASE)
+            if match:
+                item["techniqueId"] = match.group(1).upper()
+            self.scenario.append(item)
             print(f"[Scenario] Added pcap: {pcap} (index {len(self.scenario) - 1})")
         elif parts[0] == "sleep":
             try:
@@ -100,9 +106,16 @@ class ScenarioModule(RewriteMixin, InfosMixin, BaseModule):
         self.per_pcap_rewrites = new_rewrites
         print(f"[Scenario] Removed: {removed['type']} at index {index}")
 
+    def do_clear(self, _args):
+        """Clear the whole scenario and its rewrites"""
+        count = len(self.scenario)
+        self.scenario = []
+        self.per_pcap_rewrites = {}
+        print(f"[Scenario] Cleared {count} item(s)")
+
     def do_import(self, args):
         """Load a scenario from a JSON file: import <file.json>"""
-        path = args.strip()
+        path = os.path.expanduser(args.strip())
         if not path:
             print("Usage: import <file.json>")
             return
