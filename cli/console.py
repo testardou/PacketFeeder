@@ -63,13 +63,14 @@ BANNER = """
   Type 'help' for available commands.
   """
 
-class PacketFeederConsole(cmd2.Cmd):
-    prompt = "\033[1;32mPacketFeeder\033[0m > "
-    intro = BANNER
+BASE_PROMPT = "\033[1;32mPacketFeeder\033[0m > "
 
+
+class PacketFeederConsole(cmd2.Cmd):
     def __init__(self):
         root_dir = get_project_root()
-        super().__init__(allow_cli_args=False, persistent_history_file=os.path.expanduser(f"{root_dir}/.packetfeeder_history"))
+        super().__init__(allow_cli_args=False, intro=BANNER, persistent_history_file=os.path.expanduser(f"{root_dir}/.packetfeeder_history"))
+        self.prompt = BASE_PROMPT
         self.modules = {
             "replay": ReplayModule,
             "rewrite": RewriteModule,
@@ -130,7 +131,7 @@ class PacketFeederConsole(cmd2.Cmd):
     def do_back(self, _args):
         """Return to main prompt"""
         self.active_module = None
-        self.prompt = "\033[1;32mPacketFeeder\033[0m > "
+        self.prompt = BASE_PROMPT
 
     def do_set(self, args):
         if not self.active_module:
